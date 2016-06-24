@@ -16,6 +16,7 @@ def surveyPage(request):
 
 		if form.is_valid():
 			logger.info('Add code to process data')
+			form.save()
 
 	else:
 		form = PageOne()

@@ -1,0 +1,18 @@
+#pageOneUl {
+	list-style-type: none;
+}
+
+label {
+	display: inline-block;
+	width: 180px;
+	text-align: right;
+}
+
+li {
+	padding-top: 10px;
+	padding-bottom; 10px;
+}
+
+select {
+	width: 220px;
+}

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-#from django import forms
-from django import ModelForm
+from django import forms
+from django.forms import ModelForm
 from django.utils.translation import ugettext as _
 from surveyThesis.models import SurveyLine
 
@@ -21,6 +21,21 @@ from surveyThesis.models import SurveyLine
 #				)
 
 class PageOne(ModelForm):
+
 	class Meta:
 		model = SurveyLine
-		fields = ['age', 'education']
+		fields = [
+				'participantNumber', 
+				'age', 
+				'education', 
+				'undergradLevel',
+				'nativeLanguage',
+				]
+		#localized_fields = fields
+
+		labels = {
+			'participantNumber': _(u"Participant number"),
+			'age': _(u"Age"),
+			'education': _(u"Education"),
+			'nativeLanguage': _(u"Native language"),
+		}

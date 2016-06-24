@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
 
+{% load staticfiles %}
 <head>
+	<link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/>
 </head>
 
 <body>
 
 <form action="" method="post">
 	{% csrf_token %}
-	{{ form.as_p }}
+	<ul id="pageOneUl">
+	{{ form.as_ul }}
+	</ul>
 
 	<button type="submit">Next</button>
 </form>
-
-Testing.
 
 </body>
 
