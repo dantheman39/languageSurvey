@@ -5,6 +5,9 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _
 from surveyThesis.models import SurveyLine
+import logging
+
+logger = logging.getLogger('surveyThesis')
 
 #class PageOne(forms.Form):
 #	defErrMess = _(u'This field is required')
@@ -29,7 +32,10 @@ class PageOne(ModelForm):
 				'age', 
 				'education', 
 				'undergradLevel',
-				'nativeLanguage',
+				'nativeLanguage1',
+				'nativeLanguage2',
+				'nativeLanguage3',
+				'nativeLanguage4',
 				]
 		#localized_fields = fields
 
@@ -37,5 +43,25 @@ class PageOne(ModelForm):
 			'participantNumber': _(u"Participant number"),
 			'age': _(u"Age"),
 			'education': _(u"Education"),
-			'nativeLanguage': _(u"Native language"),
+			'undergradLevel': _(u"Undergrad level"),
+			'nativeLanguage1': _(u"Native language"),
+			'nativeLanguage2': _(u"Native language"),
+			'nativeLanguage3': _(u"Native language"),
+			'nativeLanguage4': _(u"Native language"),
 		}
+
+	def clean(self):
+		cleaned_data = super(PageOne, self).clean()
+
+		try:
+			educationSelection = cleaned_data['education']
+			if cleaned_data['education'] == "undergrad":
+				if not cleaned_data['undergradLevel']:
+					valError = forms.ValidationError(_(u"Please tell us what year you are in, or the last year you completed"))
+					self.add_error('undergradLevel', valError)
+
+		# means didn't pass cleaning
+		except KeyError:
+			pass
+
+		return cleaned_data

@@ -12,11 +12,14 @@ def surveyPage(request):
 	logger.info('Testing with one page for now')	
 
 	if request.method == 'POST':
+		logger.info("Page was posted")
 		form = PageOne(request.POST)
 
 		if form.is_valid():
 			logger.info('Add code to process data')
 			form.save()
+		else: 
+			logger.info('Form is not valid for some reason')
 
 	else:
 		form = PageOne()

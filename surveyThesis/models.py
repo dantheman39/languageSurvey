@@ -20,7 +20,25 @@ class SurveyLine(models.Model):
 	)
 	date = models.DateTimeField(auto_now=True)
 	
-	nativeLanguage = models.CharField(
+	nativeLanguage1 = models.CharField(
 		choices=LANGUAGE_CHOICES,
 		max_length=50,
+	)
+
+	nativeLanguage2 = models.CharField(
+		choices=LANGUAGE_CHOICES,
+		max_length=50,
+		blank=True,
+	)
+
+	nativeLanguage3 = models.CharField(
+		choices=LANGUAGE_CHOICES,
+		max_length=50,
+		blank=True,
+	)
+	
+	nativeLanguage4 = models.CharField(
+		choices=LANGUAGE_CHOICES,
+		max_length=50,
+		blank=True,
 	)
