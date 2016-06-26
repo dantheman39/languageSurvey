@@ -3,7 +3,10 @@
 
 from django.shortcuts import render
 from forms import PageOne
+from models import SurveyLine
+from django.utils.translation import ugettext as _
 import logging
+from surveyThesis.constants import LANGUAGE_CHOICES
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +20,26 @@ def surveyPage(request):
 
 		if form.is_valid():
 			logger.info('Add code to process data')
-			form.save()
+			data = form.cleaned_data
+			surveyLine = SurveyLine(
+				participantNumber=data['participantNumber'],
+				age=data['age'],
+				education=data['education'],
+				undergradLevel=data['undergradLevel'],
+				nativeLanguages=data['nativeLanguages'],
+				)
+
+			surveyLine.save()
 		else: 
 			logger.info('Form is not valid for some reason')
 
 	else:
 		form = PageOne()
 
-	return render(request, 'one.html', {'form': form})
+	argsDict = {'form': form, 
+			'langChoices': LANGUAGE_CHOICES,
+			'natLangLabel': _(u"Native language"),
+			'addLangButtonText': _(u"Add language"),
+			'removeButtonText': _(u"Remove"),
+			}
+	return render(request, 'one.html', argsDict)

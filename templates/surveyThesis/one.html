@@ -32,40 +32,20 @@
 
 		<div id="nativeLangWrapper">
 			<div id="natLangDiv1">
-				<li class="errorMessage" hidden>This field cannot be blank</li>
-				{{ form.nativeLanguage1.errors }}
-				<li>{{ form.nativeLanguage1.label_tag }}
-				{{ form.nativeLanguage1 }} 
-				<button id="natLangButt1" type="button">Add language</button>
-				</li>
+				<label for="natLangSelect1">{{ natLangLabel }}</label>
+				<select id="natLangSelect1">
+					<option selected disabled value=""></option>
+				{% for lang in langChoices %}
+					<option value="{{ lang.0 }}">{{ lang.1 }}</option>
+				{% endfor %}
+				</select>
+				<button id="addNatLangButt" type="button">{{ addLangButtonText }}</button>
 			</div>
+		</div>
 
-			<div class="hiddenDiv" id="natLangDiv2" hidden>
-				<li class="errorMessage" hidden>This field cannot be blank</li>
-				{{ form.nativeLanguage2.errors }}
-				<li>{{ form.nativeLanguage2.label_tag }}
-				{{ form.nativeLanguage2 }}
-				<button id="natLangButt2" type="button">Remove language</button>
-				</li>
-			</div>
-
-			<div class="hiddenDiv" id="natLangDiv3" hidden>
-				<li class="errorMessage" hidden>This field cannot be blank</li>
-				{{ form.nativeLanguage3.errors }}
-				<li>{{ form.nativeLanguage3.label_tag }}
-				{{ form.nativeLanguage3 }}
-				<button id="natLangButt3" type="button">Remove language</button>
-				</li>
-			</div>
-
-			<div class="hiddenDiv" id="natLangDiv4" hidden>
-				<li class="errorMessage" hidden>This field cannot be blank</li>
-				{{ form.nativeLanguage4.errors }}
-				<li>{{ form.nativeLanguage4.label_tag }}
-				{{ form.nativeLanguage4 }}
-				<button id="natLangButt4" type="button">Remove language</button>
-				</li>
-			</div>
+		<div hidden>
+			{{ form.nativeLanguages }}
+			<input id="removeButtonText" value="{{ removeButtonText }}"></input>
 		</div>
 
 	</ul>
@@ -77,6 +57,7 @@
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
 	<script src="{% static 'surveyThesis/hideShowUndergrad.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/validateAndSubmit.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/addElements.js' %}" type="text/javascript"></script>
 
 </body>
 

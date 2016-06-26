@@ -5,6 +5,7 @@ from surveyThesis.constants import *
 
 class SurveyLine(models.Model):
 
+	print("Make this unique")
 	participantNumber = models.IntegerField()
 	age = models.IntegerField()
 
@@ -42,3 +43,17 @@ class SurveyLine(models.Model):
 		max_length=50,
 		blank=True,
 	)
+
+class ForeignLangLine(models.Model):
+
+	print("Add a foreign key")
+	participantNumber = models.IntegerField()
+	
+	foreignLang = models.CharField(
+		max_length=10,
+	)
+
+	semestersStudied = models.IntegerField()
+	daysLived = models.IntegerField()
+	other = models.CharField(max_length=10)
+	otherDays = models.IntegerField()
