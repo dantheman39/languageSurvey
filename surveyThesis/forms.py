@@ -34,8 +34,8 @@ class PageOne(forms.Form):
 				choices=UG_CHOICES,
 				)
 
-	nativeLanguages = forms.ChoiceField(
-				choices=LANGUAGE_CHOICES,
+	nativeLanguages = forms.CharField(
+				max_length=200,
 				)
 
 	def clean(self):
