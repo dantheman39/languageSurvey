@@ -3,24 +3,17 @@
 
 from django.utils.translation import ugettext as _
 
-# Education choices
-ED_NONE = 'none'
-ED_PRIMARY = 'primary'
-ED_SECONDARY = 'secondary'
-ED_UNDERGRAD = 'undergrad'
-ED_MASTER = 'master'
-ED_PHD = 'phd' 
-
 ED_CHOICES = (
-	(ED_NONE, _(u'None')),
-	(ED_PRIMARY, _(u'Elementary/Middle School')),
-	(ED_SECONDARY, _(u'High school')),
-	(ED_UNDERGRAD, _(u'Undergraduate')),
-	(ED_MASTER, _(u'Master')),
-	(ED_PHD, _(u'PhD')),
+	('none', _(u'None')),
+	('primary', _(u'Elementary/Middle School')),
+	('secondary', _(u'High school')),
+	('undergrad', _(u'Undergraduate')),
+	('master', _(u'Master')),
+	('phd', _(u'PhD')),
 )
 
 UG_CHOICES = (
+	("", ""),
 	("fr", _(u"Freshman")),
 	("sp", _(u"Sophomore")),
 	("jr", _(u"Junior")),

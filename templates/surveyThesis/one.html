@@ -31,14 +31,15 @@
 
 		<div id="nativeLangWrapper">
 			<div id="natLangDiv1">
-				<label for="natLangSelect1">{{ natLangLabel }}</label>
+				<li class="errorMessage" hidden>{{ form.fieldRequiredMess }}</li>
+				<label for="natLangSelect1">{{ form.nativeLanguageLabel }}</label>
 				<select id="natLangSelect1">
 					<option selected disabled value=""></option>
 				{% for lang in langChoices %}
 					<option value="{{ lang.0 }}">{{ lang.1 }}</option>
 				{% endfor %}
 				</select>
-				<button id="addNatLangButt" type="button">{{ addLangButtonText }}</button>
+				<button id="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
 			</div>
 		</div>
 
@@ -49,7 +50,12 @@
 
 	</ul>
 
+	<p>{{ form.testingText }}</p>
+
 	<button type="button" id="submitButton">Next</button>
+
+	{{ form.errors }}
+	{{ form.non_field_errors }}
 </form>
 
 	<script src="{% static 'jquery.js' %}"></script>

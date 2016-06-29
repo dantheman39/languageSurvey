@@ -4,9 +4,8 @@
 from django.shortcuts import render
 from forms import PageOne
 from models import SurveyLine
-from django.utils.translation import ugettext as _
 import logging
-from surveyThesis.constants import LANGUAGE_CHOICES
+from surveyThesis.constants import LANGUAGE_CHOICES, NATIVE_LANGUAGE_LABEL, ADD_LANGUAGE_BUTTON_TEXT, REMOVE_BUTTON_TEXT, FIELD_REQUIRED_MESS, VISION_DIFFICULTIES_TEXT, READING_DIFFICULTIES_TEXT
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +37,9 @@ def surveyPage(request):
 
 	argsDict = {'form': form, 
 			'langChoices': LANGUAGE_CHOICES,
-			'natLangLabel': _(u"Native language"),
-			'addLangButtonText': _(u"Add language"),
-			'removeButtonText': _(u"Remove"),
+			'natLangLabel': NATIVE_LANGUAGE_LABEL,
+			'addLangButtonText': ADD_LANGUAGE_BUTTON_TEXT,
+			'removeButtonText': REMOVE_BUTTON_TEXT,
+			'natLangRequiredMess': FIELD_REQUIRED_MESS,
 			}
 	return render(request, 'one.html', argsDict)
