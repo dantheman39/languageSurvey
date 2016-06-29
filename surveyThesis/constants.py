@@ -26,6 +26,15 @@ YES_NO_CHOICES = (
 	(False, _(u"No")),
 )
 
+PROFICIENCY_CHOICES = (
+	("", ""),
+	(1, _(u"Almost none (can't use at all)")),
+	(2, _(u"Low (know very basic phrases)")),
+	(3, _(u"Intermediate (can hold simple conversations)")),
+	(4, _(u"Advanced")),
+	(5, _(u"Very advanced")),
+)
+
 LANGUAGE_CHOICES = (
 	("en", _(u"English")),
 	("es", _(u"Spanish")),

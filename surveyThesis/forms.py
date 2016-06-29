@@ -5,7 +5,7 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _
 from surveyThesis.models import SurveyLine, ForeignLangLine
-from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES
+from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES, PROFICIENCY_CHOICES
 import logging
 
 logger = logging.getLogger('surveyThesis')
@@ -32,15 +32,22 @@ class PageOne(forms.Form):
 	
 	methodOfStudyQuestion = _(u"How did you learn or use it? (Check all that apply)")
 	
+	school = forms.BooleanField(label=_(u"Classes"))
+	lived = forms.BooleanField(label=_(u"Lived abroad"))
+
+	schoolLabel = _(u"Classes")
 	semestersQuestion = _(u"About how many semesters did you study for? (one semester is about 5 months, one year is two semesters) ")
 	semestersText = _(u"Semesters")
-	years = _(u"Years")
+	semestersTotalText = _(u"semesters total")
 
+	livedLabel = _(u"Lived")
 	livedQuestion = _(u"About how long were you there?")
 	yearsText = _(u"Years")
 	monthsText = _(u"Months")
 	weeksText = _(u"Weeks")
 	daysText = _(u"Days")
+
+	foreignProfLabel = _(u"Estimated proficiency")
 
 	otherForeignDetails = _(u"Please explain")
 
@@ -93,7 +100,17 @@ class PageOne(forms.Form):
 				widget = forms.Textarea,
 				)
 
-	foreignLanguages = forms.TextField()
+	foreignLanguages = forms.CharField(
+				widget = forms.Textarea,
+				)
+
+	foreignLangBool = forms.ChoiceField(
+				choices=YES_NO_CHOICES,
+				widget=forms.RadioSelect,
+				)
+
+	foreignProficiencyChoices = PROFICIENCY_CHOICES 
+
 
 	def clean(self):
 		cleaned_data = super(PageOne, self).clean()

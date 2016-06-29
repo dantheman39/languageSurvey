@@ -6,14 +6,14 @@ $('#nativeLangWrapper').on('change', 'select', function() {
 }); 
 
 $('#addNatLangButt').click(function () {
-	addCountry();
+	addLanguage();
 });
 
 $(document).ready(function() {
 	repopulateLangs();
 });
 
-function addCountry() {
+function addLanguage() {
 
 	var divBaseName = 'natLangDiv';
 	var selectBaseName = 'natLangSelect';
