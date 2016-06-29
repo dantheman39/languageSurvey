@@ -1,6 +1,6 @@
 from django.db import models
 
-from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES
+from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES
 
 class SurveyLine(models.Model):
 
@@ -18,41 +18,37 @@ class SurveyLine(models.Model):
 		max_length=50,
 		blank=True,
 	)
+
 	date = models.DateTimeField(auto_now=True)
-	
-	nativeLanguage1 = models.CharField(
-		choices=LANGUAGE_CHOICES,
-		max_length=50,
-	)
 
-	nativeLanguage2 = models.CharField(
-		choices=LANGUAGE_CHOICES,
-		max_length=50,
-		blank=True,
-	)
+	visionProblems = models.BooleanField(choices=YES_NO_CHOICES)
+	visionProblemsDetails = models.TextField(blank=True)
 
-	nativeLanguage3 = models.CharField(
-		choices=LANGUAGE_CHOICES,
-		max_length=50,
-		blank=True,
-	)
-	
-	nativeLanguage4 = models.CharField(
-		choices=LANGUAGE_CHOICES,
-		max_length=50,
-		blank=True,
+	readingProblems = models.BooleanField(choices=YES_NO_CHOICES)
+	readingProblemsDetails = models.TextField(blank=True)
+
+class NativeLangLine(models.Model):
+
+	surveyId = models.ForeignKey('SurveyLine')
+
+	nativeLang = models.CharField(
+		max_length=10,
 	)
 
 class ForeignLangLine(models.Model):
 
-	print("Add a foreign key")
-	participantNumber = models.IntegerField()
+	surveyId = models.ForeignKey('SurveyLine')
 	
 	foreignLang = models.CharField(
 		max_length=10,
 	)
 
-	semestersStudied = models.IntegerField()
-	daysLived = models.IntegerField()
+	school = models.BooleanField(default=False)
+	schoolSemesters = models.IntegerField(null=True, blank=True)
+	livedAbroad = models.BooleanField(default=False)
+	livedAbroadDays = models.IntegerField(null=True, blank=True)
+	otherDescription = models.CharField(max_length=255, blank=True)
+	otherDays = models.IntegerField(null=True, blank=True)
+
 	other = models.CharField(max_length=10)
 	otherDays = models.IntegerField()

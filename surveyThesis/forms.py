@@ -5,7 +5,7 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _
 from surveyThesis.models import SurveyLine, ForeignLangLine
-from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES
+from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES
 import logging
 
 logger = logging.getLogger('surveyThesis')
@@ -13,12 +13,38 @@ logger = logging.getLogger('surveyThesis')
 class PageOne(forms.Form):
 
 	nativeLanguageLabel = _(u"Native language")
+
 	addLanguageButtonText = _(u"Add language")
 	removeButtonText = _(u"Remove")
+
 	fieldRequiredMess = _(u"This field is required")
-	visionDifficultiesText = _(u"Do you have any vision or hearing problems? If yes and you are comfortable doing so, please explain.")
-	readingDifficultiesText = _(u"Do you have any difficulty reading? If yes and you are comfortable doing so, please explain.")
+
+	visionProblemsText = _(u"Do you have any vision or hearing problems?")
+	visionProblemsDetailsText = _(u"If you are comfortable doing so, please explain.")
+
+	readingProblemsText = _(u"Do you have any difficulty reading?")
+	readingProblemsDetailsText = visionProblemsDetailsText
+
 	undergradBlankError = _(u"Please tell us what year you are in, or the last year you completed")
+
+	foreignLangsQuestion = _(u"Do you speak, or have you studied a foreign language?")
+	foreignLangLabel = _(u"Which one?")
+	
+	methodOfStudyQuestion = _(u"How did you learn or use it? (Check all that apply)")
+	
+	semestersQuestion = _(u"About how many semesters did you study for? (one semester is about 5 months, one year is two semesters) ")
+	semestersText = _(u"Semesters")
+	years = _(u"Years")
+
+	livedQuestion = _(u"About how long were you there?")
+	yearsText = _(u"Years")
+	monthsText = _(u"Months")
+	weeksText = _(u"Weeks")
+	daysText = _(u"Days")
+
+	otherForeignDetails = _(u"Please explain")
+
+	# need this so that I can send it to the form
 	languageChoices = LANGUAGE_CHOICES
 
 	participantNumber = forms.IntegerField(label=_(u'Participant number'),
@@ -47,6 +73,28 @@ class PageOne(forms.Form):
 				max_length=200,
 				)
 
+	visionProblems = forms.ChoiceField(
+				choices=YES_NO_CHOICES,
+				widget=forms.RadioSelect,
+				)
+
+	visionProblemsDetails = forms.CharField(
+				required=False,
+				widget = forms.Textarea,
+				)
+
+	readingProblems = forms.ChoiceField(
+				choices=YES_NO_CHOICES,
+				widget=forms.RadioSelect,
+				)
+
+	readingProblemsDetails = forms.CharField(
+				required=False,
+				widget = forms.Textarea,
+				)
+
+	foreignLanguages = forms.TextField()
+
 	def clean(self):
 		cleaned_data = super(PageOne, self).clean()
 
@@ -60,6 +108,8 @@ class PageOne(forms.Form):
 		# means didn't pass cleaning
 		except KeyError:
 			pass
+
+		# check foreign language logic
 
 		return cleaned_data
 

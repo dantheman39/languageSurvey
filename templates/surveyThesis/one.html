@@ -50,7 +50,29 @@
 
 	</ul>
 
-	<p>{{ form.testingText }}</p>
+	<div class="radioButtonWrapper">
+		{{ form.visionProblems.errors }}
+		<li>{{ form.visionProblemsText }}</li>
+		{{ form.visionProblems }}
+	</div>
+
+	<div id="visionProblemsDetails" hidden>
+		{{ form.visionProblemsDetails.errors }}
+		<li>{{ form.visionProblemsDetailsText }}</li>
+		{{ form.visionProblemsDetails }}
+	</div>
+
+	<div class="radioButtonWrapper">
+		{{ form.readingProblems.errors }}
+		<li>{{ form.readingProblemsText }}</li>
+		{{ form.readingProblems }}
+	</div>
+
+	<div id="readingProblemsDetails" hidden>
+		{{ form.readingProblemsDetails.errors }}
+		<li>{{ form.readingProblemsDetailsText }}</li>
+		{{ form.readingProblemsDetails }}
+	</div>
 
 	<button type="button" id="submitButton">Next</button>
 
@@ -63,6 +85,7 @@
 	<script src="{% static 'surveyThesis/hideShowUndergrad.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/validateAndSubmit.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/natLangs.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/radioButtonTextArea.js' %}" type="text/javascript"></script>
 
 </body>
 

@@ -13,6 +13,16 @@ li {
 	padding-bottom: 10px;
 }
 
+.radioButtonWrapper li {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.radioButtonWrapper label {
+	padding-left: 30px;
+	text-align: left;
+}
+
 select {
 	width: 220px;
 }

@@ -21,6 +21,11 @@ UG_CHOICES = (
 	("sr", _(u"Senior")),
 )
 
+YES_NO_CHOICES = (
+	(True, _(u"Yes")),
+	(False, _(u"No")),
+)
+
 LANGUAGE_CHOICES = (
 	("en", _(u"English")),
 	("es", _(u"Spanish")),
