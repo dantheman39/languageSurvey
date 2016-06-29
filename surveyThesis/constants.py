@@ -4,6 +4,7 @@
 from django.utils.translation import ugettext as _
 
 ED_CHOICES = (
+	("", ""),
 	('none', _(u'None')),
 	('primary', _(u'Elementary/Middle School')),
 	('secondary', _(u'High school')),

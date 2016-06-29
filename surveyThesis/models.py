@@ -1,6 +1,6 @@
 from django.db import models
 
-from surveyThesis.constants import *
+from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES
 
 class SurveyLine(models.Model):
 

@@ -35,7 +35,7 @@
 				<label for="natLangSelect1">{{ form.nativeLanguageLabel }}</label>
 				<select id="natLangSelect1">
 					<option selected disabled value=""></option>
-				{% for lang in langChoices %}
+				{% for lang in form.languageChoices %}
 					<option value="{{ lang.0 }}">{{ lang.1 }}</option>
 				{% endfor %}
 				</select>
@@ -45,7 +45,7 @@
 
 		<div hidden>
 			{{ form.nativeLanguages }}
-			<input id="removeButtonText" value="{{ removeButtonText }}"></input>
+			<input id="removeButtonText" value="{{ form.removeButtonText }}"></input>
 		</div>
 
 	</ul>
