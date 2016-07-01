@@ -30,6 +30,7 @@ function calculateDays(parentDiv) {
 	}
 	var totalDays = parseInt(years * 365) + parseInt(months * 30) + parseInt(weeks * 7) + parseInt(days);
 	parentDiv.find('span[name=daysTotal]').html(totalDays);
+	return totalDays;
 }
 
 $(document).ready(function() {

@@ -49,6 +49,6 @@ class ForeignLangLine(models.Model):
 	schoolSemesters = models.IntegerField(null=True, blank=True)
 	livedAbroad = models.BooleanField(default=False)
 	livedAbroadDays = models.IntegerField(null=True, blank=True)
-	other = models.BooeanField(default=False)
+	other = models.BooleanField(default=False)
 	otherDescription = models.CharField(max_length=255, blank=True)
 	otherDays = models.IntegerField(null=True, blank=True)

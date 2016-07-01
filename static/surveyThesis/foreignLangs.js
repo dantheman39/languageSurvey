@@ -3,6 +3,12 @@ $(document).ready(function() {
 	repopulateForeignLangs();
 });
 
+//catch page reload
+$('body').bind('beforeunload', function() {
+	console.log('unloading');
+	collectForeignLangSelection();
+});
+
 $('input[name=foreignLangBool]').on('change', function() {
 	hideShowDiv('#foreignLanguageWrapper', 'foreignLangBool');
 });
@@ -35,7 +41,7 @@ function addForeignLanguage() {
 	var oldNum = getLastIdNumLastElement('div', divBaseName);
 	var num = parseInt(oldNum) + 1;
 
-	var source = $('#' + divBaseName + '1');
+	var source = $('#' + divBaseName + oldNum);
 	var $clone = source.clone().prop('id', divBaseName + num);
 
 	//renumber items with numbered names or ids
@@ -69,7 +75,32 @@ function addForeignLanguage() {
 	$clone.append(removeButton);
 
 	$clone.insertAfter('#' + divBaseName + oldNum);
+	return $clone;
 }
+
+function collectForeignLangSelection() {
+	var flangDivs = $('div[id^=foreignLangDiv]');
+	
+	var langsList = [];
+	for (var fd = 0; fd < flangDivs.length; fd++) {
+		var flangDiv = $(flangDivs[fd]);
+		langDict = {
+			langName: flangDiv.find('select[id^=foreignLangSelect]').val(),
+			proficiency: flangDiv.find('select[id^=foreignProfSelect]').val(),
+			school: flangDiv.find('input[id^=schoolCheckbox]').is(':checked'),
+			schoolSemesters: calculateSemesters(flangDiv.find('div[id^=schoolTimeDiv]')),
+			livedAbroad: flangDiv.find('input[id^=livedCheckbox]').is(':checked'),
+			livedAbroadDays: calculateDays(flangDiv.find('div[id^=livedTimeDiv]')),
+			other: flangDiv.find('input[id^=otherStudyCheckbox]').is(':checked'),
+			otherDescription: flangDiv.find('input[id^=otherStudyDetails]').val(),
+			otherDays: calculateDays(flangDiv.find('div[id^=otherStudyTimeDiv]'))
+		}
+		langsList.push(langDict);
+	}
+	var langsListStr = JSON.stringify(langsList);
+	$('#id_foreignLanguages').val(langsListStr);
+	return langsListStr;
+};
 
 function removeForeignLang(number) {
 	var divToRemove = $('#foreignLangDiv' + number);
@@ -106,11 +137,43 @@ function renumberElements(clone) {
 }
 
 function repopulateForeignLangs() {
-	console.log('since some of these are nested in dynamically generated objects, must update this');
-	hideShowDiv('#schoolTimeDiv', 'school');
-	hideShowDiv('#livedTimeDiv', 'lived');
-	hideShowDiv('#otherStudyTimeDiv', 'otherStudy');
+	var jsonString = $('#id_foreignLanguages').val();
+
+	if (jsonString) {
+		
+		var langsArray = JSON.parse(jsonString);
+
+		var numLangs = langsArray.length;
+
+		//refill first div
+	
+		//create and fill divs
+		if (numLangs > 1) {
+			for (var nd = 1; nd < numLangs; nd++) {
+				var newDiv = addForeignLanguage();
+				var langObj = langsArray[nd];
+				repopulateInputs(newDiv, langObj);
+			}
+		}
+		
+	}
+
 	hideShowDiv('#foreignLanguageWrapper', 'foreignLangBool');
+
+	console.log('since some of these are nested in dynamically generated objects, must update this');
+}
+
+function repopulateInputs(div, object) {
+			flangDiv.find('select[id^=foreignLangSelect]').val(object.langName);
+			flangDiv.find('select[id^=foreignProfSelect]').val(object.proficiency);
+			//school: flangDiv.find('input[id^=schoolCheckbox]').is(':checked'),
+			//schoolSemesters: calculateSemesters(flangDiv.find('div[id^=schoolTimeDiv]')),
+			//livedAbroad: flangDiv.find('input[id^=livedCheckbox]').is(':checked'),
+			//livedAbroadDays: calculateDays(flangDiv.find('div[id^=livedTimeDiv]')),
+			//other: flangDiv.find('input[id^=otherStudyCheckbox]').is(':checked'),
+			//otherDescription: flangDiv.find('input[id^=otherStudyDetails]').val(),
+			//otherDays: calculateDays(flangDiv.find('div[id^=otherStudyTimeDiv]'))
+
 }
 
 function resetInputs(clone) {
@@ -119,44 +182,22 @@ function resetInputs(clone) {
 	for (var e = 0; e < els.length; e++) {
 		var el = $(els[e]);
 		var type = el.prop('type');
-		switch (type) {
-			case "checkbox":
+		if (type === "checkbox") { 
 				el.prop('checked', false);
-			case "number":
+		} else if (type === "number") {
 				el.val('0');
-			case "text":
+		} else if (type === "text") {
 				el.val("");
 		}
-		
 	}
 
 	return clone;
 }
 
-function collectForeignLangSelection() {
-	var flangDivs = $('div[id^=foreignLangDiv]');
-	
-	var langList = [];
-	for (var fd = 0; fd < flangDivs.length; fd++) {
-		var flangDiv = flangDivs[fd];
-		var langName = flangDiv.find('select[id^=foreignLangSelect]').val();
-		var proficiency = flangDiv.find('select[id^=foreignProfSelect]').val();
-		var school = flangDiv.find('input[id^=schoolCheckbox]').is(':checked');
-		var schoolSemesters = calculateSemesters(flangDiv.find('div[id^=schoolTimeDiv]'));
-		var livedAbroad = flangDiv.find('input[id^=livedCheckbox]').is(':checked');
-		var livedAbroadDays = calculateDays(flangDiv.find('div[id^=livedTimeDiv]'));
-		var other = flangDiv.find('input[id^=otherStudyCheckbox]').is(':checked');
-		var otherDescription = flangDiv.find('input[id^=otherStudyDetails]').val();
-		var otherDays = calculateDays(flangDiv.find('div[id^=livedTimeDiv]'));
-	}
-
-	return "hey";
-
-};
-
 function validateForeignLangs() {
 
 	var flangString = collectForeignLangSelection();	
+	console.log(flangString);
 	
 	return false;
 

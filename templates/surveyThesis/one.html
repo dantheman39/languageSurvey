@@ -13,7 +13,7 @@
 	<ul id="pageOneUl">
 
 		{{ form.participantNumber.errors }}
-		<li>{{ form.participantNumber.label_tag}}
+		<li>{{ form.participantNumber.label_tag }}
 		{{ form.participantNumber }}</li>
 
 		{{ form.age.errors }}
@@ -176,6 +176,7 @@
 </form>
 
 	<script src="{% static 'jquery.js' %}"></script>
+	<script src="{% static 'surveyThesis/json2.js' %}" type="text/javascript"></script>
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
 	<script src="{% static 'surveyThesis/getIdNum.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/hideShowUndergrad.js' %}" type="text/javascript"></script>
