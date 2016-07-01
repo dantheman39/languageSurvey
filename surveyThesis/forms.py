@@ -46,10 +46,13 @@ class PageOne(forms.Form):
 	monthsText = _(u"Months")
 	weeksText = _(u"Weeks")
 	daysText = _(u"Days")
+	daysTotalText = _(u"days total")
 
 	foreignProfLabel = _(u"Estimated proficiency")
 
-	otherForeignDetails = _(u"Please explain")
+	otherStudyDetailsLabel = _(u"Please explain")
+	otherLabel = _(u"Other")
+	otherTimeQuestion = _(u"For about how long?")
 
 	# need this so that I can send it to the form
 	languageChoices = LANGUAGE_CHOICES

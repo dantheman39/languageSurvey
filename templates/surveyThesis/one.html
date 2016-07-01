@@ -3,7 +3,7 @@
 
 {% load staticfiles %}
 <head>
-	<link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/>
+	<!-- <link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/> -->
 </head>
 
 <body>
@@ -103,46 +103,63 @@
 
 			<li>{{ form.methodOfStudyQuestion }}</li>
 			<li>
-				<label for="schoolCheckbox">{{ form.schoolLabel }}</label>
-				<input id="schoolCheckbox" name="school" type="checkbox"></input>
+				<label for="schoolCheckbox1">{{ form.schoolLabel }}</label>
+				<input id="schoolCheckbox1" name="school1" type="checkbox"></input>
 			</li>
-			<div id="schoolTimeDiv" hidden>
+			<div id="schoolTimeDiv1" hidden>
 				<p>{{ form.semestersQuestion }}</p>
 				<span class="errorMessage" hidden></span>
-				<label for="years">{{ form.yearsText }}</label>
-				<input id="years" name="years" type="number" class="studyTime" value="0" min="0"></input> + 
-				<label for="semesters">{{ form.semestersText }}</label>
-				<input id="semesters" name="semesters" type="number" class="studyTime" value="0" min="0" /> 
-				= <span name="semestersTotal">0</span> {{ form.semestersTotalText }}
-
-
+				<label for="years1">{{ form.yearsText }}</label>
+				<input id="years1" name="years" type="number" class="studyTime" value="0" min="0"></input> + 
+				<label for="semesters1">{{ form.semestersText }}</label>
+				<input id="semesters1" name="semesters" type="number" class="studyTime" value="0" min="0" /> 
+				= <span name="semestersTotal">0</span> <span>{{ form.semestersTotalText }}</span>
 			</div>
+
 			<li>
-				<label for="livedCheckbox">{{ form.livedLabel }}</label>
-				<input id="livedCheckbox" name="lived" type="checkbox"></input>
+				<label for="livedCheckbox1">{{ form.livedLabel }}</label>
+				<input id="livedCheckbox1" name="lived1" type="checkbox"></input>
 			</li>
-			<div id="livedTimeDiv" hidden>
+
+			<div id="livedTimeDiv1" hidden>
 				<p>{{ form.livedQuestion }}</p>
+				<p id="livedTime1" name="livedTime">
+					<span class="errorMessage" hidden><br /></span>
+					<label for="livedYears1">{{ form.yearsText }}</label>
+					<input id="livedYears1" name="years" type="number" class="timeInput" value="0" min="0" />	 + 
+					<label for="livedMonths1">{{ form.monthsText }}</label>
+					<input id="livedMonths1" name="months" type="number" class="timeInput" value="0" min="0" /> + 	
+					<label for="livedWeeks1">{{ form.weeksText }}</label>
+					<input id="livedWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" />	+ 
+					<label for="livedDays1">{{ form.daysText }}</label>
+					<input id="livedDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
+				= <span name="daysTotal">0</span>  <span>{{ form.daysTotalText }}</span>
+
+				</p>		
 			</div>
 
-		<div class="timeDiv" id="noLeftMargin">
-		<p id="lived" name="lived">
-			Roughly how long were you there for? (Use any combination of years/months/weeks/days)
-			<br />
-			<br />
-			<span class="error" name="livedTimeError" hidden><br /></span>
-			<label for="livedYears">Years</label>
-			<input name="livedYears" type="number" class="livedTime" value="0" min="0" />	 + 
-			<label for="livedMonths">Months</label>
-			<input name="livedMonths" type="number" class="livedTime" value="0" min="0" /> + 	
-			<label for="livedWeeks">Weeks</label>
-			<input name="livedWeeks" type="number" class="livedTime" value="0" min="0" />	+ 
-			<label for="livedDays">Days</label>
-			<input name="livedDays" type="number" class="livedTime" value="0" min="0" />	
-		= <span name="livedTotal">0</span> days
+			<li>
+				<label for="otherStudyCheckbox1">{{ form.otherLabel }}</label>
+				<input id="otherStudyCheckbox1" name="otherStudy1" type="checkbox"></input>
+			</li>
 
-		</p>		
-		</div>
+			<div id="otherStudyTimeDiv1" hidden>
+				<label for="otherStudyDetails1">{{ form.otherStudyDetailsLabel }}</label>
+				<input id="otherStudyDetails1"></input>
+				<p>{{ form.otherTimeQuestion }}</p>
+				<p id="otherStudyTime1" name="otherStudyTime">
+					<span class="errorMessage" hidden><br /></span>
+					<label for="otherYears1">{{ form.yearsText }}</label>
+					<input id="otherYears1" name="years" type="number" class="timeInput" value="0" min="0" />	 + 
+					<label for="otherMonths1">{{ form.monthsText }}</label>
+					<input id="otherMonths1" name="months" type="number" class="timeInput" value="0" min="0" /> + 	
+					<label for="otherWeeks1">{{ form.weeksText }}</label>
+					<input id="otherWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" />	+ 
+					<label for="otherDays1">{{ form.daysText }}</label>
+					<input id="otherDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
+				= <span name="daysTotal">0</span> <span>{{ form.daysTotalText }}</span>
+				</p>		
+			</div>
 
 			<button id="addForLangButt" type="button">{{ form.addLanguageButtonText }}</button>
 		</div>
@@ -160,12 +177,14 @@
 
 	<script src="{% static 'jquery.js' %}"></script>
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
+	<script src="{% static 'surveyThesis/getIdNum.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/hideShowUndergrad.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/validateAndSubmit.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/natLangs.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/radioButtonHideDiv.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/hideShowDiv.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/foreignLangs.js' %}" type="text/javascript"></script>
-
+	<script src="{% static 'surveyThesis/difficulties.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/calculateTime.js' %}" type="text/javascript"></script>
 </body>
 
 </html>

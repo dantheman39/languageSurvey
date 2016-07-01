@@ -18,7 +18,7 @@ function addLanguage() {
 	var divBaseName = 'natLangDiv';
 	var selectBaseName = 'natLangSelect';
 	//console.log('addCountry() called');
-	var oldNum = getLastIdNum('div', divBaseName);
+	var oldNum = getLastIdNumLastElement('div', divBaseName);
 	var num = parseInt(oldNum) + 1;
 
 	var source = $('#' + divBaseName + '1');
@@ -34,19 +34,6 @@ function addLanguage() {
 	$clone.append(removeButton);
 
 	$clone.insertAfter('#' + divBaseName + oldNum);
-}
-
-function getLastIdNum(element, idNoNum) {
-	//console.log(element);
-	//console.log(idNoNum);
-
-	//The forward slashes start and end the javascript regexp
-	//\d means digit, + means match preceding expression 1 or more times
-	//g is a flag that means global search
-	var $lastElement = $(element + '[id^=' + idNoNum + ']:last');
-	var num = parseInt( $lastElement.prop('id').match(/\d+/g), 10  );
-	return num
-
 }
 
 function removeLang(number) {

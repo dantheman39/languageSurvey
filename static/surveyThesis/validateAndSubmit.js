@@ -1,8 +1,15 @@
 //Some client-side validation
 $('#submitButton').click(function() {
+
+	var valResults = []
+
 	var langsCheck = validateNativeLangs();
+	valResults.push(langsCheck);
+
+	var forLangsCheck = validateForeignLangs();
+	valResults.push(forLangsCheck);
 	
-	if (langsCheck === true) {
+	if (valResults.indexOf(false) === -1) {
 		$('#form').submit();
 	}
 });
@@ -22,5 +29,4 @@ function validateNativeLangs() {
 	}
 
 	return isClean;
-
 }
