@@ -230,7 +230,7 @@ function repopulateInputs(div, object) {
 	livedDiv.find('span[name=daysTotal]').html(object.livedAbroadDays);
 
 	div.find('input[id^=otherStudyCheckbox]').prop('checked', object.other);
-	div.find('input[id^=otherStudyDetails]').val(object.otherStudyDetails);
+	div.find('input[id^=otherStudyDetails]').val(object.otherDescription);
 	otherStudyDiv.find('input[name="years"]').val(object.otherYearsInput);
 	otherStudyDiv.find('input[name="months"]').val(object.otherMonthsInput);
 	otherStudyDiv.find('input[name="weeks"]').val(object.otherWeeksInput);
