@@ -12,10 +12,13 @@ logger = logging.getLogger('surveyThesis')
 
 class PageOne(forms.Form):
 
-	nativeLanguageLabel = _(u"Native language")
+	pageTitle = _(u"Language background survey")
 
-	addLanguageButtonText = _(u"Add language")
-	removeButtonText = _(u"Remove")
+	nativeLanguageLabel = _(u"Native language")
+	nativeLangLegend = _(u"Native language(s)")
+
+	addLanguageButtonText = _(u"+")
+	removeButtonText = _(u"-")
 
 	fieldRequiredMess = _(u"This field is required")
 

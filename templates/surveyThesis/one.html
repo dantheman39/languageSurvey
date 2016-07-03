@@ -1,86 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 {% load staticfiles %}
 <head>
-	<!-- <link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/> -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ form.pageTitle }}</title>
+	<link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'surveyThesis/headerChunk.css' %}"/>
 </head>
 
 <body>
 
+<div id="headline">
+	<h1 id="headerH1">{{ form.pageTitle }}</h1>
+</div>
+
+<div id="mainContent">	
 <form id="form" action="" method="post">
 	{% csrf_token %}
-	<ul id="pageOneUl">
 
 		{{ form.participantNumber.errors }}
-		<li>{{ form.participantNumber.label_tag }}
-		{{ form.participantNumber }}</li>
+		<p>{{ form.participantNumber.label_tag }}
+		{{ form.participantNumber }}</p>
 
 		{{ form.age.errors }}
-		<li>{{ form.age.label_tag }}
-		{{ form.age }}</li>
+		<p>{{ form.age.label_tag }}
+		{{ form.age }}</p>
 		
 		{{ form.education.errors }}
-		<li>{{ form.education.label_tag }} {{ form.education }}</li>
+		<p>{{ form.education.label_tag }} {{ form.education }}</p>
 
 		<div class="hiddenDiv" id="undergradLevelDiv" hidden>
 			{{ form.undergradLevel.errors }}
-			<li>{{ form.undergradLevel.label_tag }}
-			{{ form.undergradLevel }}</li>
+			<p>{{ form.undergradLevel.label_tag }}
+			{{ form.undergradLevel }}</p>
 		</div>
 
-		<div id="nativeLangWrapper">
-			<div id="natLangDiv1">
-				<li class="errorMessage" hidden>{{ form.fieldRequiredMess }}</li>
-				<label for="natLangSelect1">{{ form.nativeLanguageLabel }}</label>
-				<select id="natLangSelect1">
-					<option selected disabled value=""></option>
-				{% for lang in form.languageChoices %}
-					<option value="{{ lang.0 }}">{{ lang.1 }}</option>
-				{% endfor %}
-				</select>
-				<button id="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
-			</div>
+	<div id="nativeLangWrapper">
+		<div id="natLangDiv1">
+			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
+			<label for="natLangSelect1">{{ form.nativeLanguageLabel }}</label>
+			<select id="natLangSelect1">
+				<option selected disabled value=""></option>
+			{% for lang in form.languageChoices %}
+				<option value="{{ lang.0 }}">{{ lang.1 }}</option>
+			{% endfor %}
+			</select>
+			<button id="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
 		</div>
-
-		<div hidden>
-			{{ form.nativeLanguages }}
-			<input id="removeButtonText" value="{{ form.removeButtonText }}"></input>
-		</div>
-
-	</ul>
-
-	<div class="radioButtonWrapper">
-		{{ form.visionProblems.errors }}
-		<li>{{ form.visionProblemsText }}</li>
-		{{ form.visionProblems }}
-	</div>
-	<div id="visionProblemsDetails" hidden>
-		{{ form.visionProblemsDetails.errors }}
-		<li>{{ form.visionProblemsDetailsText }}</li>
-		{{ form.visionProblemsDetails }}
 	</div>
 
-	<div class="radioButtonWrapper">
-		{{ form.readingProblems.errors }}
-		<li>{{ form.readingProblemsText }}</li>
-		{{ form.readingProblems }}
-	</div>
-	<div id="readingProblemsDetails" hidden>
-		{{ form.readingProblemsDetails.errors }}
-		<li>{{ form.readingProblemsDetailsText }}</li>
-		{{ form.readingProblemsDetails }}
+	<div hidden>
+		{{ form.nativeLanguages }}
+		<input id="removeButtonText" value="{{ form.removeButtonText }}"/>
 	</div>
 
-	<div class="radioButtonWrapper">
+	<div id="foreignLangBoolDiv" class="radioButtonWrapper">
 		{{ form.foreignLangsBool.errors }}
-		<li>{{ form.foreignLangsQuestion }}</li>
+		<p>{{ form.foreignLangsQuestion }}</p>
 		{{ form.foreignLangBool }}	
 	</div>
 
+	<div hidden>
+		{{ form.foreignLanguages }}
+	</div>
+
 	<div id="foreignLanguageWrapper" hidden>
-		<div id="foreignLangDiv1">
-			<li class="errorMessage" hidden>{{ form.fieldRequiredMess }}</li>
+		<div id="outerDiv">
+		<div id="foreignLangDiv1" class=foreignLangDiv>
+			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
 			<label for="foreignLangSelect1">{{ form.foreignLangLabel }}</label>
 			<select id="foreignLangSelect1">
 				<option selected disabled value=""></option>
@@ -89,8 +78,8 @@
 			{% endfor %}
 			</select>
 
-			<li class="errorMessage" hidden>{{ form.fieldRequiredMess }}</li>
-			<li>
+			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
+			<p>
 			<label for="foreignProfSelect1">{{ form.foreignProfLabel }}</label>
 				<select id="foreignProfSelect1">
 					<option selected disabled value=""></option>
@@ -98,32 +87,32 @@
 					<option value="{{ prof.0 }}">{{ prof.1 }}</option>
 					{% endfor %}
 				</select>
-			</li>
+			</p>
 			{{ form.foreignProficiency }}
 
-			<li>{{ form.methodOfStudyQuestion }}</li>
-			<li>
+			<p>{{ form.methodOfStudyQuestion }}</p>
+			<p class="methodOfStudy">
 				<label for="schoolCheckbox1">{{ form.schoolLabel }}</label>
-				<input id="schoolCheckbox1" name="school1" type="checkbox"></input>
-			</li>
+				<input id="schoolCheckbox1" name="school1" type="checkbox"/>
+			</p>
 			<div id="schoolTimeDiv1" hidden>
 				<p>{{ form.semestersQuestion }}</p>
 				<span class="errorMessage" hidden></span>
 				<label for="years1">{{ form.yearsText }}</label>
-				<input id="years1" name="years" type="number" class="studyTime" value="0" min="0"></input> + 
+				<input id="years1" name="years" type="number" class="studyTime" value="0" min="0"/> + 
 				<label for="semesters1">{{ form.semestersText }}</label>
 				<input id="semesters1" name="semesters" type="number" class="studyTime" value="0" min="0" /> 
-				= <span name="semestersTotal">0</span> <span>{{ form.semestersTotalText }}</span>
+				= <span id="semestersTotal">0</span> <span>{{ form.semestersTotalText }}</span>
 			</div>
 
-			<li>
+			<p class="methodOfStudy">
 				<label for="livedCheckbox1">{{ form.livedLabel }}</label>
-				<input id="livedCheckbox1" name="lived1" type="checkbox"></input>
-			</li>
+				<input id="livedCheckbox1" name="lived1" type="checkbox"/>
+			</p>
 
 			<div id="livedTimeDiv1" hidden>
 				<p>{{ form.livedQuestion }}</p>
-				<p id="livedTime1" name="livedTime">
+				<p id="livedTime1">
 					<span class="errorMessage" hidden><br /></span>
 					<label for="livedYears1">{{ form.yearsText }}</label>
 					<input id="livedYears1" name="years" type="number" class="timeInput" value="0" min="0" />	 + 
@@ -133,19 +122,19 @@
 					<input id="livedWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" />	+ 
 					<label for="livedDays1">{{ form.daysText }}</label>
 					<input id="livedDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
-				= <span name="daysTotal">0</span>  <span>{{ form.daysTotalText }}</span>
+				= <span id="daysTotal">0</span>  <span>{{ form.daysTotalText }}</span>
 
 				</p>		
 			</div>
 
-			<li>
+			<p class="methodOfStudy">
 				<label for="otherStudyCheckbox1">{{ form.otherLabel }}</label>
-				<input id="otherStudyCheckbox1" name="otherStudy1" type="checkbox"></input>
-			</li>
+				<input id="otherStudyCheckbox1" name="otherStudy1" type="checkbox"/>
+			</p>
 
 			<div id="otherStudyTimeDiv1" hidden>
 				<label for="otherStudyDetails1">{{ form.otherStudyDetailsLabel }}</label>
-				<input id="otherStudyDetails1"></input>
+				<input id="otherStudyDetails1"/>
 				<p>{{ form.otherTimeQuestion }}</p>
 				<p id="otherStudyTime1" name="otherStudyTime">
 					<span class="errorMessage" hidden><br /></span>
@@ -157,23 +146,45 @@
 					<input id="otherWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" />	+ 
 					<label for="otherDays1">{{ form.daysText }}</label>
 					<input id="otherDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
-				= <span name="daysTotal">0</span> <span>{{ form.daysTotalText }}</span>
+				= <span id="daysTotal">0</span> <span>{{ form.daysTotalText }}</span>
 				</p>		
 			</div>
 
 			<button id="addForLangButt" type="button">{{ form.addLanguageButtonText }}</button>
 		</div>
+		</div>
 	</div>
 
-	<div>
-		{{ form.foreignLanguages }}
+	<div class="radioButtonWrapper">
+		{{ form.visionProblems.errors }}
+		<p>{{ form.visionProblemsText }}</p>
+		{{ form.visionProblems }}
 	</div>
+	<div id="visionProblemsDetails" hidden>
+		{{ form.visionProblemsDetails.errors }}
+		<p>{{ form.visionProblemsDetailsText }}</p>
+		{{ form.visionProblemsDetails }}
+	</div>
+
+	<div class="radioButtonWrapper">
+		{{ form.readingProblems.errors }}
+		<p>{{ form.readingProblemsText }}</p>
+		{{ form.readingProblems }}
+	</div>
+	<div id="readingProblemsDetails" hidden>
+		{{ form.readingProblemsDetails.errors }}
+		<p>{{ form.readingProblemsDetailsText }}</p>
+		{{ form.readingProblemsDetails }}
+	</div>
+
 
 	<button type="button" id="submitButton">Next</button>
 
 	{{ form.errors }}
 	{{ form.non_field_errors }}
+
 </form>
+</div>
 
 	<script src="{% static 'jquery.js' %}"></script>
 	<script src="{% static 'surveyThesis/json2.js' %}" type="text/javascript"></script>

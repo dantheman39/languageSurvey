@@ -1,3 +1,19 @@
+* {
+
+	margin: 0;
+	font-family: Ubuntu;
+
+}
+
+#mainContent {
+	max-width: 800px;
+	margin: auto;	
+}
+
+#form {
+	padding-top: 2em;
+}
+
 ul {
 	list-style-type: none;
 }
@@ -5,7 +21,36 @@ ul {
 label {
 	display: inline-block;
 	width: 180px;
-	text-align: right;
+	text-align: left;
+}
+
+p {
+	padding-top:10px;
+	padding-bottom:10px;
+}
+
+.foreignLangDiv {
+	border-left-style: solid;
+	border-width: 10px;
+	border-color: grey;
+	margin: 20px;
+	max-width: 500px;
+	padding-left: 10px;
+}
+
+.outerDiv {
+	padding-left: 20px;
+}
+
+.foreignLangDiv input[type=number] {
+	width: 50px;
+}
+
+#foreignLangBoolDiv {
+	padding-top: 20px;
+}
+
+input[type=number] {
 }
 
 li {
@@ -18,11 +63,25 @@ li {
 	padding-bottom: 0px;
 }
 
-.radioButtonWrapper label {
+/*.radioButtonWrapper label {
 	padding-left: 30px;
 	text-align: left;
+}*/
+
+.methodOfStudy {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.methodOfStudy > label {
+	width: 70px;
+	padding-left: 20px;
 }
 
 select {
-	width: 220px;
+	width: 170px;
+}
+
+fieldset {
+	
 }

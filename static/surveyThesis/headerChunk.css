@@ -1,0 +1,38 @@
+#headline {
+
+	background-color: #0099ff;
+	min-height: 100px;
+	margin: 0;
+	padding:0;
+
+}
+
+#headerH1 {
+	color: white;
+	/* no idea why this gets 
+	rid of a white border at the
+	top */
+	display: inline-block;
+	padding-top: 20px;
+	padding-left: 2%;
+}
+
+@media (min-width: 343px) and (max-width: 470px) {
+
+	#headerH1 {
+		max-width: 300px;
+		padding-top: 0px;
+	}
+
+}
+
+@media (max-width: 342px) {
+	#headerH1 {
+		max-width: 100px;
+		padding-top: 0px;
+	}
+
+	div#navDiv {
+		top: 120px;
+	}
+}

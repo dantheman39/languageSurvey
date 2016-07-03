@@ -46,7 +46,7 @@ function repopulateLangs() {
 	var langsSelected = $('#id_nativeLanguages').val().split(',');
 	if (langsSelected.length > 1) {
 		for (var e = 1; e < langsSelected.length; e++) {
-			addCountry();
+			addLanguage();
 			var selectSelector = '#natLangSelect' + parseInt(e + 1);
 			$('#natLangSelect' + parseInt(e + 1)).val(langsSelected[e]);
 		}

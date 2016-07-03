@@ -60,7 +60,7 @@ function addForeignLanguage() {
 	//reset time labels to 0
 	var labsToReset = ['semestersTotal', 'daysTotal'];
 	for (var l = 0; l < labsToReset.length; l++) {
-		$clone.find('span[name=' + labsToReset[l] + ']').each(function(ind, spanEl) {
+		$clone.find('span[id=' + labsToReset[l] + ']').each(function(ind, spanEl) {
 			$(spanEl).html('0');
 		});
 	}
@@ -220,14 +220,14 @@ function repopulateInputs(div, object) {
 
 	studyDiv.find('input[name="years"]').val(object.schoolYearsInput);
 	studyDiv.find('input[name="semesters"]').val(object.schoolSemestersInput);
-	studyDiv.find('span[name=semestersTotal]').html(object.schoolSemesters);
+	studyDiv.find('span[id=semestersTotal]').html(object.schoolSemesters);
 
 	div.find('input[id^=livedCheckbox]').prop('checked', object.livedAbroad);
 	livedDiv.find('input[name="years"]').val(object.livedAbroadYearsInput);
 	livedDiv.find('input[name="months"]').val(object.livedAbroadMonthsInput);
 	livedDiv.find('input[name="weeks"]').val(object.livedAbroadWeeksInput);
 	livedDiv.find('input[name="days"]').val(object.livedAbroadDaysInput);
-	livedDiv.find('span[name=daysTotal]').html(object.livedAbroadDays);
+	livedDiv.find('span[id=daysTotal]').html(object.livedAbroadDays);
 
 	div.find('input[id^=otherStudyCheckbox]').prop('checked', object.other);
 	div.find('input[id^=otherStudyDetails]').val(object.otherDescription);
@@ -235,7 +235,7 @@ function repopulateInputs(div, object) {
 	otherStudyDiv.find('input[name="months"]').val(object.otherMonthsInput);
 	otherStudyDiv.find('input[name="weeks"]').val(object.otherWeeksInput);
 	otherStudyDiv.find('input[name="days"]').val(object.otherDaysInput);
-	otherStudyDiv.find('span[name=daysTotal]').html(object.otherDays);
+	otherStudyDiv.find('span[id=daysTotal]').html(object.otherDays);
 }
 
 function resetInputs(clone) {
