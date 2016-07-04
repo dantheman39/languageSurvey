@@ -5,7 +5,7 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _
 from surveyThesis.models import SurveyLine, ForeignLangLine
-from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES, PROFICIENCY_CHOICES
+from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES, PROFICIENCY_CHOICES, GENDER_CHOICES
 import logging
 
 logger = logging.getLogger('surveyThesis')
@@ -13,6 +13,8 @@ logger = logging.getLogger('surveyThesis')
 class PageOne(forms.Form):
 
 	pageTitle = _(u"Language background survey")
+	
+	genderLabel = _(u"Gender")
 
 	nativeLanguageLabel = _(u"Native language")
 	nativeLangLegend = _(u"Native language(s)")
@@ -31,7 +33,7 @@ class PageOne(forms.Form):
 	undergradBlankError = _(u"Please tell us what year you are in, or the last year you completed")
 
 	foreignLangsQuestion = _(u"Do you speak, or have you studied a foreign language?")
-	foreignLangLabel = _(u"Which one?")
+	foreignLangLabel = _(u"Language")
 	
 	methodOfStudyQuestion = _(u"How did you learn or use it? (Check all that apply)")
 	
@@ -39,9 +41,9 @@ class PageOne(forms.Form):
 	lived = forms.BooleanField(label=_(u"Lived abroad"))
 
 	schoolLabel = _(u"Classes")
-	semestersQuestion = _(u"About how many semesters did you study for? (one semester is about 5 months, one year is two semesters) ")
+	semestersQuestion = _(u"About how many semesters?")
 	semestersText = _(u"Semesters")
-	semestersTotalText = _(u"semesters total")
+	semestersTotalText = _(u"Semesters total")
 
 	livedLabel = _(u"Lived")
 	livedQuestion = _(u"About how long were you there?")
@@ -49,26 +51,32 @@ class PageOne(forms.Form):
 	monthsText = _(u"Months")
 	weeksText = _(u"Weeks")
 	daysText = _(u"Days")
-	daysTotalText = _(u"days total")
+	daysTotalText = _(u"Days total")
 
 	foreignProfLabel = _(u"Estimated proficiency")
 
-	otherStudyDetailsLabel = _(u"Please explain")
+	otherStudyDetailsLabel = _(u"Description")
 	otherLabel = _(u"Other")
 	otherTimeQuestion = _(u"For about how long?")
+
+	additionalHomeLangText = _(u"As a child did you speak with another family member in a language that you didn't include above?")
+	additionalHomeLangDetails = _(u"Please briefly tell us about it")
 
 	# need this so that I can send it to the form
 	languageChoices = LANGUAGE_CHOICES
 
-	participantNumber = forms.IntegerField(label=_(u'Participant number'),
-				label_suffix='',
-				error_messages={'required': fieldRequiredMess},
-				)
 	age = forms.IntegerField(label=_(u'Age'),
 				label_suffix='',
 				error_messages={'required': fieldRequiredMess},
 				#localize=True,
 				)
+
+	gender = forms.ChoiceField(label=genderLabel,
+				label_suffix='',
+				error_messages={'required': fieldRequiredMess},
+				choices=GENDER_CHOICES,
+				)
+
 	education = forms.ChoiceField(label=_(u'Education level'),
 				label_suffix='',
 				error_messages={'required': fieldRequiredMess},
@@ -116,6 +124,16 @@ class PageOne(forms.Form):
 				)
 
 	foreignProficiencyChoices = PROFICIENCY_CHOICES 
+
+	additionalHomeLang = forms.ChoiceField(
+				choices=YES_NO_CHOICES,
+				widget=forms.RadioSelect,
+				)
+
+	additionalHomeLangDetails = forms.CharField(
+				required=False,
+				widget=forms.Textarea,
+				)
 
 
 	def clean(self):

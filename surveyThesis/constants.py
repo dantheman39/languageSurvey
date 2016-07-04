@@ -26,6 +26,13 @@ YES_NO_CHOICES = (
 	(False, _(u"No")),
 )
 
+GENDER_CHOICES = (
+	("",""),
+	("f", _(u"Female")),
+	("m", _(u"Male")),
+	("o", _(u"Other")),
+)
+
 PROFICIENCY_CHOICES = (
 	("", ""),
 	(1, _(u"Almost none (can't use at all)")),

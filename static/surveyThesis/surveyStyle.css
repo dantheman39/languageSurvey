@@ -29,10 +29,15 @@ p {
 	padding-bottom:10px;
 }
 
-.foreignLangDiv {
+#undergradLevelDiv p {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.indentDiv {
 	border-left-style: solid;
 	border-width: 10px;
-	border-color: grey;
+	border-color: #d1c9c9;
 	margin: 20px;
 	max-width: 500px;
 	padding-left: 10px;
@@ -42,7 +47,7 @@ p {
 	padding-left: 20px;
 }
 
-.foreignLangDiv input[type=number] {
+.indentDiv input[type=number] {
 	width: 50px;
 }
 
@@ -76,6 +81,50 @@ li {
 .methodOfStudy > label {
 	width: 70px;
 	padding-left: 20px;
+}
+
+/*.stackedInputs {
+	text-align: right;
+	margin-right: 30%;
+}
+
+.stackedInputs input {
+}
+
+.stackedSpan {
+	display: block;
+}
+
+.stackedSpan label {
+	width: 90px;
+}
+*/
+
+/*.stackedInputs > label {
+	padding-left: 20px;
+	width: 70px;
+	text-align: right;
+}*/
+
+.stackedInputs p {
+	padding-left: 20%;
+}
+
+.timeTable, .timeTable td, .timeTable th {
+	border-style: none;
+}
+
+.timeTable {
+	margin-left: 20%;
+	padding-bottom: 20px;
+}
+
+.timeTable label {
+	width: auto;
+}
+
+.totalRow td {
+	padding-top: 10px;
 }
 
 select {

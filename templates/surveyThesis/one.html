@@ -20,18 +20,18 @@
 <form id="form" action="" method="post">
 	{% csrf_token %}
 
-		{{ form.participantNumber.errors }}
-		<p>{{ form.participantNumber.label_tag }}
-		{{ form.participantNumber }}</p>
-
 		{{ form.age.errors }}
 		<p>{{ form.age.label_tag }}
 		{{ form.age }}</p>
+
+		{{ form.gender.errors }}
+		<p>{{ form.gender.label_tag }}
+		{{ form.gender }}</p>
 		
 		{{ form.education.errors }}
 		<p>{{ form.education.label_tag }} {{ form.education }}</p>
 
-		<div class="hiddenDiv" id="undergradLevelDiv" hidden>
+		<div id="undergradLevelDiv" class="indentDiv" hidden>
 			{{ form.undergradLevel.errors }}
 			<p>{{ form.undergradLevel.label_tag }}
 			{{ form.undergradLevel }}</p>
@@ -68,7 +68,7 @@
 
 	<div id="foreignLanguageWrapper" hidden>
 		<div id="outerDiv">
-		<div id="foreignLangDiv1" class=foreignLangDiv>
+		<div id="foreignLangDiv1" class=indentDiv>
 			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
 			<label for="foreignLangSelect1">{{ form.foreignLangLabel }}</label>
 			<select id="foreignLangSelect1">
@@ -95,14 +95,40 @@
 				<label for="schoolCheckbox1">{{ form.schoolLabel }}</label>
 				<input id="schoolCheckbox1" name="school1" type="checkbox"/>
 			</p>
-			<div id="schoolTimeDiv1" hidden>
+			<div id="schoolTimeDiv1" class="stackedInputs" hidden>
 				<p>{{ form.semestersQuestion }}</p>
-				<span class="errorMessage" hidden></span>
-				<label for="years1">{{ form.yearsText }}</label>
-				<input id="years1" name="years" type="number" class="studyTime" value="0" min="0"/> + 
-				<label for="semesters1">{{ form.semestersText }}</label>
-				<input id="semesters1" name="semesters" type="number" class="studyTime" value="0" min="0" /> 
-				= <span id="semestersTotal">0</span> <span>{{ form.semestersTotalText }}</span>
+				<p class="errorMessage" hidden></p>
+
+				<table class="timeTable">
+					<tr>
+						<td></td>
+						<td>
+							<input id="years1" name="years" type="number" class="studyTime" value="0" min="0" />
+						</td>
+						<td>
+							<label for="years1">{{ form.yearsText }}</label>
+						</td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>
+							<input id="semesters1" name="semesters" type="number" class="studyTime" value="0" min="0" />
+						</td>
+						<td>
+							<label for="semesters1">{{ form.semestersText }}</label>
+						</td>
+					</tr>
+					<tr class="totalRow">
+						<td>=</td>
+						<td>
+							<span name="semestersTotal">0</span>
+						</td>
+						<td>
+							{{ form.semestersTotalText }}
+						</td>
+					</tr>
+				</table>
+
 			</div>
 
 			<p class="methodOfStudy">
@@ -110,21 +136,57 @@
 				<input id="livedCheckbox1" name="lived1" type="checkbox"/>
 			</p>
 
-			<div id="livedTimeDiv1" hidden>
+			<div id="livedTimeDiv1" class="stackedInputs" hidden>
 				<p>{{ form.livedQuestion }}</p>
-				<p id="livedTime1">
-					<span class="errorMessage" hidden><br /></span>
-					<label for="livedYears1">{{ form.yearsText }}</label>
-					<input id="livedYears1" name="years" type="number" class="timeInput" value="0" min="0" />	 + 
-					<label for="livedMonths1">{{ form.monthsText }}</label>
-					<input id="livedMonths1" name="months" type="number" class="timeInput" value="0" min="0" /> + 	
-					<label for="livedWeeks1">{{ form.weeksText }}</label>
-					<input id="livedWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" />	+ 
-					<label for="livedDays1">{{ form.daysText }}</label>
-					<input id="livedDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
-				= <span id="daysTotal">0</span>  <span>{{ form.daysTotalText }}</span>
+				<p class="errorMessage" hidden></p>
 
-				</p>		
+				<table class="timeTable">
+					<tr>
+						<td></td>
+						<td>
+							<input id="livedYears1" name="years" type="number" class="timeInput" value="0" min="0" />
+						</td>
+						<td>
+							<label for="livedYears1">{{ form.yearsText }}</label>
+						</td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>
+							<input id="livedMonths1" name="months" type="number" class="timeInput" value="0" min="0" />
+						</td>
+						<td>
+							<label for="livedMonths1">{{ form.monthsText }}</label>
+						</td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>
+							<input id="livedWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" /> 
+						</td>
+						<td>
+							<label for="livedWeeks1">{{ form.weeksText }}</label>
+						</td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>
+							<input id="livedDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
+						</td>
+						<td>
+							<label for="livedDays1">{{ form.daysText }}</label>
+						</td>
+					</tr>
+					<tr class="totalRow">
+						<td>=</td>
+						<td>
+							<span name="daysTotal">0</span>
+						</td>
+						<td>
+							{{ form.daysTotalText }}
+						</td>
+					</tr>
+				</table>
 			</div>
 
 			<p class="methodOfStudy">
@@ -132,11 +194,63 @@
 				<input id="otherStudyCheckbox1" name="otherStudy1" type="checkbox"/>
 			</p>
 
-			<div id="otherStudyTimeDiv1" hidden>
-				<label for="otherStudyDetails1">{{ form.otherStudyDetailsLabel }}</label>
-				<input id="otherStudyDetails1"/>
+			<div id="otherStudyTimeDiv1" class="stackedInputs" hidden>
+				<p>{{ form.otherStudyDetails.errors }}</p>
+				<p><label for="otherStudyDetails1">{{ form.otherStudyDetailsLabel }}</label>
+					<input id="otherStudyDetails1"/>
+				</p>
 				<p>{{ form.otherTimeQuestion }}</p>
-				<p id="otherStudyTime1" name="otherStudyTime">
+
+
+				<table class="timeTable">
+					<tr>
+						<td></td>
+						<td>
+							<input id="otherYears1" name="years" type="number" class="timeInput" value="0" min="0" />
+						</td>
+						<td>
+							<label for="otherYears1">{{ form.yearsText }}</label>
+						</td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>
+							<input id="otherMonths1" name="months" type="number" class="timeInput" value="0" min="0" />
+						</td>
+						<td>
+							<label for="otherMonths1">{{ form.monthsText }}</label>
+						</td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>
+							<input id="otherWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" /> 
+						</td>
+						<td>
+							<label for="otherWeeks1">{{ form.weeksText }}</label>
+						</td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>
+							<input id="otherDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
+						</td>
+						<td>
+							<label for="otherDays1">{{ form.daysText }}</label>
+						</td>
+					</tr>
+					<tr class="totalRow">
+						<td>=</td>
+						<td>
+							<span name="daysTotal">0</span>
+						</td>
+						<td>
+							{{ form.daysTotalText }}
+						</td>
+					</tr>
+				</table>
+
+<!--
 					<span class="errorMessage" hidden><br /></span>
 					<label for="otherYears1">{{ form.yearsText }}</label>
 					<input id="otherYears1" name="years" type="number" class="timeInput" value="0" min="0" />	 + 
@@ -147,7 +261,7 @@
 					<label for="otherDays1">{{ form.daysText }}</label>
 					<input id="otherDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
 				= <span id="daysTotal">0</span> <span>{{ form.daysTotalText }}</span>
-				</p>		
+				</p>		-->
 			</div>
 
 			<button id="addForLangButt" type="button">{{ form.addLanguageButtonText }}</button>
@@ -160,7 +274,7 @@
 		<p>{{ form.visionProblemsText }}</p>
 		{{ form.visionProblems }}
 	</div>
-	<div id="visionProblemsDetails" hidden>
+	<div id="visionProblemsDetails" class="indentDiv" hidden>
 		{{ form.visionProblemsDetails.errors }}
 		<p>{{ form.visionProblemsDetailsText }}</p>
 		{{ form.visionProblemsDetails }}
@@ -171,10 +285,21 @@
 		<p>{{ form.readingProblemsText }}</p>
 		{{ form.readingProblems }}
 	</div>
-	<div id="readingProblemsDetails" hidden>
+	<div id="readingProblemsDetails" class="indentDiv" hidden>
 		{{ form.readingProblemsDetails.errors }}
 		<p>{{ form.readingProblemsDetailsText }}</p>
 		{{ form.readingProblemsDetails }}
+	</div>
+
+	<div class="radioButtonWrapper">
+		{{ form.additionalHomeLang.errors }}
+		<p>{{ form.additionalHomeLangText }}</p>
+		{{ form.additionalHomeLang }}
+	</div>
+	<div id="additionalHomeLangDetails" class="indentDiv" hidden>
+		{{ form.additionalHomeLangDetails.errors }}
+		<p>{{ form.additionalHomeLangDetailsText }}</p>
+		{{ form.additionalHomeLangDetails }}
 	</div>
 
 
@@ -197,6 +322,7 @@
 	<script src="{% static 'surveyThesis/foreignLangs.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/difficulties.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/calculateTime.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/additionalLang.js' %}" type="text/javascript"></script>
 </body>
 
 </html>

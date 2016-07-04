@@ -1,12 +1,13 @@
 from django.db import models
 
-from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES
+from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES, GENDER_CHOICES
 
 class SurveyLine(models.Model):
 
 	print("Make this unique")
 	participantNumber = models.IntegerField()
 	age = models.IntegerField()
+	gender = models.CharField(choices=GENDER_CHOICES, max_length=10)
 
 	education = models.CharField(
 		choices=ED_CHOICES,
@@ -26,6 +27,9 @@ class SurveyLine(models.Model):
 
 	readingProblems = models.BooleanField(choices=YES_NO_CHOICES)
 	readingProblemsDetails = models.TextField(blank=True)
+
+	additionalHomeLang = models.BooleanField(choices=YES_NO_CHOICES)
+	additionalHomeLangDetails = models.TextField(blank=True)
 
 class NativeLangLine(models.Model):
 

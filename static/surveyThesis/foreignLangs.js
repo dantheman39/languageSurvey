@@ -60,7 +60,7 @@ function addForeignLanguage() {
 	//reset time labels to 0
 	var labsToReset = ['semestersTotal', 'daysTotal'];
 	for (var l = 0; l < labsToReset.length; l++) {
-		$clone.find('span[id=' + labsToReset[l] + ']').each(function(ind, spanEl) {
+		$clone.find('span[name=' + labsToReset[l] + ']').each(function(ind, spanEl) {
 			$(spanEl).html('0');
 		});
 	}
@@ -101,7 +101,7 @@ function collectForeignLangSelection() {
 			schoolSemestersInput: studyDiv.find('input[name=semesters]').val(),
 			schoolYearsInput: studyDiv.find('input[name=years]').val(),
 			//total semesters
-			schoolSemesters: calculateSemesters(flangDiv.find('div[id^=schoolTimeDiv]')),
+			schoolSemesters: calculateSemesters(studyDiv),
 
 			livedAbroad: flangDiv.find('input[id^=livedCheckbox]').is(':checked'),
 			livedAbroadYearsInput: livedDiv.find('input[name=years]').val(),
@@ -109,11 +109,11 @@ function collectForeignLangSelection() {
 			livedAbroadWeeksInput: livedDiv.find('input[name=weeks]').val(),
 			livedAbroadDaysInput: livedDiv.find('input[name=days]').val(),
 
-			livedAbroadDays: calculateDays(flangDiv.find('div[id^=livedTimeDiv]')),
+			livedAbroadDays: calculateDays(livedDiv),
 
 			other: flangDiv.find('input[id^=otherStudyCheckbox]').is(':checked'),
 			otherDescription: flangDiv.find('input[id^=otherStudyDetails]').val(),
-			otherDays: calculateDays(flangDiv.find('div[id^=otherStudyTimeDiv]')),
+			otherDays: calculateDays(otherStudyDiv),
 
 			otherYearsInput: otherStudyDiv.find('input[name=years]').val(),
 			otherMonthsInput: otherStudyDiv.find('input[name=months]').val(),
@@ -162,7 +162,6 @@ function renumberElements(clone) {
 }
 
 function repopulateForeignLangs() {
-	console.log('in repopulate');
 	var jsonString = $('#id_foreignLanguages').val();
 
 	if (jsonString) {
@@ -174,18 +173,15 @@ function repopulateForeignLangs() {
 		//refill first div
 	
 		//create and fill divs
-		if (numLangs > 1) {
-			for (var nd = 0; nd < numLangs; nd++) {
-				if (nd > 0) {
-					var theDiv = addForeignLanguage();
-				} else {
-					var theDiv = $('#foreignLangDiv1');
-				}
-				var langObj = langsArray[nd];
-				repopulateInputs(theDiv, langObj);
+		for (var nd = 0; nd < numLangs; nd++) {
+			if (nd > 0) {
+				var theDiv = addForeignLanguage();
+			} else {
+				var theDiv = $('#foreignLangDiv1');
 			}
+			var langObj = langsArray[nd];
+			repopulateInputs(theDiv, langObj);
 		}
-		
 	}
 	//unhide elements
 	hideShowDiv('#foreignLanguageWrapper', 'foreignLangBool');
@@ -220,14 +216,14 @@ function repopulateInputs(div, object) {
 
 	studyDiv.find('input[name="years"]').val(object.schoolYearsInput);
 	studyDiv.find('input[name="semesters"]').val(object.schoolSemestersInput);
-	studyDiv.find('span[id=semestersTotal]').html(object.schoolSemesters);
+	studyDiv.find('span[name=semestersTotal]').html(object.schoolSemesters);
 
 	div.find('input[id^=livedCheckbox]').prop('checked', object.livedAbroad);
 	livedDiv.find('input[name="years"]').val(object.livedAbroadYearsInput);
 	livedDiv.find('input[name="months"]').val(object.livedAbroadMonthsInput);
 	livedDiv.find('input[name="weeks"]').val(object.livedAbroadWeeksInput);
 	livedDiv.find('input[name="days"]').val(object.livedAbroadDaysInput);
-	livedDiv.find('span[id=daysTotal]').html(object.livedAbroadDays);
+	livedDiv.find('span[name=daysTotal]').html(object.livedAbroadDays);
 
 	div.find('input[id^=otherStudyCheckbox]').prop('checked', object.other);
 	div.find('input[id^=otherStudyDetails]').val(object.otherDescription);
@@ -235,7 +231,7 @@ function repopulateInputs(div, object) {
 	otherStudyDiv.find('input[name="months"]').val(object.otherMonthsInput);
 	otherStudyDiv.find('input[name="weeks"]').val(object.otherWeeksInput);
 	otherStudyDiv.find('input[name="days"]').val(object.otherDaysInput);
-	otherStudyDiv.find('span[id=daysTotal]').html(object.otherDays);
+	otherStudyDiv.find('span[name=daysTotal]').html(object.otherDays);
 }
 
 function resetInputs(clone) {
