@@ -65,6 +65,8 @@ class PageOne(forms.Form):
 	# need this so that I can send it to the form
 	languageChoices = LANGUAGE_CHOICES
 
+	submitText = _(u"Submit")
+
 	age = forms.IntegerField(label=_(u'Age'),
 				label_suffix='',
 				error_messages={'required': fieldRequiredMess},
