@@ -57,12 +57,13 @@ function addForeignLanguage() {
 	//reset all inputs
 	$clone = resetInputs($clone);
 
+	var resetFun = function(ind, spanEl) {
+		$(spanEl).html('0');
+	};
 	//reset time labels to 0
 	var labsToReset = ['semestersTotal', 'daysTotal'];
 	for (var l = 0; l < labsToReset.length; l++) {
-		$clone.find('span[id=' + labsToReset[l] + ']').each(function(ind, spanEl) {
-			$(spanEl).html('0');
-		});
+		$clone.find('span[id=' + labsToReset[l] + ']').each(resetFun);
 	}
 
 	var elsToHide = ['.errorMessage', 
@@ -119,13 +120,15 @@ function collectForeignLangSelection() {
 			otherMonthsInput: otherStudyDiv.find('input[name=months]').val(),
 			otherWeeksInput: otherStudyDiv.find('input[name=weeks]').val(),
 			otherDaysInput: otherStudyDiv.find('input[name=days]').val(),
-		}
+		};
 		langsList.push(langDict);
-		console.log(langsList);
+		//console.log(langsList);
 	}
 	var langsListStr = JSON.stringify(langsList);
 	$('#id_foreignLanguages').val(langsListStr);
-};
+
+	return langsListStr;
+}
 
 function removeForeignLang(number) {
 	var divToRemove = $('#foreignLangDiv' + number);
@@ -162,8 +165,9 @@ function renumberElements(clone) {
 }
 
 function repopulateForeignLangs() {
-	console.log('in repopulate');
+	//console.log('in repopulate');
 	var jsonString = $('#id_foreignLanguages').val();
+	var theDiv;
 
 	if (jsonString) {
 		
@@ -177,9 +181,9 @@ function repopulateForeignLangs() {
 		if (numLangs > 1) {
 			for (var nd = 0; nd < numLangs; nd++) {
 				if (nd > 0) {
-					var theDiv = addForeignLanguage();
+					theDiv = addForeignLanguage();
 				} else {
-					var theDiv = $('#foreignLangDiv1');
+					theDiv = $('#foreignLangDiv1');
 				}
 				var langObj = langsArray[nd];
 				repopulateInputs(theDiv, langObj);
@@ -263,4 +267,4 @@ function validateForeignLangs() {
 	
 	return false;
 
-};
+}

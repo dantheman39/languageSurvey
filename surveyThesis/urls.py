@@ -20,4 +20,5 @@ from surveyThesis import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^one/', views.surveyPage),
+	url(r'^$', views.surveyPage),
 ]
