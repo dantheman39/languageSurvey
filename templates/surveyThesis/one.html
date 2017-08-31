@@ -64,15 +64,180 @@
 	</div>
 	-->
 
-	<div>
+	<div id="foreignLanguageWrapper">
 		{{ forLangsForms.management_form }}
-		{% for forLangsForm in forLangsForms %}
-			{{ forLangsForm }}
+		{% for fl in forLangsForms %}
+			<div id="foreignLangDiv{{ forloop.count }}" class="foreignLangDiv">
+				{{ fl.foreignLang.errors }}
+				{{ fl.foreignLang.label_tag }}
+				{{ fl.foreignLang }}
+
+				{{ fl.proficiency.errors }}
+				{{ fl.proficiency.label_tag }}
+				{{ fl.proficiency }}
+
+				<p>{{ fl.methodOfStudyQuestion }}</p>
+
+				<div class="methodOfStudy">
+					{{ fl.school.errors }}
+					{{ fl.school.label_tag }}
+					{{ fl.school }}
+
+					<div class="studyCalculator">
+						<p>{{ fl.semestersQuestion }}</p>
+						{{ fl.schoolSemesters.errors }}
+
+						<table>
+							<tr>
+								<td></td>
+								<td>{{ fl.schoolYears }}</td>
+								<td>{{ fl.schoolYears.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.schoolSemesters }}</td>
+								<td>{{ fl.schoolSemesters.label }}</td>
+							</tr>
+							<tr>
+								<td>=</td>
+								<td><span class="semestersTotal">0</span>
+								<td>{{ fl.semestersTotalText }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="methodOfStudy">
+					{{ fl.lived.errors }}
+					{{ fl.lived.label_tag }}
+					{{ fl.lived }}
+
+					<div class="daysCalculator">
+						<p>{{ fl.livedQuestion }}</p>
+						{{ fl.livedYears.errors }}
+
+						<table>
+							<tr>
+								<td></td>
+								<td>{{ fl.livedYears }}</td>
+								<td>{{ fl.livedYears.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.livedMonths }}</td>
+								<td>{{ fl.livedMonths.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.livedWeeks }}</td>
+								<td>{{ fl.livedWeeks.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.livedDays }}</td>
+								<td>{{ fl.livedDays.label }}</td>
+							</tr>
+
+							<tr>
+								<td>=</td>
+								<td><span class="daysTotal">0</span>
+								<td>{{ fl.daysTotalText }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="methodOfStudy">
+					{{ fl.worked.errors }}
+					{{ fl.worked.label_tag }}
+					{{ fl.worked }}
+
+					<div class="daysCalculator">
+						<p>{{ fl.livedQuestion }}</p>
+						{{ fl.workedYears.errors }}
+
+						<table>
+							<tr>
+								<td></td>
+								<td>{{ fl.workedYears }}</td>
+								<td>{{ fl.workedYears.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.workedMonths }}</td>
+								<td>{{ fl.workedMonths.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.workedWeeks }}</td>
+								<td>{{ fl.workedWeeks.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.workedDays }}</td>
+								<td>{{ fl.workedDays.label }}</td>
+							</tr>
+
+							<tr>
+								<td>=</td>
+								<td><span class="daysTotal">0</span>
+								<td>{{ fl.daysTotalText }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="methodOfStudy">
+					{{ fl.other.errors }}
+					{{ fl.other.label_tag }}
+					{{ fl.other }}
+
+					<div class="daysCalculator">
+						{{ fl.otherStudyExplanation.errors }}
+						<p>
+							{{ fl.otherStudyExplanation.label_tag }}
+							{{ fl.otherStudyExplanation }}
+						</p>
+
+						{{ fl.otherYears.errors }}
+
+						<table>
+							<tr>
+								<td></td>
+								<td>{{ fl.otherYears }}</td>
+								<td>{{ fl.otherYears.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.otherMonths }}</td>
+								<td>{{ fl.otherMonths.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.otherWeeks }}</td>
+								<td>{{ fl.otherWeeks.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.otherDays }}</td>
+								<td>{{ fl.otherDays.label }}</td>
+							</tr>
+
+							<tr>
+								<td>=</td>
+								<td><span class="daysTotal">0</span>
+								<td>{{ fl.daysTotalText }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+			</div>
 		{% endfor %}
 	</div>
 
 
-	<!-- <div id="foreignLanguageWrapper" hidden>
+	<div id="foreignLanguageWrapper" hidden>
 		<div id="outerDiv">
 		<div id="foreignLangDiv1" class=foreignLangDiv>
 			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
@@ -159,7 +324,7 @@
 			<button id="addForLangButt" type="button">{{ form.addLanguageButtonText }}</button>
 		</div>
 		</div>
-	</div> -->
+	</div>
 
 	<div class="radioButtonWrapper">
 		{{ form.visionProblems.errors }}

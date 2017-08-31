@@ -141,25 +141,25 @@ class ForeignLangForm(forms.Form):
 	livedQuestion = _(u"About how long were you there?")
 	semestersQuestion = _(u"About how many semesters did you study for? (one semester is about 5 months, one year is two semesters) ")
 	semestersText = _(u"Semesters")
-	semestersTotalText = _(u"semesters total")
+	semestersTotalText = _(u"Semesters total")
+
+	studyAttrs = { "class": "studyTime", "min": "0" }
+	timeAttrs = { "class": "timeInput", "min": "0" }
 
 	school = forms.BooleanField(label=_(u"Classes"))
 	schoolSemesters = forms.IntegerField(
 						label=semestersText, 
 						initial=0, 
-						required=False
+						required=False,
 	)
+	schoolSemesters.widget.attrs = studyAttrs
+
 	schoolYears = forms.IntegerField(
 						label=yearsText, 
 						initial=0, 
-						required=False
+						required=False,
 	)
-	schoolSemestersTotal = forms.IntegerField(
-						label=semestersTotalText,
-						initial=0,
-						disabled=True,
-						required=False
-	)
+	schoolYears.widget.attrs = studyAttrs
 
 	lived = forms.BooleanField(label=_(u"Lived"))
 	livedYears = forms.IntegerField(
@@ -206,7 +206,7 @@ class ForeignLangForm(forms.Form):
 	)
 
 	other = forms.BooleanField(label=_(u"Other"))
-	otherStudeExplanation = forms.CharField(label=_("Please explain"),required=False)
+	otherStudyExplanation = forms.CharField(label=_("What was it?"),required=False)
 	otherYears = forms.IntegerField(
 						label=yearsText, 
 						initial=0, 

@@ -89,3 +89,7 @@ fieldset {
 .errorlist {
 	color: red;
 }
+
+.studyCalculator, .daysCalculator {
+	padding-left: 10%;
+}

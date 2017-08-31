@@ -1,7 +1,7 @@
 //Some client-side validation
 $('#submitButton').click(function() {
 
-	var valResults = []
+	var valResults = [];
 
 	var langsCheck = validateNativeLangs();
 	valResults.push(langsCheck);
