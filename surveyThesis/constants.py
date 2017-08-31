@@ -36,6 +36,7 @@ PROFICIENCY_CHOICES = (
 )
 
 LANGUAGE_CHOICES = (
+	("", ""),
 	("en", _(u"English")),
 	("es", _(u"Spanish")),
 	("ab", _(u"Abkhazian")),

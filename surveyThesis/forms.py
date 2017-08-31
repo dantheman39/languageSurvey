@@ -9,6 +9,7 @@ from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES
 import logging
 
 logger = logging.getLogger('surveyThesis')
+FIELD_REQUIRED_MESS = _(u"This field is required")
 
 class PageOne(forms.Form):
 
@@ -20,8 +21,6 @@ class PageOne(forms.Form):
 	addLanguageButtonText = _(u"+")
 	removeButtonText = _(u"-")
 
-	fieldRequiredMess = _(u"This field is required")
-
 	visionProblemsText = _(u"Do you have any vision or hearing problems?")
 	visionProblemsDetailsText = _(u"If you are comfortable doing so, please explain.")
 
@@ -31,60 +30,35 @@ class PageOne(forms.Form):
 	undergradBlankError = _(u"Please tell us what year you are in, or the last year you completed")
 
 	foreignLangsQuestion = _(u"Do you speak, or have you studied a foreign language?")
-	foreignLangLabel = _(u"Which one?")
-	
-	methodOfStudyQuestion = _(u"How did you learn or use it? (Check all that apply)")
-	
-	school = forms.BooleanField(label=_(u"Classes"))
-	lived = forms.BooleanField(label=_(u"Lived abroad"))
-
-	schoolLabel = _(u"Classes")
-	semestersQuestion = _(u"About how many semesters did you study for? (one semester is about 5 months, one year is two semesters) ")
-	semestersText = _(u"Semesters")
-	semestersTotalText = _(u"semesters total")
-
-	livedLabel = _(u"Lived")
-	livedQuestion = _(u"About how long were you there?")
-	yearsText = _(u"Years")
-	monthsText = _(u"Months")
-	weeksText = _(u"Weeks")
-	daysText = _(u"Days")
-	daysTotalText = _(u"days total")
-
-	foreignProfLabel = _(u"Estimated proficiency")
-
-	otherStudyDetailsLabel = _(u"Please explain")
-	otherLabel = _(u"Other")
-	otherTimeQuestion = _(u"For about how long?")
 
 	# need this so that I can send it to the form
 	languageChoices = LANGUAGE_CHOICES
 
 	participantNumber = forms.IntegerField(label=_(u'Participant number'),
 				label_suffix='',
-				error_messages={'required': fieldRequiredMess},
+				error_messages={'required': FIELD_REQUIRED_MESS},
 				)
 	age = forms.IntegerField(label=_(u'Age'),
 				label_suffix='',
-				error_messages={'required': fieldRequiredMess},
+				error_messages={'required': FIELD_REQUIRED_MESS},
 				#localize=True,
 				)
 	education = forms.ChoiceField(label=_(u'Education level'),
 				label_suffix='',
-				error_messages={'required': fieldRequiredMess},
+				error_messages={'required': FIELD_REQUIRED_MESS},
 				choices=ED_CHOICES,
 				)
 
 	undergradLevel = forms.ChoiceField(label=_(u'Undergrad level'),
 				label_suffix='',
-				error_messages={'required': fieldRequiredMess},
+				error_messages={'required': FIELD_REQUIRED_MESS},
 				choices=UG_CHOICES,
 				required=False,
 				)
 
-	nativeLanguages = forms.CharField(
-				max_length=200,
-				)
+	#nativeLanguages = forms.CharField(
+	#			max_length=200,
+	#			)
 
 	visionProblems = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
@@ -106,9 +80,9 @@ class PageOne(forms.Form):
 				widget = forms.Textarea,
 				)
 
-	foreignLanguages = forms.CharField(
-				widget = forms.Textarea,
-				)
+	#foreignLanguages = forms.CharField(
+	#			widget = forms.Textarea,
+	#			)
 
 	foreignLangBool = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
@@ -119,7 +93,6 @@ class PageOne(forms.Form):
 
 
 	def clean(self):
-		import pdb; pdb.set_trace()
 		cleaned_data = super(PageOne, self).clean()
 
 		if 'education' in cleaned_data:
@@ -132,6 +105,129 @@ class PageOne(forms.Form):
 		# check foreign language logic
 
 		return cleaned_data
+
+class NativeLangForm(forms.Form):
+
+	nativeLang = forms.ChoiceField(label=_(u'Native language'),
+				label_suffix='',
+				error_messages={'required': FIELD_REQUIRED_MESS},
+				choices=LANGUAGE_CHOICES,
+				)
+
+class ForeignLangForm(forms.Form):
+
+	foreignLangLabel = _(u"Which one?")
+	foreignLang = forms.ChoiceField(
+					label=foreignLangLabel,
+					label_suffix='',
+					error_messages={'required': FIELD_REQUIRED_MESS},
+					choices=LANGUAGE_CHOICES,
+				)
+
+	foreignProfLabel = _(u"Estimated proficiency")
+	proficiency = forms.ChoiceField(
+					label=foreignProfLabel,
+					label_suffix='',
+					error_messages={'required': FIELD_REQUIRED_MESS},
+					choices=PROFICIENCY_CHOICES,
+				)
+
+	methodOfStudyQuestion = _(u"How did you learn or use it? (Check all that apply)")
+	yearsText = _(u"Years")
+	monthsText = _(u"Months")
+	weeksText = _(u"Weeks")
+	daysText = _(u"Days")
+	daysTotalText = _(u"days total")
+	livedQuestion = _(u"About how long were you there?")
+	semestersQuestion = _(u"About how many semesters did you study for? (one semester is about 5 months, one year is two semesters) ")
+	semestersText = _(u"Semesters")
+	semestersTotalText = _(u"semesters total")
+
+	school = forms.BooleanField(label=_(u"Classes"))
+	schoolSemesters = forms.IntegerField(
+						label=semestersText, 
+						initial=0, 
+						required=False
+	)
+	schoolYears = forms.IntegerField(
+						label=yearsText, 
+						initial=0, 
+						required=False
+	)
+	schoolSemestersTotal = forms.IntegerField(
+						label=semestersTotalText,
+						initial=0,
+						disabled=True,
+						required=False
+	)
+
+	lived = forms.BooleanField(label=_(u"Lived"))
+	livedYears = forms.IntegerField(
+						label=yearsText, 
+						initial=0, 
+						required=False
+	)
+	livedMonths = forms.IntegerField(
+						label=monthsText, 
+						initial=0, 
+						required=False
+	)
+	livedWeeks = forms.IntegerField(
+						label=weeksText, 
+						initial=0, 
+						required=False
+	)
+	livedDays = forms.IntegerField(
+						label=daysText, 
+						initial=0, 
+						required=False
+	)
+
+	worked = forms.BooleanField(label=_(u"Worked"))
+	workedYears = forms.IntegerField(
+						label=yearsText, 
+						initial=0, 
+						required=False
+	)
+	workedMonths = forms.IntegerField(
+						label=monthsText, 
+						initial=0, 
+						required=False
+	)
+	workedWeeks = forms.IntegerField(
+						label=weeksText, 
+						initial=0, 
+						required=False
+	)
+	workedDays = forms.IntegerField(
+						label=daysText, 
+						initial=0, 
+						required=False
+	)
+
+	other = forms.BooleanField(label=_(u"Other"))
+	otherStudeExplanation = forms.CharField(label=_("Please explain"),required=False)
+	otherYears = forms.IntegerField(
+						label=yearsText, 
+						initial=0, 
+						required=False
+	)
+	otherMonths = forms.IntegerField(
+						label=monthsText, 
+						initial=0, 
+						required=False
+	)
+	otherWeeks = forms.IntegerField(
+						label=weeksText, 
+						initial=0, 
+						required=False
+	)
+	otherDays = forms.IntegerField(
+						label=daysText, 
+						initial=0, 
+						required=False
+	)
+
 
 #class PageOne(ModelForm):
 #

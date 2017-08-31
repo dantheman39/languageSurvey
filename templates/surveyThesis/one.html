@@ -38,21 +38,18 @@
 		</div>
 
 	<div id="nativeLangWrapper">
-		<div id="natLangDiv1">
-			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
-			<label for="natLangSelect1">{{ form.nativeLanguageLabel }}</label>
-			<select id="natLangSelect1">
-				<option selected disabled value=""></option>
-			{% for lang in form.languageChoices %}
-				<option value="{{ lang.0 }}">{{ lang.1 }}</option>
-			{% endfor %}
-			</select>
-			<button id="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
-		</div>
+		{{ natLangsForms.management_form }}
+		{% for natLangForm in natLangsForms %}
+			<div id="natLangDiv{{ forloop.counter }}">
+				{{ natLangForm }}
+
+				<button id="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
+			</div>
+		{% endfor %}
+
 	</div>
 
 	<div hidden>
-		{{ form.nativeLanguages }}
 		<input id="removeButtonText" value="{{ form.removeButtonText }}"/>
 	</div>
 
@@ -62,11 +59,20 @@
 		{{ form.foreignLangBool }}	
 	</div>
 
-	<div hidden>
+	<!-- <div hidden>
 		{{ form.foreignLanguages }}
 	</div>
+	-->
 
-	<div id="foreignLanguageWrapper" hidden>
+	<div>
+		{{ forLangsForms.management_form }}
+		{% for forLangsForm in forLangsForms %}
+			{{ forLangsForm }}
+		{% endfor %}
+	</div>
+
+
+	<!-- <div id="foreignLanguageWrapper" hidden>
 		<div id="outerDiv">
 		<div id="foreignLangDiv1" class=foreignLangDiv>
 			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
@@ -153,7 +159,7 @@
 			<button id="addForLangButt" type="button">{{ form.addLanguageButtonText }}</button>
 		</div>
 		</div>
-	</div>
+	</div> -->
 
 	<div class="radioButtonWrapper">
 		{{ form.visionProblems.errors }}
