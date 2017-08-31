@@ -79,7 +79,7 @@ class PageOne(forms.Form):
 				label_suffix='',
 				error_messages={'required': fieldRequiredMess},
 				choices=UG_CHOICES,
-				required=True,
+				required=False,
 				)
 
 	nativeLanguages = forms.CharField(
@@ -119,18 +119,15 @@ class PageOne(forms.Form):
 
 
 	def clean(self):
+		import pdb; pdb.set_trace()
 		cleaned_data = super(PageOne, self).clean()
 
-		try:
+		if 'education' in cleaned_data:
 			educationSelection = cleaned_data['education']
 			if cleaned_data['education'] == "undergrad":
-				if not cleaned_data['undergradLevel']:
+				if 'undergradLevel' not in cleaned_data or not cleaned_data['undergradLevel']:
 					valError = forms.ValidationError(self.undergradBlankError)
 					self.add_error('undergradLevel', valError)
-
-		# means didn't pass cleaning
-		except KeyError:
-			pass
 
 		# check foreign language logic
 

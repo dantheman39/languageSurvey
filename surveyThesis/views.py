@@ -20,15 +20,15 @@ def surveyPage(request):
 		if form.is_valid():
 			logger.info('Add code to process data')
 			data = form.cleaned_data
-			surveyLine = SurveyLine(
-				participantNumber=data['participantNumber'],
-				age=data['age'],
-				education=data['education'],
-				undergradLevel=data['undergradLevel'],
-				nativeLanguages=data['nativeLanguages'],
-				)
+			#surveyLine = SurveyLine(
+			#	participantNumber=data['participantNumber'],
+			#	age=data['age'],
+			#	education=data['education'],
+			#	undergradLevel=data['undergradLevel'],
+			#	nativeLanguages=data['nativeLanguages'],
+			#	)
 
-			surveyLine.save()
+			#surveyLine.save()
 		else: 
 			logger.info('Form is not valid for some reason')
 

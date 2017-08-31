@@ -85,3 +85,7 @@ select {
 fieldset {
 	
 }
+
+.errorlist {
+	color: red;
+}
