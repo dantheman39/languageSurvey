@@ -45,10 +45,12 @@
 		var div = $(hideDivId);
 		var input = $('input[name=' + inputName + ']');
 		var inputType = input.attr('type');
+		var checkedVal;
 
 		var conditional = false;
 		if (inputType === 'radio') {
-			conditional = input.filter(':checked').val() === "true";
+			checkedVal = input.filter(':checked').val();
+			conditional = checkedVal === "true" || checkedVal === "True";
 		} else if (inputType === 'checkbox') {
 			conditional = input.is(':checked') === true;
 		}
@@ -458,6 +460,7 @@
 
 	return { hideShowDiv: hideShowDiv,
 		setEngine: setEngine,
+		parseDjangoProp: parseDjangoProp,
 		parseListProp: parseListProp,
 		getLettersAndNumber: getLettersAndNumber,
 		renumberHtml: renumberHtml,

@@ -122,6 +122,7 @@ class ForeignLangForm(forms.Form):
 					label_suffix='',
 					error_messages={'required': FIELD_REQUIRED_MESS},
 					choices=LANGUAGE_CHOICES,
+					required=False,
 				)
 
 	foreignProfLabel = _(u"Estimated proficiency")
@@ -130,6 +131,7 @@ class ForeignLangForm(forms.Form):
 					label_suffix='',
 					error_messages={'required': FIELD_REQUIRED_MESS},
 					choices=PROFICIENCY_CHOICES,
+					required=False,
 				)
 
 	methodOfStudyQuestion = _(u"How did you learn or use it? (Check all that apply)")
@@ -146,7 +148,7 @@ class ForeignLangForm(forms.Form):
 	studyAttrs = { "class": "studyTime", "min": "0" }
 	timeAttrs = { "class": "timeInput", "min": "0" }
 
-	school = forms.BooleanField(label=_(u"Classes"))
+	school = forms.BooleanField(label=_(u"Classes"), required=False)
 	schoolSemesters = forms.IntegerField(
 						label=semestersText, 
 						initial=0, 
@@ -161,7 +163,7 @@ class ForeignLangForm(forms.Form):
 	)
 	schoolYears.widget.attrs = studyAttrs
 
-	lived = forms.BooleanField(label=_(u"Lived"))
+	lived = forms.BooleanField(label=_(u"Lived"), required=False)
 	livedYears = forms.IntegerField(
 						label=yearsText, 
 						initial=0, 
@@ -183,7 +185,7 @@ class ForeignLangForm(forms.Form):
 						required=False
 	)
 
-	worked = forms.BooleanField(label=_(u"Worked"))
+	worked = forms.BooleanField(label=_(u"Worked"), required=False)
 	workedYears = forms.IntegerField(
 						label=yearsText, 
 						initial=0, 
@@ -205,7 +207,7 @@ class ForeignLangForm(forms.Form):
 						required=False
 	)
 
-	other = forms.BooleanField(label=_(u"Other"))
+	other = forms.BooleanField(label=_(u"Other"), required=False)
 	otherStudyExplanation = forms.CharField(label=_("What was it?"),required=False)
 	otherYears = forms.IntegerField(
 						label=yearsText, 
@@ -227,6 +229,9 @@ class ForeignLangForm(forms.Form):
 						initial=0, 
 						required=False
 	)
+
+	for widg in [livedYears, workedYears, otherYears, livedMonths, workedMonths, otherMonths, livedWeeks, workedWeeks, otherWeeks, livedDays, workedDays, otherDays]:
+		widg.widget.attrs = timeAttrs
 
 
 #class PageOne(ModelForm):

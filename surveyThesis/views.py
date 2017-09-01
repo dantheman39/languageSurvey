@@ -37,8 +37,6 @@ def surveyPage(request):
 			print("Form")
 			print(natLangForm.cleaned_data)
 
-		import pdb; pdb.set_trace()
-
 		if form.is_valid() and natLangsForms.is_valid():
 			logger.info('Add code to process data')
 			data = form.cleaned_data

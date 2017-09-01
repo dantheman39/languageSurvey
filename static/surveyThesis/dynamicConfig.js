@@ -14,6 +14,12 @@ var rmNatLangClass = "rmNatLangButt";
 var natLangForm = "natLang";
 $(document).ready(function() {
 
+	dynamicDr.hideShowDiv("#foreignLanguageWrapper", "foreignLangBool");
+
+	$("input[name=foreignLangBool]").on("change", function() {
+		dynamicDr.hideShowDiv("#foreignLanguageWrapper", "foreignLangBool");
+	});
+
 	// hide all inputs for DELETE
 	var deleteIns = $("input[id$=DELETE]");
 	deleteIns.prop("hidden", true);

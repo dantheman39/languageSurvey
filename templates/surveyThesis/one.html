@@ -61,7 +61,7 @@
 	</div>
 
 	<div id="foreignLangBoolDiv" class="radioButtonWrapper">
-		{{ form.foreignLangsBool.errors }}
+		{{ form.foreignLangBool.errors }}
 		<p>{{ form.foreignLangsQuestion }}</p>
 		{{ form.foreignLangBool }}	
 	</div>
@@ -94,7 +94,7 @@
 						<p>{{ fl.semestersQuestion }}</p>
 						{{ fl.schoolSemesters.errors }}
 
-						<table>
+						<table class="studyTable">
 							<tr>
 								<td></td>
 								<td>{{ fl.schoolYears }}</td>
@@ -123,7 +123,7 @@
 						<p>{{ fl.livedQuestion }}</p>
 						{{ fl.livedYears.errors }}
 
-						<table>
+						<table class="daysTable">
 							<tr>
 								<td></td>
 								<td>{{ fl.livedYears }}</td>
@@ -163,7 +163,7 @@
 						<p>{{ fl.livedQuestion }}</p>
 						{{ fl.workedYears.errors }}
 
-						<table>
+						<table class="daysTable">
 							<tr>
 								<td></td>
 								<td>{{ fl.workedYears }}</td>
@@ -208,7 +208,7 @@
 
 						{{ fl.otherYears.errors }}
 
-						<table>
+						<table class="daysTable">
 							<tr>
 								<td></td>
 								<td>{{ fl.otherYears }}</td>
@@ -368,6 +368,8 @@
 	<script src="{% static 'surveyThesis/json2.js' %}" type="text/javascript"></script>
 	<script src="{% static 'dynamicDr/dynamicDr.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/dynamicConfig.js' %}" type="text/javascript"></script>
+	<script src="{% static 'timeCalculator/timeCalculator.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/timeCalcConfig.js' %}" type="text/javascript"></script>
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
 	<script src="{% static 'surveyThesis/getIdNum.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/hideShowUndergrad.js' %}" type="text/javascript"></script>
