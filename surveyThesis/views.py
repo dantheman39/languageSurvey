@@ -13,16 +13,33 @@ logger = logging.getLogger(__name__)
 def surveyPage(request):
 
 	logger.info('Testing with one page for now')	
-	NatLangFormset = formset_factory(NativeLangForm, min_num=1,validate_min=True, extra=0)
-	ForLangFormset = formset_factory(ForeignLangForm)
+	NatLangFormset = formset_factory(
+						NativeLangForm, 
+						min_num=1,
+						validate_min=True, 
+						extra=0,
+						can_delete=True,
+	)
+	ForLangFormset = formset_factory(ForeignLangForm,)
 
 	if request.method == 'POST':
 		logger.info("Page was posted")
 		form = PageOne(request.POST)
-		natLangsForms = NatLangFormset(request.POST, request.FILES)
-		forLangsForms = ForLangFormset(request.POST, request.FILES)
+		natLangsForms = NatLangFormset(request.POST, request.FILES, prefix=u"natLang")
+		forLangsForms = ForLangFormset(request.POST, request.FILES, prefix=u"forLang")
 
-		if form.is_valid() and natLangsGood.is_valid():
+		# for debugging
+		for ke, va in request.POST.iteritems():
+			if ke[:4] == "natL":
+				print("{0}\t{1}".format(ke,va))
+		natLangsForms.is_valid()
+		for natLangForm in natLangsForms:
+			print("Form")
+			print(natLangForm.cleaned_data)
+
+		import pdb; pdb.set_trace()
+
+		if form.is_valid() and natLangsForms.is_valid():
 			logger.info('Add code to process data')
 			data = form.cleaned_data
 			#surveyLine = SurveyLine(
@@ -39,8 +56,8 @@ def surveyPage(request):
 
 	else:
 		form = PageOne()
-		natLangsForms = NatLangFormset()
-		forLangsForms = ForLangFormset()
+		natLangsForms = NatLangFormset(prefix=u"natLang")
+		forLangsForms = ForLangFormset(prefix=u"forLang")
 
 	argsDict = {
 		'form': form, 

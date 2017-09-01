@@ -40,10 +40,17 @@
 	<div id="nativeLangWrapper">
 		{{ natLangsForms.management_form }}
 		{% for natLangForm in natLangsForms %}
-			<div id="natLangDiv{{ forloop.counter }}">
-				{{ natLangForm }}
+			<div id="natLangDiv{{ forloop.counter0 }}" class="natLang">
+				{{ natLangForm.errors }}
+				{{ natLangForm.nativeLang.label_tag }}
+				{{ natLangForm.nativeLang }}
+				{{ natLangForm.DELETE }}
 
-				<button id="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
+				{% if forloop.counter0 == 0 %}
+					<button class="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
+				{% else %}
+					<button class="rmNatLangButt" type="button">{{ form.removeButtonText }}</button>
+				{% endif %}
 			</div>
 		{% endfor %}
 
@@ -359,6 +366,8 @@
 
 	<script src="{% static 'jquery.js' %}"></script>
 	<script src="{% static 'surveyThesis/json2.js' %}" type="text/javascript"></script>
+	<script src="{% static 'dynamicDr/dynamicDr.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/dynamicConfig.js' %}" type="text/javascript"></script>
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
 	<script src="{% static 'surveyThesis/getIdNum.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/hideShowUndergrad.js' %}" type="text/javascript"></script>
