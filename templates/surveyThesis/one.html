@@ -41,7 +41,7 @@
 		{{ natLangsForms.management_form }}
 		{% for natLangForm in natLangsForms %}
 			<div id="natLangDiv{{ forloop.counter0 }}" class="natLang">
-				{{ natLangForm.errors }}
+				{{ natLangForm.nativeLang.errors }}
 				{{ natLangForm.nativeLang.label_tag }}
 				{{ natLangForm.nativeLang }}
 				{{ natLangForm.DELETE }}
@@ -72,7 +72,7 @@
 		{{ forLangsForms.management_form }}
 		{% for fl in forLangsForms %}
 			<div id="foreignLangDiv{{ forloop.counter0 }}" class="foreignLangDiv">
-				<span>{{ fl.DELETE }}</span>
+				{{ fl.DELETE }}
 				{{ fl.foreignLang.errors }}
 				{{ fl.foreignLang.label_tag }}
 				{{ fl.foreignLang }}
@@ -236,7 +236,12 @@
 						</table>
 					</div>
 				</div>
-				<button type="button" class="addForLangButt">Add Foreign Language</button>
+				{% if forloop.counter0 == 0 %}
+					<button class="addForLangButt" type="button">{{ form.addForLangText }}</button>
+				{% else %}
+					<button class="rmForLangButt" type="button">{{ form.rmForLangText }}</button>
+				{% endif %}
+
 			</div>
 		{% endfor %}
 	</div>
@@ -268,8 +273,10 @@
 
 	<button type="submit" id="submitButton">Next</button>
 
-	{{ form.errors }}
-	{{ form.non_field_errors }}
+	{% comment %}
+		{{ form.errors }}
+		{{ form.non_field_errors }}
+	{% endcomment %}
 
 </form>
 </div>

@@ -427,9 +427,14 @@
 						newVal = false;
 					}
 					input.prop("checked", newVal);
-				} else if (inType === "text" || inType === "textarea" || inType === "hidden" || inType === "number") {
+				} else if (inType === "text" || inType === "textarea" || inType === "hidden") {
 					if (!newValDefined) {
 						newVal = "";
+					}
+					input.val(newVal);
+				} else if (inType === "number") {
+					if (!newValDefined) {
+						newVal = "0";
 					}
 					input.val(newVal);
 				} else if (inType === "radio") {

@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from forms import PageOne, NativeLangForm, ForeignLangForm
+from forms import PageOne, NativeLangForm, ForeignLangForm, BaseForeignLangFormSet
 from django.forms import formset_factory
 from models import SurveyLine
 import logging
@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 def surveyPage(request):
 
-	logger.info('Testing with one page for now')	
 	NatLangFormset = formset_factory(
 						NativeLangForm, 
 						min_num=1,
@@ -23,6 +22,7 @@ def surveyPage(request):
 	ForLangFormset = formset_factory(
 						ForeignLangForm,
 						can_delete=True,
+						formset=BaseForeignLangFormSet,
 	)
 
 	if request.method == 'POST':
@@ -35,7 +35,21 @@ def surveyPage(request):
 		for ke, va in request.POST.iteritems():
 			if ke[:4] == "natL":
 				print("{0}\t{1}".format(ke,va))
-		natLangsForms.is_valid()
+
+		mainFormValid = form.is_valid()
+		# see if the foreign languages were visible and need validation
+		forLangBoolVal = form.cleaned_data.get("foreignLangBool")
+		if forLangBoolVal == u"False" or forLangBoolVal == False:
+			for flf in forLangsForms:
+				flf.needsValidation = False
+
+		# see if forms are marked as deleted
+		#for flf in forLangsForms:
+		#	print(flf)
+
+		natLangsValid = natLangsForms.is_valid()
+		forLangsValid = forLangsForms.is_valid()
+
 		for natLangForm in natLangsForms:
 			print("Form")
 			print(natLangForm.cleaned_data)

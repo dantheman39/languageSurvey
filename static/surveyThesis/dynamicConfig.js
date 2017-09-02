@@ -22,6 +22,7 @@ var forLangRenumSpec = dynamicDr.renumArgsBase(
 );
 var forLangResetSpec = dynamicDr.renumArgsBase(
 	[
+		{ selector: "select" },
 		{ selector: "input" },
 		{ selector: ".daysTotal,.semestersTotal", newVal: "0" },
 	]
@@ -58,6 +59,17 @@ var hideShowTimeDivs = function(container) {
 	}
 };
 
+var hideShowUnderGrad = function () {
+	var select = $('#id_education');
+	var selected = select.val();
+	var hiddenDiv = $('#undergradLevelDiv');
+	if (selected === "undergrad") {
+		hiddenDiv.show();
+	} else {
+		hiddenDiv.hide();
+	}
+};
+
 $(document).ready(function() {
 
 	dynamicDr.hideShowDiv("#foreignLanguageWrapper", "input[name=foreignLangBool]");
@@ -73,8 +85,12 @@ $(document).ready(function() {
 	$("input[name=readingProblems]").on("change", function() {
 		dynamicDr.hideShowDiv("#readingProblemsDetails", "input[name=readingProblems]");
 	});
+	$("#id_education").on("change", function() {
+		hideShowUnderGrad();
+	});
 
 	hideShowTimeDivs();
+	hideShowUnderGrad();
 
 	$(document).on("change", ".hideShowCb", function() {
 		dynamicDr.hideShowDiv($(this).next("div"), $(this));
@@ -84,17 +100,22 @@ $(document).ready(function() {
 	var deleteIns = $("input[id$=DELETE]");
 	deleteIns.prop("hidden", true);
 	// hide all divs that are marked as deleted (after bad POST, for example)
+	// assumes the parent is the div you want to hide
 	deleteIns.filter(":checked").parent().prop("hidden", true);
 
 	$(".addNatLangButt").click(function() {
 		var newDiv = dynamicDr.cloneAndRenumber("natLangDiv", "#nativeLangWrapper", natLangForm, rmNatLangClass, natLangRenumSpec, natLangForm);
+		newDiv.find(".errorlist").remove();
 		var butt = newDiv.find("button");
+		dynamicDr.resetValues({ selector: "select" }, newDiv);
 		butt.html("-");
 		butt.prop("class", rmNatLangClass);
+		// remove errors
 	});
 
 	$(".addForLangButt").click(function() {
 		var newDiv = dynamicDr.cloneAndRenumber("foreignLangDiv", "#foreignLanguageWrapper", "foreignLangDiv", "dontMattah", forLangRenumSpec, "forLang");
+		newDiv.find(".errorlist").remove();
 		dynamicDr.resetMultipleValues(forLangResetSpec, newDiv);
 		hideShowTimeDivs(newDiv);
 
