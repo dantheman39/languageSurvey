@@ -20,7 +20,10 @@ def surveyPage(request):
 						extra=0,
 						can_delete=True,
 	)
-	ForLangFormset = formset_factory(ForeignLangForm,)
+	ForLangFormset = formset_factory(
+						ForeignLangForm,
+						can_delete=True,
+	)
 
 	if request.method == 'POST':
 		logger.info("Page was posted")

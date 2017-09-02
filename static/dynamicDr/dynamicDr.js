@@ -41,9 +41,9 @@
 
 	//right now works for checkboxes and radio buttons
 	//If checked/true, will show a div
-	hideShowDiv = function(hideDivId, inputName) {
+	hideShowDiv = function(hideDivId, inputSel) {
 		var div = $(hideDivId);
-		var input = $('input[name=' + inputName + ']');
+		var input = $(inputSel);
 		var inputType = input.attr('type');
 		var checkedVal;
 
@@ -313,9 +313,10 @@
 		return container;
 	};
 
-	cloneAndRenumber = function(divBaseName, appendToSelector, classOfDiv, classOfRemoveButton, renumSpecObj) {
-		// note that for djangoFormset, classOfDiv should also be the name of the
-		// formset prefex (as in "id_classOfDiv-0-DELETE")
+	cloneAndRenumber = function(divBaseName, appendToSelector, classOfDiv, classOfRemoveButton, renumSpecObj, formName) {
+		// classOfDiv is used to count how many of the divs there are
+		// note that for djangoFormset, formName is the 
+		// formset prefix (as in "id_formName-0-DELETE")
 		var sourceId = "#" + divBaseName + "0";
 		var source = $(sourceId);
 		var clone = source.clone();
@@ -323,7 +324,7 @@
 		renumber.apply(this,[clone, newNum, renumSpecObj]);
 		$(appendToSelector).append(clone);
 		if (this.engine === "djangoFormset") {
-			document.getElementById("id_" + classOfDiv + "-TOTAL_FORMS").value = parseInt(newNum) + 1;
+			document.getElementById("id_" + formName + "-TOTAL_FORMS").value = parseInt(newNum) + 1;
 		}
 
 		return clone;
@@ -417,30 +418,39 @@
 
 		}
 		numIns = inputs.length;
-
 		if (inputs.length > 0) {
-			inType = $(inputs.first()).prop("type");
-			if (inType === "checkbox") {
-				if (!newValDefined) {
-					newVal = false;
-				}
-				inputs.prop("checked", newVal);
-			} else if (inType === "text" || inType === "textarea" || inType === "hidden" || inType === "number") {
-				if (!newValDefined) {
-					newVal = "";
-				}
-				inputs.val(newVal);
-			} else if (inType === "radio") {
-				if (!newValDefined) {
-					newVal = false;
-				}
-				inputs.prop("checked", newVal);
-			} else if (inType === "select-one") {
-				if (optionSelector !== undefined) {
-					optionObj = inputs.find(optionSelector);
-					optionObj.prop("selected", true);
-				} else {
-					inputs.prop("selectedIndex", 0);
+			for (i; i < numIns; i++) {
+				input = $(inputs[i]);
+				inType = input.prop("type");
+				if (inType === "checkbox") {
+					if (!newValDefined) {
+						newVal = false;
+					}
+					input.prop("checked", newVal);
+				} else if (inType === "text" || inType === "textarea" || inType === "hidden" || inType === "number") {
+					if (!newValDefined) {
+						newVal = "";
+					}
+					input.val(newVal);
+				} else if (inType === "radio") {
+					if (!newValDefined) {
+						newVal = false;
+					}
+					input.prop("checked", newVal);
+				} else if (inType === "select-one") {
+					if (optionSelector !== undefined) {
+						optionObj = input.find(optionSelector);
+						optionObj.prop("selected", true);
+					} else {
+						input.prop("selectedIndex", 0);
+					}
+				} else if (inType === undefined) {
+					// assume html element, newVal must be defined
+					if (!newValDefined) {
+						throw "It seems like you are trying to change the value of an html element, but no .newVal property is found on the spec object";
+					}
+
+					input.html(newVal);
 				}
 			}
 		} else {
@@ -449,11 +459,12 @@
 	};
 
 	resetMultipleValues = function(specs, container) {
-		var numSpecs = specs.length;
+		var numSpecs = specs.length();
+		var specsArr = specs.getArgs();
 		var i = 0;
 		var spec;
 		for (i; i < numSpecs; i++) {
-			spec = specs[i];
+			spec = specsArr[i];
 			resetValues(spec, container);
 		}
 	};

@@ -147,6 +147,7 @@ class ForeignLangForm(forms.Form):
 
 	studyAttrs = { "class": "studyTime", "min": "0" }
 	timeAttrs = { "class": "timeInput", "min": "0" }
+	hideShowAttrs = { "class": "hideShowCb" }
 
 	school = forms.BooleanField(label=_(u"Classes"), required=False)
 	schoolSemesters = forms.IntegerField(
@@ -229,6 +230,8 @@ class ForeignLangForm(forms.Form):
 						initial=0, 
 						required=False
 	)
+	for widg in [school, lived, worked, other]:
+		widg.widget.attrs = hideShowAttrs
 
 	for widg in [livedYears, workedYears, otherYears, livedMonths, workedMonths, otherMonths, livedWeeks, workedWeeks, otherWeeks, livedDays, workedDays, otherDays]:
 		widg.widget.attrs = timeAttrs
