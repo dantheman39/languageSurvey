@@ -29,7 +29,7 @@ p {
 	padding-bottom:10px;
 }
 
-.foreignLangDiv, #visionProblemsDetails, #readingProblemsDetails {
+.foreignLangDiv, #visionProblemsDetails, #hearingProblemsDetails {
 	border-left-style: solid;
 	border-width: 10px;
 	border-color: grey;

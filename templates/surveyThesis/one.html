@@ -28,6 +28,10 @@
 		<p>{{ form.age.label_tag }}
 		{{ form.age }}</p>
 		
+		{{ form.gender.errors }}
+		<p>{{ form.gender.label_tag }}
+		{{ form.gender }}</p>
+
 		{{ form.education.errors }}
 		<p>{{ form.education.label_tag }} {{ form.education }}</p>
 
@@ -39,6 +43,7 @@
 
 	<div id="nativeLangWrapper">
 		{{ natLangsForms.management_form }}
+		{{ natLangsForms.non_form_errors }}
 		{% for natLangForm in natLangsForms %}
 			<div id="natLangDiv{{ forloop.counter0 }}" class="natLang">
 				{{ natLangForm.nativeLang.errors }}
@@ -70,6 +75,7 @@
 		occurs when put in css file, probably because css is loaded later? -->
 	<div id="foreignLanguageWrapper" style="display:none;">
 		{{ forLangsForms.management_form }}
+		{{ forLangsForms.non_form_errors }}
 		{% for fl in forLangsForms %}
 			<div id="foreignLangDiv{{ forloop.counter0 }}" class="foreignLangDiv">
 				{{ fl.DELETE }}
@@ -259,15 +265,15 @@
 		{{ form.visionProblemsDetails }}
 	</div>
 
-	<div id="readingDiv" class="radioButtonWrapper">
-		{{ form.readingProblems.errors }}
-		<p>{{ form.readingProblemsText }}</p>
-		{{ form.readingProblems }}
+	<div id="hearingDiv" class="radioButtonWrapper">
+		{{ form.hearingProblems.errors }}
+		<p>{{ form.hearingProblemsText }}</p>
+		{{ form.hearingProblems }}
 	</div>
-	<div id="readingProblemsDetails" style="display:none;">
-		{{ form.readingProblemsDetails.errors }}
-		<p>{{ form.readingProblemsDetailsText }}</p>
-		{{ form.readingProblemsDetails }}
+	<div id="hearingProblemsDetails" style="display:none;">
+		{{ form.hearingProblemsDetails.errors }}
+		<p>{{ form.hearingProblemsDetailsText }}</p>
+		{{ form.hearingProblemsDetails }}
 	</div>
 
 

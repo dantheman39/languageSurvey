@@ -2,9 +2,9 @@
 #-*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from forms import PageOne, NativeLangForm, ForeignLangForm, BaseForeignLangFormSet
+from forms import PageOne, NativeLangForm, ForeignLangForm, BaseLangFormSet
 from django.forms import formset_factory
-from models import SurveyLine
+from models import SurveyLine, NativeLangLine, ForeignLangLine
 import logging
 from surveyThesis.constants import LANGUAGE_CHOICES
 
@@ -18,53 +18,91 @@ def surveyPage(request):
 						validate_min=True, 
 						extra=0,
 						can_delete=True,
+						formset=BaseLangFormSet,
 	)
 	ForLangFormset = formset_factory(
 						ForeignLangForm,
 						can_delete=True,
-						formset=BaseForeignLangFormSet,
+						formset=BaseLangFormSet,
 	)
 
 	if request.method == 'POST':
-		logger.info("Page was posted")
+
 		form = PageOne(request.POST)
 		natLangsForms = NatLangFormset(request.POST, request.FILES, prefix=u"natLang")
 		forLangsForms = ForLangFormset(request.POST, request.FILES, prefix=u"forLang")
 
-		# for debugging
-		for ke, va in request.POST.iteritems():
-			if ke[:4] == "natL":
-				print("{0}\t{1}".format(ke,va))
 
 		mainFormValid = form.is_valid()
 		# see if the foreign languages were visible and need validation
 		forLangBoolVal = form.cleaned_data.get("foreignLangBool")
-		if forLangBoolVal == u"False" or forLangBoolVal == False:
+		#if forLangBoolVal == u"False":
+		#	forLangBoolVal = False
+		#elif forLangBoolVal == u"True":
+		#	forLangBoolVal = True
+		#else:
+		#	forLangBoolVal = bool(forLangBoolVal)
+
+		if not forLangBoolVal:
 			for flf in forLangsForms:
 				flf.needsValidation = False
-
-		# see if forms are marked as deleted
-		#for flf in forLangsForms:
-		#	print(flf)
 
 		natLangsValid = natLangsForms.is_valid()
 		forLangsValid = forLangsForms.is_valid()
 
-		for natLangForm in natLangsForms:
-			print("Form")
-			print(natLangForm.cleaned_data)
+		if not forLangBoolVal:
+			# post is valid but we won't be saving any data for it
+			forLangsValid = True
 
-		if form.is_valid() and natLangsForms.is_valid():
-			logger.info('Add code to process data')
+		if mainFormValid and natLangsValid and forLangsValid:
 			data = form.cleaned_data
-			#surveyLine = SurveyLine(
-			#	participantNumber=data['participantNumber'],
-			#	age=data['age'],
-			#	education=data['education'],
-			#	undergradLevel=data['undergradLevel'],
-			#	nativeLanguages=data['nativeLanguages'],
-			#	)
-			#surveyLine.save()
+			import pdb; pdb.set_trace()
+			surveyLine = SurveyLine(
+				participantNumber=data['participantNumber'],
+				age=data['age'],
+				gender=data["gender"],
+				education=data['education'],
+				undergradLevel=data['undergradLevel'],
+				visionProblems=data['visionProblems'],
+				visionProblemsDetails=data['visionProblemsDetails'],
+				hearingProblems=data['hearingProblems'],
+				hearingProblemsDetails=data['hearingProblemsDetails'],
+				foreignLangBool=data['foreignLangBool'],
+				)
+			surveyLine.save()
+
+			for natLangForm in natLangsForms:
+				data = natLangForm.cleaned_data
+				if not data["DELETE"]:
+					natLangLine = NativeLangLine(
+						surveyId=surveyLine,
+						nativeLang=data["nativeLang"],
+					)
+					natLangLine.save()
+
+			if forLangBoolVal:
+				for forLangForm in forLangsForms:
+					data = forLangForm.cleaned_data
+					if not data["DELETE"]:
+						forLangLine = ForeignLangLine(
+							surveyId=surveyLine,
+							foreignLang=data["foreignLang"],
+							proficiency=data["proficiency"],
+							school=data["school"],
+							livedAbroad=data["lived"],
+							worked=data["worked"],
+							other=data["other"],
+							schoolSemesters=forLangForm.schoolTotal,
+							livedAbroadDays=forLangForm.livedTotal,
+							workedDays=forLangForm.workedTotal,
+							otherDays=forLangForm.otherTotal,
+						)
+						otherDesc = data.get("otherStudyExplanation")
+						if otherDesc is not None:
+							forLangLine.otherDescription = otherDesc
+
+						forLangLine.save()
+
 
 		else: 
 			logger.info('Form is not valid for some reason')

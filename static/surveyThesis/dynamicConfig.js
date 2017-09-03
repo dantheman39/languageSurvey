@@ -74,7 +74,7 @@ $(document).ready(function() {
 
 	dynamicDr.hideShowDiv("#foreignLanguageWrapper", "input[name=foreignLangBool]");
 	dynamicDr.hideShowDiv("#visionProblemsDetails", "input[name=visionProblems]");
-	dynamicDr.hideShowDiv("#readingProblemsDetails", "input[name=readingProblems]");
+	dynamicDr.hideShowDiv("#hearingProblemsDetails", "input[name=hearingProblems]");
 
 	$("input[name=foreignLangBool]").on("change", function() {
 		dynamicDr.hideShowDiv("#foreignLanguageWrapper", "input[name=foreignLangBool]");
@@ -82,8 +82,8 @@ $(document).ready(function() {
 	$("input[name=visionProblems]").on("change", function() {
 		dynamicDr.hideShowDiv("#visionProblemsDetails", "input[name=visionProblems]");
 	});
-	$("input[name=readingProblems]").on("change", function() {
-		dynamicDr.hideShowDiv("#readingProblemsDetails", "input[name=readingProblems]");
+	$("input[name=hearingProblems]").on("change", function() {
+		dynamicDr.hideShowDiv("#hearingProblemsDetails", "input[name=hearingProblems]");
 	});
 	$("#id_education").on("change", function() {
 		hideShowUnderGrad();

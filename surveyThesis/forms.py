@@ -5,7 +5,7 @@ from django import forms
 from django.forms import BaseFormSet
 from django.utils.translation import ugettext as _
 from surveyThesis.models import SurveyLine, ForeignLangLine
-from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES, PROFICIENCY_CHOICES
+from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES_NO_CHOICES, PROFICIENCY_CHOICES, GENDER_CHOICES
 import logging
 
 logger = logging.getLogger('surveyThesis')
@@ -23,18 +23,18 @@ class PageOne(forms.Form):
 	addForLangText = _(u"Add foreign language")
 	rmForLangText = _(u"Remove")
 
-	visionProblemsText = _(u"Do you have any vision or hearing problems?")
+	visionProblemsText = _(u"Do you have any vision or reading problems?")
 	visionProblemsDetailsText = _(u"If you are comfortable doing so, please explain.")
 
-	readingProblemsText = _(u"Do you have any difficulty reading?")
-	readingProblemsDetailsText = visionProblemsDetailsText
+	hearingProblemsText = _(u"Do you have any hearing problems?")
+	hearingProblemsDetailsText = visionProblemsDetailsText
 
 	undergradBlankError = _(u"Please tell us what year you are in, or the last year you completed")
 
 	foreignLangsQuestion = _(u"Do you speak, or have you studied a foreign language?")
 
 	# need this so that I can send it to the form
-	languageChoices = LANGUAGE_CHOICES
+	#languageChoices = LANGUAGE_CHOICES
 
 	participantNumber = forms.IntegerField(label=_(u'Participant number'),
 				label_suffix='',
@@ -45,7 +45,12 @@ class PageOne(forms.Form):
 				error_messages={'required': FIELD_REQUIRED_MESS},
 				#localize=True,
 				)
-	education = forms.ChoiceField(label=_(u'Education level'),
+	gender = forms.ChoiceField(label=_(u"Gender"),
+				label_suffix='',
+				error_messages={'required': FIELD_REQUIRED_MESS},
+				choices=GENDER_CHOICES,
+				)
+	education = forms.ChoiceField(label=_(u'Current education level'),
 				label_suffix='',
 				error_messages={'required': FIELD_REQUIRED_MESS},
 				choices=ED_CHOICES,
@@ -72,12 +77,12 @@ class PageOne(forms.Form):
 				widget = forms.Textarea,
 				)
 
-	readingProblems = forms.ChoiceField(
+	hearingProblems = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
 				widget=forms.RadioSelect,
 				)
 
-	readingProblemsDetails = forms.CharField(
+	hearingProblemsDetails = forms.CharField(
 				required=False,
 				widget = forms.Textarea,
 				)
@@ -93,9 +98,30 @@ class PageOne(forms.Form):
 
 	foreignProficiencyChoices = PROFICIENCY_CHOICES 
 
+	def castBooleanText(self, boolFields, cleaned_data):
+
+		for bf in boolFields:
+			bv = cleaned_data.get(bf)
+			if bv is not None:
+				if bv == "True":
+					bv = True
+				elif bv == "False":
+					bv = False
+
+				cleaned_data[bf] = bv
 
 	def clean(self):
 		cleaned_data = super(PageOne, self).clean()
+
+		# for some reason radio buttons are not being
+		# correctly converted to python types
+		boolFields = [
+			"visionProblems",
+			"hearingProblems",
+			"foreignLangBool",
+		]
+		self.castBooleanText(boolFields, cleaned_data)
+				
 
 		if 'education' in cleaned_data:
 			educationSelection = cleaned_data.get('education')
@@ -106,7 +132,7 @@ class PageOne(forms.Form):
 
 		checkBox_description = [
 			("visionProblems", "visionProblemsDetails"),
-			("readingProblems", "readingProblemsDetails"),
+			("hearingProblems", "hearingProblemsDetails"),
 		]
 
 		for cdt in checkBox_description:
@@ -125,6 +151,10 @@ class PageOne(forms.Form):
 
 class NativeLangForm(forms.Form):
 
+	# this will be used by the BaseLangFormSet to 
+	# check for duplicate languages
+	langFieldName = "nativeLang"
+
 	nativeLang = forms.ChoiceField(label=_(u'Native language'),
 				label_suffix='',
 				error_messages={'required': FIELD_REQUIRED_MESS},
@@ -132,6 +162,10 @@ class NativeLangForm(forms.Form):
 				)
 
 class ForeignLangForm(forms.Form):
+
+	# this will be used by the BaseLangFormSet to 
+	# check for duplicate languages
+	langFieldName = "foreignLang"
 
 	foreignLangLabel = _(u"Which one?")
 	foreignLang = forms.ChoiceField(
@@ -384,16 +418,32 @@ class ForeignLangForm(forms.Form):
 
 
 
-class BaseForeignLangFormSet(BaseFormSet):
+class BaseLangFormSet(BaseFormSet):
 
 	def clean(self):
-		if any(self.errors):
-			# Don't bother validating the formset if one 
-			# of the forms has errors
-			return
 
-		# If foreign langs bool, add required 
+		#if any(self.errors):
+		#	# Don't bother validating the formset if one 
+		#	# of the forms has errors
+		#	return
 
+		cleaned_data = super(BaseLangFormSet, self).clean()
+
+		# check that two languages aren't the same
+		languages = []
+		numForms = len(self.forms)
+		for i in range(0, numForms):
+			form = self.forms[i]
+			# Ignore if going to be deleted
+			if form.cleaned_data["DELETE"]:
+				continue
+
+			lang = form.cleaned_data.get(form.langFieldName)
+			if lang in languages:
+				raise forms.ValidationError(_("The same language was listed twice"))
+			else:
+				languages.append(lang)
+				
 class TimeCalculator(object):
 
 	def __init__(self, prefix, cleaned_data):
