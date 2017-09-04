@@ -51,16 +51,11 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 		mainFormValid = form.is_valid()
 		# see if the foreign languages were visible and need validation
 		forLangBoolVal = form.cleaned_data.get("foreignLangBool")
-		#if forLangBoolVal == u"False":
-		#	forLangBoolVal = False
-		#elif forLangBoolVal == u"True":
-		#	forLangBoolVal = True
-		#else:
-		#	forLangBoolVal = bool(forLangBoolVal)
 
-		if not forLangBoolVal:
-			for flf in forLangsForms:
-				flf.needsValidation = False
+		# I think my understanding of this was off.
+		#if not forLangBoolVal:
+		#	for flf in forLangsForms:
+		#		flf.needsValidation = False
 
 		natLangsValid = natLangsForms.is_valid()
 		forLangsValid = forLangsForms.is_valid()
@@ -71,52 +66,85 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 		if mainFormValid and natLangsValid and forLangsValid:
 			data = form.cleaned_data
-			surveyLine = SurveyLine(
-				userName=request.user,
-				age=data['age'],
-				gender=data["gender"],
-				education=data['education'],
-				undergradLevel=data['undergradLevel'],
-				visionProblems=data['visionProblems'],
-				visionProblemsDetails=data['visionProblemsDetails'],
-				hearingProblems=data['hearingProblems'],
-				hearingProblemsDetails=data['hearingProblemsDetails'],
-				foreignLangBool=data['foreignLangBool'],
-				)
-			surveyLine.save()
 
-			for natLangForm in natLangsForms:
-				data = natLangForm.cleaned_data
-				if not data["DELETE"]:
-					natLangLine = NativeLangLine(
-						surveyId=surveyLine,
-						nativeLang=data["nativeLang"],
+			# see if updating or posting new
+			entry = None
+			try: 
+				entry = SurveyLine.objects.get(userName=userName)
+			except ObjectDoesNotExist:
+				pass
+
+			import pdb; pdb.set_trace()
+
+			if entry is not None:
+				# we are updating a pre-existing entry
+
+				# first is the model attribute, second is the form attribute
+				attrs = [
+					"age",
+					"gender",
+					"education",
+					"undergradLevel",
+					"foreignLangBool",
+					"visionProblems",
+					"visionProblemsDetails",
+					"hearingProblems",
+					"hearingProblemsDetails",
+				]
+
+				for att in attrs:
+					setattr(entry, att, data[att])
+
+				nlEntry = entry.nativelangline_set.all()
+				flEntry = entry.foreignlangline_set.all()
+
+			else:
+				# we are creating a new entry
+				surveyLine = SurveyLine(
+					userName=request.user,
+					age=data['age'],
+					gender=data["gender"],
+					education=data['education'],
+					undergradLevel=data['undergradLevel'],
+					visionProblems=data['visionProblems'],
+					visionProblemsDetails=data['visionProblemsDetails'],
+					hearingProblems=data['hearingProblems'],
+					hearingProblemsDetails=data['hearingProblemsDetails'],
+					foreignLangBool=data['foreignLangBool'],
 					)
-					natLangLine.save()
+				surveyLine.save()
 
-			if forLangBoolVal:
-				for forLangForm in forLangsForms:
-					data = forLangForm.cleaned_data
+				for natLangForm in natLangsForms:
+					data = natLangForm.cleaned_data
 					if not data["DELETE"]:
-						forLangLine = ForeignLangLine(
+						natLangLine = NativeLangLine(
 							surveyId=surveyLine,
-							foreignLang=data["foreignLang"],
-							proficiency=data["proficiency"],
-							school=data["school"],
-							livedAbroad=data["lived"],
-							worked=data["worked"],
-							other=data["other"],
-							schoolSemesters=forLangForm.schoolTotal,
-							livedAbroadDays=forLangForm.livedTotal,
-							workedDays=forLangForm.workedTotal,
-							otherDays=forLangForm.otherTotal,
+							nativeLang=data["nativeLang"],
 						)
-						otherDesc = data.get("otherStudyExplanation")
-						if otherDesc is not None:
-							forLangLine.otherDescription = otherDesc
+						natLangLine.save()
 
-						forLangLine.save()
+				if forLangBoolVal:
+					for forLangForm in forLangsForms:
+						data = forLangForm.cleaned_data
+						if not data["DELETE"]:
+							forLangLine = ForeignLangLine(
+								surveyId=surveyLine,
+								foreignLang=data["foreignLang"],
+								proficiency=data["proficiency"],
+								school=data["school"],
+								livedAbroad=data["lived"],
+								worked=data["worked"],
+								other=data["other"],
+								schoolSemesters=forLangForm.schoolTotal,
+								livedAbroadDays=forLangForm.livedTotal,
+								workedDays=forLangForm.workedTotal,
+								otherDays=forLangForm.otherTotal,
+							)
+							otherDesc = data.get("otherStudyExplanation")
+							if otherDesc is not None:
+								forLangLine.otherDescription = otherDesc
 
+							forLangLine.save()
 
 		else: 
 			logger.info('Form is not valid for some reason')

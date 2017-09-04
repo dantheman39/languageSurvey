@@ -51,11 +51,29 @@ class ForeignLangLine(models.Model):
 	proficiency = models.IntegerField()
 
 	school = models.BooleanField(default=False)
+	schoolSemestersTotal = models.IntegerField(default=0)
+	schoolYears = models.IntegerField(default=0)
 	schoolSemesters = models.IntegerField(default=0)
+
 	livedAbroad = models.BooleanField(default=False)
+	livedAbroadDaysTotal = models.IntegerField(default=0)
+	livedAbroadYears = models.IntegerField(default=0)
+	livedAbroadMonths = models.IntegerField(default=0)
+	livedAbroadWeeks = models.IntegerField(default=0)
 	livedAbroadDays = models.IntegerField(default=0)
+
 	worked = models.BooleanField(default=False)
+	workedTotal = models.IntegerField(default=0)
+	workedYears = models.IntegerField(default=0)
+	workedMonths = models.IntegerField(default=0)
+	workedWeeks = models.IntegerField(default=0)
 	workedDays = models.IntegerField(default=0)
+
 	other = models.BooleanField(default=False)
 	otherDescription = models.CharField(max_length=255, blank=True)
+	otherDaysTotal = models.IntegerField(default=0)
+	otherYears = models.IntegerField(default=0)
+	otherMonths = models.IntegerField(default=0)
+	otherWeeks = models.IntegerField(default=0)
 	otherDays = models.IntegerField(default=0)
+
