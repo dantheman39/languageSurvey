@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset='utf-8'></meta>
+	{% load staticfiles %}
+	<link type='text/css' rel='stylesheet' href="{% static 'cTests/loginPageStyle.css' %}" />
+
+	<title>C-Test Login</title>
+</head>
+
+<body>
+
+	<div class='titleDiv'>
+		<h2>C-Test Login</h2>
+	</div>
+
+	<div class='sepDiv'></div>
+
+	<p>Please enter the username and password you received from the researchers.</p>
+
+	<div class='sepDiv'></div>
+
+	<div id='formDiv'>
+	<form name='loginForm' action='' method='post' accept-charset='utf-8'>{% csrf_token %}
+
+		<label for='username'>Username:</label> 
+		<input type='text' name='username' value='' id='username'></input>
+		<br>
+		<br>
+		<label for='password'>Password:</label>
+		<input type='password' name='password' value='' id='password'>
+		<!--<input type='hidden' name='next' value='/accentTest/' /> -->
+		<br>
+		<br>
+		<button type='submit'>Enter</button>
+		{% if form.errors %}
+		<p id='message'>The username and/or password entered were not found.</p>
+		{% endif %}
+	</form>
+	</div>
+</body>
+</html>
+
+

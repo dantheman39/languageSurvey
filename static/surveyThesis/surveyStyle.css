@@ -29,12 +29,7 @@ p {
 	padding-bottom:10px;
 }
 
-#undergradLevelDiv p {
-	padding-top: 0px;
-	padding-bottom: 0px;
-}
-
-.indentDiv {
+.foreignLangDiv, #visionProblemsDetails, #hearingProblemsDetails, #adminCommentDiv {
 	border-left-style: solid;
 	border-width: 10px;
 	border-color: #d1c9c9;
@@ -133,4 +128,28 @@ select {
 
 fieldset {
 	
+}
+
+.errorlist, .error {
+	color: red;
+	padding-left: 0;
+}
+.errorList li {
+	padding-bottom: 0;
+}
+
+.studyCalculator, .daysCalculator {
+	padding-left: 10%;
+}
+
+.normalWidth {
+	width: auto;
+}
+
+.headerRight, .headerRight * {
+	text-align: right;
+	color: #ffffff;
+	margin-bottom: .25em;
+	margin-top: .25em;
+	margin-right: .5em;
 }

@@ -15,9 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth.views import login, logout
 from surveyThesis import views
 
 urlpatterns = [
+    url(r'^accounts/login/$', login),
+    url(r'^accounts/logout/$', logout),
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^one/', views.surveyPage),
+	url(r'^$', views.surveyPage),
+	url(r'^results/view/([0-9])/$', views.resultsViewOne), 
+	url(r'^results/$', views.results),
+	url(r'^results/download/$', views.exportSurvey),
 ]

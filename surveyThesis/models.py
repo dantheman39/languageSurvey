@@ -4,10 +4,13 @@ from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES
 
 class SurveyLine(models.Model):
 
-	print("Make this unique")
-	participantNumber = models.IntegerField()
+	userName = models.CharField(unique=True, max_length=50)
 	age = models.IntegerField()
-	gender = models.CharField(choices=GENDER_CHOICES, max_length=10)
+
+	gender = models.CharField(
+		choices=GENDER_CHOICES,
+		max_length=50,
+	)
 
 	education = models.CharField(
 		choices=ED_CHOICES,
@@ -20,13 +23,18 @@ class SurveyLine(models.Model):
 		blank=True,
 	)
 
-	date = models.DateTimeField(auto_now=True)
+	date = models.DateTimeField()
+	dateLastEdited = models.DateTimeField(auto_now=True)
 
 	visionProblems = models.BooleanField(choices=YES_NO_CHOICES)
 	visionProblemsDetails = models.TextField(blank=True)
 
-	readingProblems = models.BooleanField(choices=YES_NO_CHOICES)
-	readingProblemsDetails = models.TextField(blank=True)
+	hearingProblems = models.BooleanField(choices=YES_NO_CHOICES)
+	hearingProblemsDetails = models.TextField(blank=True)
+
+	foreignLangBool = models.BooleanField(choices=YES_NO_CHOICES)
+
+	adminComment = models.TextField(blank=True)
 
 	additionalHomeLang = models.BooleanField(choices=YES_NO_CHOICES)
 	additionalHomeLangDetails = models.TextField(blank=True)
@@ -47,12 +55,32 @@ class ForeignLangLine(models.Model):
 		max_length=10,
 	)
 
-	proficiency = models.IntegerField(blank=True)
+	proficiency = models.IntegerField()
 
 	school = models.BooleanField(default=False)
-	schoolSemesters = models.IntegerField(null=True, blank=True)
-	livedAbroad = models.BooleanField(default=False)
-	livedAbroadDays = models.IntegerField(null=True, blank=True)
+	schoolSemestersTotal = models.IntegerField(default=0)
+	schoolYears = models.IntegerField(default=0)
+	schoolSemesters = models.IntegerField(default=0)
+
+	lived= models.BooleanField(default=False)
+	livedDaysTotal = models.IntegerField(default=0)
+	livedYears = models.IntegerField(default=0)
+	livedMonths = models.IntegerField(default=0)
+	livedWeeks = models.IntegerField(default=0)
+	livedDays = models.IntegerField(default=0)
+
+	worked = models.BooleanField(default=False)
+	workedDaysTotal = models.IntegerField(default=0)
+	workedYears = models.IntegerField(default=0)
+	workedMonths = models.IntegerField(default=0)
+	workedWeeks = models.IntegerField(default=0)
+	workedDays = models.IntegerField(default=0)
+
 	other = models.BooleanField(default=False)
 	otherDescription = models.CharField(max_length=255, blank=True)
-	otherDays = models.IntegerField(null=True, blank=True)
+	otherDaysTotal = models.IntegerField(default=0)
+	otherYears = models.IntegerField(default=0)
+	otherMonths = models.IntegerField(default=0)
+	otherWeeks = models.IntegerField(default=0)
+	otherDays = models.IntegerField(default=0)
+

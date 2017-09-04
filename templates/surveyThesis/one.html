@@ -14,11 +14,35 @@
 
 <div id="headline">
 	<h1 id="headerH1">{{ form.pageTitle }}</h1>
+		<p class="headerRight">Logged in as {{ user }}
+			<a id="logoutLink" href="/accounts/logout/">Logout</a>
+		</p>
 </div>
 
 <div id="mainContent">	
+
 <form id="form" action="" method="post">
 	{% csrf_token %}
+
+	{% if resultsForUser %}
+		<h3>Viewing results for {{ resultsForUser }}</h3>
+
+		<p><a href="/results">Back to list</a></p>
+
+		<p>Administrator comments:</p>
+		<div id="adminCommentDiv">
+			{{ form.adminComment }}
+		</div>
+
+	{% elif isAdmin %}
+
+		<p><a href="/results">View submissions</a></p>
+
+	{% endif %}
+
+		{% if form.errors or natLangsForms.total_error_count > 0  or forLangsForms.total_error_count > 0 %}
+			<p class="error">There were errors, please find them below</p>
+		{% endif %}
 
 		{{ form.age.errors }}
 		<p>{{ form.age.label_tag }}
@@ -28,6 +52,10 @@
 		<p>{{ form.gender.label_tag }}
 		{{ form.gender }}</p>
 		
+		{{ form.gender.errors }}
+		<p>{{ form.gender.label_tag }}
+		{{ form.gender }}</p>
+
 		{{ form.education.errors }}
 		<p>{{ form.education.label_tag }} {{ form.education }}</p>
 
@@ -38,257 +66,241 @@
 		</div>
 
 	<div id="nativeLangWrapper">
-		<div id="natLangDiv1">
-			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
-			<label for="natLangSelect1">{{ form.nativeLanguageLabel }}</label>
-			<select id="natLangSelect1">
-				<option selected disabled value=""></option>
-			{% for lang in form.languageChoices %}
-				<option value="{{ lang.0 }}">{{ lang.1 }}</option>
-			{% endfor %}
-			</select>
-			<button id="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
-		</div>
+		{{ natLangsForms.management_form }}
+		{{ natLangsForms.non_form_errors }}
+		{% for natLangForm in natLangsForms %}
+			<div id="natLangDiv{{ forloop.counter0 }}" class="natLang">
+				{{ natLangForm.nativeLang.errors }}
+				{{ natLangForm.nativeLang.label_tag }}
+				{{ natLangForm.nativeLang }}
+				{{ natLangForm.DELETE }}
+
+				{% if forloop.counter0 == 0 %}
+					<button class="addNatLangButt" type="button">{{ form.addLanguageButtonText }}</button>
+				{% else %}
+					<button class="rmNatLangButt" type="button">{{ form.removeButtonText }}</button>
+				{% endif %}
+			</div>
+		{% endfor %}
+
 	</div>
 
 	<div hidden>
-		{{ form.nativeLanguages }}
 		<input id="removeButtonText" value="{{ form.removeButtonText }}"/>
 	</div>
 
 	<div id="foreignLangBoolDiv" class="radioButtonWrapper">
-		{{ form.foreignLangsBool.errors }}
+		{{ form.foreignLangBool.errors }}
 		<p>{{ form.foreignLangsQuestion }}</p>
 		{{ form.foreignLangBool }}	
 	</div>
 
-	<div hidden>
-		{{ form.foreignLanguages }}
+	<!-- using style prevents it from flashing on load, flashing still 
+		occurs when put in css file, probably because css is loaded later? -->
+	<div id="foreignLanguageWrapper" style="display:none;">
+		{{ forLangsForms.management_form }}
+		{{ forLangsForms.non_form_errors }}
+		{% for fl in forLangsForms %}
+			<div id="foreignLangDiv{{ forloop.counter0 }}" class="foreignLangDiv">
+				{{ fl.DELETE }}
+				{{ fl.foreignLang.errors }}
+				{{ fl.foreignLang.label_tag }}
+				{{ fl.foreignLang }}
+
+				{{ fl.proficiency.errors }}
+				{{ fl.proficiency.label_tag }}
+				{{ fl.proficiency }}
+
+				<p>{{ fl.methodOfStudyQuestion }}</p>
+
+				<div class="methodOfStudy">
+					{{ fl.school.errors }}
+					{{ fl.school.label_tag }}
+					{{ fl.school }}
+
+					<div class="studyCalculator" hidden>
+						<p>{{ fl.semestersQuestion }}</p>
+						{{ fl.schoolSemesters.errors }}
+
+						<table class="studyTable">
+							<tr>
+								<td></td>
+								<td>{{ fl.schoolYears }}</td>
+								<td>{{ fl.schoolYears.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.schoolSemesters }}</td>
+								<td>{{ fl.schoolSemesters.label }}</td>
+							</tr>
+							<tr>
+								<td>=</td>
+								<td><span class="semestersTotal">0</span>
+								<td>{{ fl.semestersTotalText }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="methodOfStudy">
+					{{ fl.lived.errors }}
+					{{ fl.lived.label_tag }}
+					{{ fl.lived }}
+
+					<div class="daysCalculator" hidden>
+						<p>{{ fl.livedQuestion }}</p>
+						{{ fl.livedYears.errors }}
+
+						<table class="daysTable">
+							<tr>
+								<td></td>
+								<td>{{ fl.livedYears }}</td>
+								<td>{{ fl.livedYears.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.livedMonths }}</td>
+								<td>{{ fl.livedMonths.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.livedWeeks }}</td>
+								<td>{{ fl.livedWeeks.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.livedDays }}</td>
+								<td>{{ fl.livedDays.label }}</td>
+							</tr>
+
+							<tr>
+								<td>=</td>
+								<td><span class="daysTotal">0</span>
+								<td>{{ fl.daysTotalText }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="methodOfStudy">
+					{{ fl.worked.errors }}
+					{{ fl.worked.label_tag }}
+					{{ fl.worked }}
+
+					<div class="daysCalculator" hidden>
+						<p>{{ fl.livedQuestion }}</p>
+						{{ fl.workedYears.errors }}
+
+						<table class="daysTable">
+							<tr>
+								<td></td>
+								<td>{{ fl.workedYears }}</td>
+								<td>{{ fl.workedYears.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.workedMonths }}</td>
+								<td>{{ fl.workedMonths.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.workedWeeks }}</td>
+								<td>{{ fl.workedWeeks.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.workedDays }}</td>
+								<td>{{ fl.workedDays.label }}</td>
+							</tr>
+
+							<tr>
+								<td>=</td>
+								<td><span class="daysTotal">0</span>
+								<td>{{ fl.daysTotalText }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="methodOfStudy">
+					{{ fl.other.errors }}
+					{{ fl.other.label_tag }}
+					{{ fl.other }}
+
+					<div class="daysCalculator" hidden>
+						{{ fl.otherStudyExplanation.errors }}
+						<p>
+							<label for="{{ fl.otherStudyExplanation.auto_id }}" class="slimLabel">
+								{{ fl.otherStudyExplanation.label }}
+								{{ fl.otherStudyExplanation }}
+							</label>
+						</p>
+
+						{{ fl.otherYears.errors }}
+
+						<table class="daysTable">
+							<tr>
+								<td></td>
+								<td>{{ fl.otherYears }}</td>
+								<td>{{ fl.otherYears.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.otherMonths }}</td>
+								<td>{{ fl.otherMonths.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.otherWeeks }}</td>
+								<td>{{ fl.otherWeeks.label }}</td>
+							</tr>
+							<tr>
+								<td>+</td>
+								<td>{{ fl.otherDays }}</td>
+								<td>{{ fl.otherDays.label }}</td>
+							</tr>
+
+							<tr>
+								<td>=</td>
+								<td><span class="daysTotal">0</span>
+								<td>{{ fl.daysTotalText }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				{% if forloop.counter0 == 0 %}
+					<button class="addForLangButt" type="button">{{ form.addForLangText }}</button>
+				{% else %}
+					<button class="rmForLangButt" type="button">{{ form.rmForLangText }}</button>
+				{% endif %}
+
+			</div>
+		{% endfor %}
 	</div>
 
-	<div id="foreignLanguageWrapper" hidden>
-		<div id="outerDiv">
-		<div id="foreignLangDiv1" class=indentDiv>
-			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
-			<label for="foreignLangSelect1">{{ form.foreignLangLabel }}</label>
-			<select id="foreignLangSelect1">
-				<option selected disabled value=""></option>
-			{% for flang in form.languageChoices %}
-				<option value="{{ flang.0 }}">{{ flang.1 }}</option>
-			{% endfor %}
-			</select>
-
-			<p class="errorMessage" hidden>{{ form.fieldRequiredMess }}</p>
-			<p>
-			<label for="foreignProfSelect1">{{ form.foreignProfLabel }}</label>
-				<select id="foreignProfSelect1">
-					<option selected disabled value=""></option>
-					{% for prof in form.foreignProficiencyChoices %}
-					<option value="{{ prof.0 }}">{{ prof.1 }}</option>
-					{% endfor %}
-				</select>
-			</p>
-			{{ form.foreignProficiency }}
-
-			<p>{{ form.methodOfStudyQuestion }}</p>
-			<p class="methodOfStudy">
-				<label for="schoolCheckbox1">{{ form.schoolLabel }}</label>
-				<input id="schoolCheckbox1" name="school1" type="checkbox"/>
-			</p>
-			<div id="schoolTimeDiv1" class="stackedInputs" hidden>
-				<p>{{ form.semestersQuestion }}</p>
-				<p class="errorMessage" hidden></p>
-
-				<table class="timeTable">
-					<tr>
-						<td></td>
-						<td>
-							<input id="years1" name="years" type="number" class="studyTime" value="0" min="0" />
-						</td>
-						<td>
-							<label for="years1">{{ form.yearsText }}</label>
-						</td>
-					</tr>
-					<tr>
-						<td>+</td>
-						<td>
-							<input id="semesters1" name="semesters" type="number" class="studyTime" value="0" min="0" />
-						</td>
-						<td>
-							<label for="semesters1">{{ form.semestersText }}</label>
-						</td>
-					</tr>
-					<tr class="totalRow">
-						<td>=</td>
-						<td>
-							<span name="semestersTotal">0</span>
-						</td>
-						<td>
-							{{ form.semestersTotalText }}
-						</td>
-					</tr>
-				</table>
-
-			</div>
-
-			<p class="methodOfStudy">
-				<label for="livedCheckbox1">{{ form.livedLabel }}</label>
-				<input id="livedCheckbox1" name="lived1" type="checkbox"/>
-			</p>
-
-			<div id="livedTimeDiv1" class="stackedInputs" hidden>
-				<p>{{ form.livedQuestion }}</p>
-				<p class="errorMessage" hidden></p>
-
-				<table class="timeTable">
-					<tr>
-						<td></td>
-						<td>
-							<input id="livedYears1" name="years" type="number" class="timeInput" value="0" min="0" />
-						</td>
-						<td>
-							<label for="livedYears1">{{ form.yearsText }}</label>
-						</td>
-					</tr>
-					<tr>
-						<td>+</td>
-						<td>
-							<input id="livedMonths1" name="months" type="number" class="timeInput" value="0" min="0" />
-						</td>
-						<td>
-							<label for="livedMonths1">{{ form.monthsText }}</label>
-						</td>
-					</tr>
-					<tr>
-						<td>+</td>
-						<td>
-							<input id="livedWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" /> 
-						</td>
-						<td>
-							<label for="livedWeeks1">{{ form.weeksText }}</label>
-						</td>
-					</tr>
-					<tr>
-						<td>+</td>
-						<td>
-							<input id="livedDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
-						</td>
-						<td>
-							<label for="livedDays1">{{ form.daysText }}</label>
-						</td>
-					</tr>
-					<tr class="totalRow">
-						<td>=</td>
-						<td>
-							<span name="daysTotal">0</span>
-						</td>
-						<td>
-							{{ form.daysTotalText }}
-						</td>
-					</tr>
-				</table>
-			</div>
-
-			<p class="methodOfStudy">
-				<label for="otherStudyCheckbox1">{{ form.otherLabel }}</label>
-				<input id="otherStudyCheckbox1" name="otherStudy1" type="checkbox"/>
-			</p>
-
-			<div id="otherStudyTimeDiv1" class="stackedInputs" hidden>
-				<p>{{ form.otherStudyDetails.errors }}</p>
-				<p><label for="otherStudyDetails1">{{ form.otherStudyDetailsLabel }}</label>
-					<input id="otherStudyDetails1"/>
-				</p>
-				<p>{{ form.otherTimeQuestion }}</p>
 
 
-				<table class="timeTable">
-					<tr>
-						<td></td>
-						<td>
-							<input id="otherYears1" name="years" type="number" class="timeInput" value="0" min="0" />
-						</td>
-						<td>
-							<label for="otherYears1">{{ form.yearsText }}</label>
-						</td>
-					</tr>
-					<tr>
-						<td>+</td>
-						<td>
-							<input id="otherMonths1" name="months" type="number" class="timeInput" value="0" min="0" />
-						</td>
-						<td>
-							<label for="otherMonths1">{{ form.monthsText }}</label>
-						</td>
-					</tr>
-					<tr>
-						<td>+</td>
-						<td>
-							<input id="otherWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" /> 
-						</td>
-						<td>
-							<label for="otherWeeks1">{{ form.weeksText }}</label>
-						</td>
-					</tr>
-					<tr>
-						<td>+</td>
-						<td>
-							<input id="otherDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
-						</td>
-						<td>
-							<label for="otherDays1">{{ form.daysText }}</label>
-						</td>
-					</tr>
-					<tr class="totalRow">
-						<td>=</td>
-						<td>
-							<span name="daysTotal">0</span>
-						</td>
-						<td>
-							{{ form.daysTotalText }}
-						</td>
-					</tr>
-				</table>
-
-<!--
-					<span class="errorMessage" hidden><br /></span>
-					<label for="otherYears1">{{ form.yearsText }}</label>
-					<input id="otherYears1" name="years" type="number" class="timeInput" value="0" min="0" />	 + 
-					<label for="otherMonths1">{{ form.monthsText }}</label>
-					<input id="otherMonths1" name="months" type="number" class="timeInput" value="0" min="0" /> + 	
-					<label for="otherWeeks1">{{ form.weeksText }}</label>
-					<input id="otherWeeks1" name="weeks" type="number" class="timeInput" value="0" min="0" />	+ 
-					<label for="otherDays1">{{ form.daysText }}</label>
-					<input id="otherDays1" name="days" type="number" class="timeInput" value="0" min="0" />	
-				= <span id="daysTotal">0</span> <span>{{ form.daysTotalText }}</span>
-				</p>		-->
-			</div>
-
-			<button id="addForLangButt" type="button">{{ form.addLanguageButtonText }}</button>
-		</div>
-		</div>
-	</div>
-
-	<div class="radioButtonWrapper">
+	<div id="visionDiv" class="radioButtonWrapper">
 		{{ form.visionProblems.errors }}
 		<p>{{ form.visionProblemsText }}</p>
 		{{ form.visionProblems }}
 	</div>
-	<div id="visionProblemsDetails" class="indentDiv" hidden>
+
+	<div id="visionProblemsDetails" style="display:none;">
 		{{ form.visionProblemsDetails.errors }}
 		<p>{{ form.visionProblemsDetailsText }}</p>
 		{{ form.visionProblemsDetails }}
 	</div>
 
-	<div class="radioButtonWrapper">
-		{{ form.readingProblems.errors }}
-		<p>{{ form.readingProblemsText }}</p>
-		{{ form.readingProblems }}
+	<div id="hearingDiv" class="radioButtonWrapper">
+		{{ form.hearingProblems.errors }}
+		<p>{{ form.hearingProblemsText }}</p>
+		{{ form.hearingProblems }}
 	</div>
-	<div id="readingProblemsDetails" class="indentDiv" hidden>
-		{{ form.readingProblemsDetails.errors }}
-		<p>{{ form.readingProblemsDetailsText }}</p>
-		{{ form.readingProblemsDetails }}
+	<div id="hearingProblemsDetails" style="display:none;">
+		{{ form.hearingProblemsDetails.errors }}
+		<p>{{ form.hearingProblemsDetailsText }}</p>
+		{{ form.hearingProblemsDetails }}
 	</div>
 
 	<div class="radioButtonWrapper">
@@ -303,26 +315,23 @@
 	</div>
 
 
-	<button type="button" id="submitButton">{{ form.submitText }}</button>
+	<button type="submit" id="submitButton">{{ form.submitText }}</button>
 
-	{{ form.errors }}
-	{{ form.non_field_errors }}
+	{% comment %}
+		{{ form.errors }}
+		{{ form.non_field_errors }}
+	{% endcomment %}
 
 </form>
 </div>
 
 	<script src="{% static 'jquery.js' %}"></script>
 	<script src="{% static 'surveyThesis/json2.js' %}" type="text/javascript"></script>
+	<script src="{% static 'dynamicDr/dynamicDr.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/dynamicConfig.js' %}" type="text/javascript"></script>
+	<script src="{% static 'timeCalculator/timeCalculator.js' %}" type="text/javascript"></script>
+	<script src="{% static 'surveyThesis/timeCalcConfig.js' %}" type="text/javascript"></script>
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
-	<script src="{% static 'surveyThesis/getIdNum.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/hideShowUndergrad.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/validateAndSubmit.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/natLangs.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/hideShowDiv.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/foreignLangs.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/difficulties.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/calculateTime.js' %}" type="text/javascript"></script>
-	<script src="{% static 'surveyThesis/additionalLang.js' %}" type="text/javascript"></script>
 </body>
 
 </html>

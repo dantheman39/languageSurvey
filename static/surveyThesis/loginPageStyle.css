@@ -1,0 +1,82 @@
+* {
+
+	margin: 0;
+	font-family: Ubuntu;
+
+}
+
+button {
+
+	width: 10em;
+
+}
+
+div#formDiv, div#logoutDiv {
+
+	width: 30em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#logoutDiv {
+	padding-top: 10%;
+}
+
+#logoutDiv * {
+	padding-top: 20px;
+	text-align: left;
+}
+	
+form {
+	border-style: dotted;
+	border-width: 1px;
+	text-align: center;
+	padding-top: 10%;
+	padding-bottom: 10%;
+
+	margin-top: 1em;
+	max-width: 50em;
+	margin-left: 10%;
+	margin-right: 10%;
+	accept-charset: "UTF-8";
+}
+
+h2 {
+	color: #ffffff;
+}
+
+p {
+
+	text-align: center;
+
+}
+
+p#message {
+
+	color: red;
+
+}
+
+span#ex {
+
+	color: red;
+
+}
+
+/*.titleDiv {
+
+	height: 5em;
+	background-color: #5e0009;
+	margin-bottom: 1em;
+
+}*/
+
+.sepDiv {
+
+	height: 2em;
+
+}
+
+.normalWidth {
+	width: auto;
+}
