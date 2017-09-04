@@ -26,4 +26,5 @@ urlpatterns = [
 	url(r'^$', views.surveyPage),
 	url(r'^results/view/([0-9])/$', views.resultsViewOne), 
 	url(r'^results/$', views.results),
+	url(r'^results/download/$', views.exportSurvey),
 ]

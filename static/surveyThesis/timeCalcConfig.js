@@ -1,7 +1,13 @@
 $(document).ready(function() {
 	// calculate times
-	var studyTable = $(".studyTable");
-	timeCalculator.calculate(studyTable, ".studyTime", ".semestersTotal", "semesters", true);
+	var j;
+	var sTable;
+	var studyTables = $(".studyTable");
+	var numSTables = studyTables.length;
+	for (j = 0; j < numSTables; j++) {
+		sTable = $(studyTables[j]);
+		timeCalculator.calculate(sTable, ".studyTime", ".semestersTotal", "semesters", true);
+	}
 	var dayTables = $(".daysTable");
 	var numTables = dayTables.length;
 	var i;

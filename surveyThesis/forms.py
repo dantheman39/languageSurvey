@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger('surveyThesis')
 FIELD_REQUIRED_MESS = _(u"This field is required")
+SORTOF_OPTIONAL = _(u"If you don't want to answer, you can say so here, but this field can't be blank")
 
 class PageOne(forms.Form):
 
@@ -32,6 +33,11 @@ class PageOne(forms.Form):
 	undergradBlankError = _(u"Please tell us what year you are in, or the last year you completed")
 
 	foreignLangsQuestion = _(u"Do you speak, or have you studied a foreign language?")
+
+	adminComment = forms.CharField(
+				required=False,
+				widget = forms.Textarea,
+				)
 
 
 	age = forms.IntegerField(label=_(u'Age'),
@@ -69,6 +75,7 @@ class PageOne(forms.Form):
 	visionProblemsDetails = forms.CharField(
 				required=False,
 				widget = forms.Textarea,
+				error_messages={'required': SORTOF_OPTIONAL},
 				)
 
 	hearingProblems = forms.ChoiceField(
@@ -79,6 +86,7 @@ class PageOne(forms.Form):
 	hearingProblemsDetails = forms.CharField(
 				required=False,
 				widget = forms.Textarea,
+				error_messages={'required': SORTOF_OPTIONAL},
 				)
 
 	#foreignLanguages = forms.CharField(
@@ -137,7 +145,7 @@ class PageOne(forms.Form):
 				if checked == u"True" or checked == True:
 					description = cleaned_data.get(descName)
 					if not description:
-						valError = forms.ValidationError(FIELD_REQUIRED_MESS)
+						valError = forms.ValidationError(SORTOF_OPTIONAL)
 						self.add_error(descName, valError)
 
 
@@ -254,7 +262,7 @@ class ForeignLangForm(forms.Form):
 	)
 
 	other = forms.BooleanField(label=_(u"Other"), required=False)
-	otherStudyExplanation = forms.CharField(label=_("What was it?"),required=False)
+	otherStudyExplanation = forms.CharField(label=_("Please describe"),required=False)
 	otherYears = forms.IntegerField(
 						label=yearsText, 
 						initial=0, 

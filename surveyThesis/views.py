@@ -2,6 +2,7 @@
 #-*- coding: utf-8 -*-
 
 from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
 from forms import PageOne, NativeLangForm, ForeignLangForm, BaseLangFormSet
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -10,7 +11,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import formset_factory
 from models import SurveyLine, NativeLangLine, ForeignLangLine
 import logging
+from settings import ALLOW_RESUBMIT
 from surveyThesis.constants import LANGUAGE_CHOICES
+from export import exportSurvey as exS
+import os
+from django.http import HttpResponse
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +23,24 @@ logger = logging.getLogger(__name__)
 def surveyPage(request):
 
 	user = request.user
+	isAdmin = user.is_staff or user.is_superuser
+
+	try:
+		entry = SurveyLine.objects.get(userName=user)
+		# we already have an entry for this person
+		if ALLOW_RESUBMIT:
+			pass
+		elif not isAdmin:
+			return render(request, "alreadySubmitted.html")
+
+	except ObjectDoesNotExist:
+		pass
 
 	request, argsDict = processSurvey(request, userName=user) 
 
 	argsDict["user"] = user
+	if isAdmin:
+		argsDict["isAdmin"] = True
 
 	return render(request, 'one.html', argsDict)
 
@@ -52,10 +71,9 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 		# see if the foreign languages were visible and need validation
 		forLangBoolVal = form.cleaned_data.get("foreignLangBool")
 
-		# I think my understanding of this was off.
-		#if not forLangBoolVal:
-		#	for flf in forLangsForms:
-		#		flf.needsValidation = False
+		if not forLangBoolVal:
+			for flf in forLangsForms:
+				flf.needsValidation = False
 
 		natLangsValid = natLangsForms.is_valid()
 		forLangsValid = forLangsForms.is_valid()
@@ -68,15 +86,17 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 			data = form.cleaned_data
 
 			# see if updating or posting new
-			entry = None
+			surveyLine = None
 			try: 
-				entry = SurveyLine.objects.get(userName=userName)
+				if adminView:
+					surveyLine = SurveyLine.objects.get(id=adminViewId)
+				else:
+					surveyLine = SurveyLine.objects.get(userName=userName)
 			except ObjectDoesNotExist:
 				pass
 
-			import pdb; pdb.set_trace()
 
-			if entry is not None:
+			if surveyLine is not None:
 				# we are updating a pre-existing entry
 
 				# first is the model attribute, second is the form attribute
@@ -93,15 +113,27 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 				]
 
 				for att in attrs:
-					setattr(entry, att, data[att])
+					setattr(surveyLine, att, data[att])
 
-				nlEntry = entry.nativelangline_set.all()
-				flEntry = entry.foreignlangline_set.all()
+				surveyLine.dateLastEdited = timezone.now()
+
+				if adminView and "adminComment" in data:
+					surveyLine.adminComment = data["adminComment"]
+
+				# It's going to be easier to delete than to update
+				nlEntry = surveyLine.nativelangline_set.all()
+				flEntry = surveyLine.foreignlangline_set.all()
+				for lq in [nlEntry, flEntry]:
+					for le in lq:
+						le.delete()
+
+				surveyLine.save()
 
 			else:
 				# we are creating a new entry
 				surveyLine = SurveyLine(
 					userName=request.user,
+					date=timezone.now(),
 					age=data['age'],
 					gender=data["gender"],
 					education=data['education'],
@@ -114,45 +146,55 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 					)
 				surveyLine.save()
 
-				for natLangForm in natLangsForms:
-					data = natLangForm.cleaned_data
+			for natLangForm in natLangsForms:
+				data = natLangForm.cleaned_data
+				if not data["DELETE"]:
+					natLangLine = NativeLangLine(
+						surveyId=surveyLine,
+						nativeLang=data["nativeLang"],
+					)
+					natLangLine.save()
+
+			if forLangBoolVal:
+				for forLangForm in forLangsForms:
+					data = forLangForm.cleaned_data
 					if not data["DELETE"]:
-						natLangLine = NativeLangLine(
+						forLangLine = ForeignLangLine(
 							surveyId=surveyLine,
-							nativeLang=data["nativeLang"],
+							foreignLang=data["foreignLang"],
+							proficiency=data["proficiency"],
+							school=data["school"],
+							lived=data["lived"],
+							worked=data["worked"],
+							other=data["other"],
+							schoolSemestersTotal=forLangForm.schoolTotal,
+							livedDaysTotal=forLangForm.livedTotal,
+							workedDaysTotal=forLangForm.workedTotal,
+							otherDaysTotal=forLangForm.otherTotal,
+							schoolYears=data["schoolYears"],
+							livedYears=data["livedYears"],
+							workedYears=data["workedYears"],
+							otherYears=data["otherYears"],
+							livedMonths=data["livedMonths"],
+							workedMonths=data["workedMonths"],
+							otherMonths=data["otherMonths"],
+							livedWeeks=data["livedWeeks"],
+							workedWeeks=data["workedWeeks"],
+							otherWeeks=data["otherWeeks"],
+							livedDays=data["livedDays"],
+							workedDays=data["workedDays"],
+							otherDays=data["otherDays"],
 						)
-						natLangLine.save()
+						otherDesc = data.get("otherStudyExplanation")
+						if otherDesc is not None:
+							forLangLine.otherDescription = otherDesc
 
-				if forLangBoolVal:
-					for forLangForm in forLangsForms:
-						data = forLangForm.cleaned_data
-						if not data["DELETE"]:
-							forLangLine = ForeignLangLine(
-								surveyId=surveyLine,
-								foreignLang=data["foreignLang"],
-								proficiency=data["proficiency"],
-								school=data["school"],
-								livedAbroad=data["lived"],
-								worked=data["worked"],
-								other=data["other"],
-								schoolSemesters=forLangForm.schoolTotal,
-								livedAbroadDays=forLangForm.livedTotal,
-								workedDays=forLangForm.workedTotal,
-								otherDays=forLangForm.otherTotal,
-							)
-							otherDesc = data.get("otherStudyExplanation")
-							if otherDesc is not None:
-								forLangLine.otherDescription = otherDesc
-
-							forLangLine.save()
+						forLangLine.save()
 
 		else: 
 			logger.info('Form is not valid for some reason')
 
 	else:
-
-		
-		#import pdb; pdb.set_trace()
 
 		entry = None
 		try:
@@ -170,6 +212,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 		if entry is not None:
 
 			initial = {
+				"adminComment": entry.adminComment,
 				"age": entry.age, 
 				"gender": entry.gender,
 				"education": entry.education,
@@ -209,14 +252,28 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 					"foreignLang": fle.foreignLang,
 					"proficiency": fle.proficiency,
 					"school": fle.school,
-					"lived": fle.livedAbroad,
+					"lived": fle.lived,
 					"worked": fle.worked,
 					"other": fle.other,
 					"schoolSemesters": fle.schoolSemesters,
-					"livedDays": fle.livedAbroadDays,
+					"livedDays": fle.livedDays,
 					"workedDays": fle.workedDays,
 					"otherDays": fle.otherDays,
 					"otherStudyExplanation": fle.otherDescription, 
+					"schoolYears": fle.schoolYears,
+					"livedYears": fle.livedYears,
+					"workedYears": fle.workedYears,
+					"otherYears": fle.otherYears,
+					"livedMonths": fle.livedMonths,
+					"workedMonths": fle.workedMonths,
+					"otherMonths": fle.otherMonths,
+					"livedWeeks": fle.livedWeeks,
+					"workedWeeks": fle.workedWeeks,
+					"otherWeeks": fle.otherWeeks,
+					"livedDays": fle.livedDays,
+					"workedDays": fle.workedDays,
+					"otherDays": fle.otherDays,
+
 				}	
 				flInitials.append(flInitial)
 
@@ -241,7 +298,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 @staff_member_required
 def results(request):
 
-	usersDates = list(SurveyLine.objects.values_list("userName", "date", "id"))
+	usersDates = list(SurveyLine.objects.values_list("userName", "date", "id", "dateLastEdited"))
 	
 	argsDict = { 
 		"usersDates": usersDates,
@@ -258,3 +315,19 @@ def resultsViewOne(request, surveyId):
 	argsDict["resultsForUser"] = forUser
 
 	return render(request, "one.html", argsDict)
+
+@staff_member_required
+def exportSurvey(request):
+
+	today = timezone.now().strftime("%Y-%m-%d")
+	rootFolder = '/tmp'
+	fileName = 'survey_' + today + '.xlsx'
+	outName = os.path.join(rootFolder, fileName)
+	exS(outName)
+
+	response = HttpResponse()
+	response['Content-Disposition'] = 'attachment; filename={0}'.format(fileName)
+	response['X-Sendfile'] = outName
+		
+	#return render(request, 'languageSurvey/resultsTest.html', {'userName': request.user})
+	return response

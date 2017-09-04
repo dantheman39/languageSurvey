@@ -22,7 +22,8 @@ class SurveyLine(models.Model):
 		blank=True,
 	)
 
-	date = models.DateTimeField(auto_now=True)
+	date = models.DateTimeField()
+	dateLastEdited = models.DateTimeField(auto_now=True)
 
 	visionProblems = models.BooleanField(choices=YES_NO_CHOICES)
 	visionProblemsDetails = models.TextField(blank=True)
@@ -31,6 +32,8 @@ class SurveyLine(models.Model):
 	hearingProblemsDetails = models.TextField(blank=True)
 
 	foreignLangBool = models.BooleanField(choices=YES_NO_CHOICES)
+
+	adminComment = models.TextField(blank=True)
 
 class NativeLangLine(models.Model):
 
@@ -55,15 +58,15 @@ class ForeignLangLine(models.Model):
 	schoolYears = models.IntegerField(default=0)
 	schoolSemesters = models.IntegerField(default=0)
 
-	livedAbroad = models.BooleanField(default=False)
-	livedAbroadDaysTotal = models.IntegerField(default=0)
-	livedAbroadYears = models.IntegerField(default=0)
-	livedAbroadMonths = models.IntegerField(default=0)
-	livedAbroadWeeks = models.IntegerField(default=0)
-	livedAbroadDays = models.IntegerField(default=0)
+	lived= models.BooleanField(default=False)
+	livedDaysTotal = models.IntegerField(default=0)
+	livedYears = models.IntegerField(default=0)
+	livedMonths = models.IntegerField(default=0)
+	livedWeeks = models.IntegerField(default=0)
+	livedDays = models.IntegerField(default=0)
 
 	worked = models.BooleanField(default=False)
-	workedTotal = models.IntegerField(default=0)
+	workedDaysTotal = models.IntegerField(default=0)
 	workedYears = models.IntegerField(default=0)
 	workedMonths = models.IntegerField(default=0)
 	workedWeeks = models.IntegerField(default=0)

@@ -25,14 +25,18 @@
 		<tr>
 			<th>Username</th>
 			<th>Date submitted</th>
+			<th>Last edited</th>
 		</tr>
 	{% for userDate in usersDates %}
 		<tr>
 			<th><a href="/results/view/{{userDate.2}}">{{ userDate.0 }}</a></th>
 			<th>{{ userDate.1 }}</th>	
+			<th>{{ userDate.3 }}</th>
 		</tr>
 	{% endfor %}
 	</table>
+
+	<p><a href="/results/download">Download all results</p>
 
 </form>
 </div>

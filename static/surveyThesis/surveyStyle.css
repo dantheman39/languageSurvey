@@ -29,7 +29,7 @@ p {
 	padding-bottom:10px;
 }
 
-.foreignLangDiv, #visionProblemsDetails, #hearingProblemsDetails {
+.foreignLangDiv, #visionProblemsDetails, #hearingProblemsDetails, #adminCommentDiv {
 	border-left-style: solid;
 	border-width: 10px;
 	border-color: grey;
@@ -86,8 +86,12 @@ fieldset {
 	
 }
 
-.errorlist {
+.errorlist, .error {
 	color: red;
+	padding-left: 0;
+}
+.errorList li {
+	padding-bottom: 0;
 }
 
 .studyCalculator, .daysCalculator {
