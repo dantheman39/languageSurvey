@@ -93,3 +93,15 @@ fieldset {
 .studyCalculator, .daysCalculator {
 	padding-left: 10%;
 }
+
+.normalWidth {
+	width: auto;
+}
+
+.headerRight, .headerRight * {
+	text-align: right;
+	color: #ffffff;
+	margin-bottom: .25em;
+	margin-top: .25em;
+	margin-right: .5em;
+}

@@ -14,15 +14,18 @@
 
 <div id="headline">
 	<h1 id="headerH1">{{ form.pageTitle }}</h1>
+		<p class="headerRight">Logged in as {{ user }}
+			<a id="logoutLink" href="/accounts/logout/">Logout</a>
+		</p>
 </div>
 
 <div id="mainContent">	
+
+{% if resultsForUser %}
+<h3>Viewing results for {{ resultsForUser }}</h3>
+{% endif %}
 <form id="form" action="" method="post">
 	{% csrf_token %}
-
-		{{ form.participantNumber.errors }}
-		<p>{{ form.participantNumber.label_tag }}
-		{{ form.participantNumber }}</p>
 
 		{{ form.age.errors }}
 		<p>{{ form.age.label_tag }}

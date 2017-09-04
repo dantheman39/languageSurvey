@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset='utf-8'></meta>
+	{% load staticfiles %}
+	<link type='text/css' rel='stylesheet' href="{% static 'cTests/stylesheet.css' %}" />
+	<title>Logged out</title>
+</head>
+<body>
+	<div class="titleDiv">
+		<h2>Logged out</h2>
+	</div>
+
+	<p>You've been successfully logged out. Redirecting to login page ... </p>
+	<a href="/accounts/login/">Login</a>
+
+	<meta http-equiv="refresh" content="5; url=/accounts/login/" />
+
+
+</body>
+</html>

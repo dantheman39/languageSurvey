@@ -4,8 +4,7 @@ from surveyThesis.constants import ED_CHOICES, UG_CHOICES, LANGUAGE_CHOICES, YES
 
 class SurveyLine(models.Model):
 
-	print("Make this unique")
-	participantNumber = models.IntegerField()
+	userName = models.CharField(unique=True, max_length=50)
 	age = models.IntegerField()
 	gender = models.CharField(
 		choices=GENDER_CHOICES,

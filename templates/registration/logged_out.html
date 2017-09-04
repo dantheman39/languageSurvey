@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load staticfiles %}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Language background survey - Logout</title>
+	<link href="{% static 'surveyThesis/loginPageStyle.css' %}" type="text/css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'surveyThesis/headerChunk.css' %}"/>
+</head>
+
+<body>
+
+<div id="headline">
+	<h1 id="headerH1">Language background survey</h1>
+</div>
+
+<div id="logoutDiv">
+
+	<h3>Logged out</h3>
+	<p>You've been successfully logged out. Redirecting to login page ... </p>
+	<p><a href="/accounts/login/">Login</a></p>
+
+	<meta http-equiv="refresh" content="5; url=/accounts/login/" />
+
+</div>
+
+</body>
+</html>

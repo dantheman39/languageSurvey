@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load staticfiles %}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ form.pageTitle }}</title>
+	<link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'surveyThesis/headerChunk.css' %}"/>
+</head>
+
+<body>
+<div id="headline">
+	<h1 id="headerH1">{{ form.pageTitle }}</h1>
+</div>
+
+
+
+<div id="mainContent">	
+<form id="form" action="" method="post">
+	{% csrf_token %}
+
+	<table>
+		<tr>
+			<th>Username</th>
+			<th>Date submitted</th>
+		</tr>
+	{% for userDate in usersDates %}
+		<tr>
+			<th><a href="/results/view/{{userDate.2}}">{{ userDate.0 }}</a></th>
+			<th>{{ userDate.1 }}</th>	
+		</tr>
+	{% endfor %}
+	</table>
+
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load staticfiles %}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Language background survey</title>
+	<link href="{% static 'surveyThesis/loginPageStyle.css' %}" type="text/css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'surveyThesis/headerChunk.css' %}"/>
+</head>
+
+<body>
+
+<div id="headline">
+	<h1 id="headerH1">Language background survey</h1>
+</div>
+
+	<div class='sepDiv'></div>
+
+	<p>Please enter the username and password you received from the researchers.</p>
+
+	<div class='sepDiv'></div>
+
+	<div id='formDiv'>
+	<form name='loginForm' action='' method='post' accept-charset='utf-8'>{% csrf_token %}
+
+		<label for='username'>Username:</label> 
+		<input type='text' name='username' value='' id='username' class="normalWidth"></input>
+		<br>
+		<br>
+		<label for='password'>Password:</label>
+		<input type='password' name='password' value='' id='password' class="normalWidth">
+		<br>
+		<br>
+		<button type='submit'>Enter</button>
+		{% if form.errors %}
+		<p id='message'>The username and/or password entered were not found.</p>
+		{% endif %}
+	</form>
+	</div>
+</body>
+</html>

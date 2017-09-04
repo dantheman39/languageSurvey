@@ -33,13 +33,7 @@ class PageOne(forms.Form):
 
 	foreignLangsQuestion = _(u"Do you speak, or have you studied a foreign language?")
 
-	# need this so that I can send it to the form
-	#languageChoices = LANGUAGE_CHOICES
 
-	participantNumber = forms.IntegerField(label=_(u'Participant number'),
-				label_suffix='',
-				error_messages={'required': FIELD_REQUIRED_MESS},
-				)
 	age = forms.IntegerField(label=_(u'Age'),
 				label_suffix='',
 				error_messages={'required': FIELD_REQUIRED_MESS},
