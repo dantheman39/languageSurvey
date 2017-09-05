@@ -36,13 +36,13 @@ def surveyPage(request):
 	except ObjectDoesNotExist:
 		pass
 
-	request, argsDict = processSurvey(request, userName=user) 
+	request, template, argsDict = processSurvey(request, userName=user) 
 
 	argsDict["user"] = user
 	if isAdmin:
 		argsDict["isAdmin"] = True
 
-	return render(request, 'one.html', argsDict)
+	return render(request, template, argsDict)
 
 def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
@@ -191,6 +191,8 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 						forLangLine.save()
 
+			return request, "completed.html", {}
+
 		else: 
 			logger.info('Form is not valid for some reason')
 
@@ -292,7 +294,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 		'forLangsForms': forLangsForms,
 	}
 
-	return request, argsDict
+	return request, "one.html", argsDict
 
 
 @staff_member_required
@@ -309,12 +311,12 @@ def results(request):
 @staff_member_required
 def resultsViewOne(request, surveyId):
 
-	request, argsDict = processSurvey(request, adminView=True, adminViewId=surveyId)
+	request, template, argsDict = processSurvey(request, adminView=True, adminViewId=surveyId)
 
 	forUser = SurveyLine.objects.get(id=surveyId).userName
 	argsDict["resultsForUser"] = forUser
 
-	return render(request, "one.html", argsDict)
+	return render(request, template, argsDict)
 
 @staff_member_required
 def exportSurvey(request):
