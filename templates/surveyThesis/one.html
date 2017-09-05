@@ -30,7 +30,7 @@
 		<p><a href="/results">Back to list</a></p>
 
 		<p>Administrator comments:</p>
-		<div id="adminCommentDiv">
+		<div id="adminCommentDiv" class="leftBarOffset">
 			{{ form.adminComment }}
 		</div>
 
@@ -282,7 +282,7 @@
 		{{ form.visionProblems }}
 	</div>
 
-	<div id="visionProblemsDetails" style="display:none;">
+	<div id="visionProblemsDetails" class="leftBarOffset" style="display:none;">
 		{{ form.visionProblemsDetails.errors }}
 		<p>{{ form.visionProblemsDetailsText }}</p>
 		{{ form.visionProblemsDetails }}
@@ -293,7 +293,7 @@
 		<p>{{ form.hearingProblemsText }}</p>
 		{{ form.hearingProblems }}
 	</div>
-	<div id="hearingProblemsDetails" style="display:none;">
+	<div id="hearingProblemsDetails" class="leftBarOffset" style="display:none;">
 		{{ form.hearingProblemsDetails.errors }}
 		<p>{{ form.hearingProblemsDetailsText }}</p>
 		{{ form.hearingProblemsDetails }}
