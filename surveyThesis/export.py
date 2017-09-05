@@ -8,6 +8,8 @@ def exportSurvey(outFileName):
 
 	allEntries = list(SurveyLine.objects.values())
 
+	import pdb; pdb.set_trace()
+
 	fields = SurveyLine._meta.fields
 	#print(fields)
 

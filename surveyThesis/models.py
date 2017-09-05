@@ -36,9 +36,6 @@ class SurveyLine(models.Model):
 
 	adminComment = models.TextField(blank=True)
 
-	additionalHomeLang = models.BooleanField(choices=YES_NO_CHOICES)
-	additionalHomeLangDetails = models.TextField(blank=True)
-
 class NativeLangLine(models.Model):
 
 	surveyId = models.ForeignKey('SurveyLine')

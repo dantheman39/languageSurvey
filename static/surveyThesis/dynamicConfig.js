@@ -72,6 +72,8 @@ var hideShowUnderGrad = function () {
 
 $(document).ready(function() {
 
+	$("form").attr("autocomplete", "off");
+
 	dynamicDr.hideShowDiv("#foreignLanguageWrapper", "input[name=foreignLangBool]");
 	dynamicDr.hideShowDiv("#visionProblemsDetails", "input[name=visionProblems]");
 	dynamicDr.hideShowDiv("#hearingProblemsDetails", "input[name=hearingProblems]");
