@@ -4,32 +4,32 @@
 from models import SurveyLine
 import xlsxwriter
 
-def exportSurvey(outFileName):
+def collectData(ModelClass, dataContainer=[], fkId=None, fkName=None):
 
-	allEntries = list(SurveyLine.objects.values())
+	className = ModelClass().__class__.__name__
+	fields = ModelClass._meta.fields
 
-	import pdb; pdb.set_trace()
-
-	fields = SurveyLine._meta.fields
-	#print(fields)
-
-	header = [unicode(x.name) for x in fields]
+	header = [x.name for x in fields]
 	data = []
-	data.append(header)
-
+	
+	allEntries = list(ModelClass.objects.values())
 	for entry in allEntries:
-
-		userRow = []
-
+		row = []
 		for f in fields:
-			
-			fName = f.name
+
+			if f.is_relation:
+
+				relFields = f.resolve_related_fields().pop(0)
+				toJoin = [x.name for x in relFields]
+				fName = "_".join(toJoin)
+				
+			else:
+				fName = f.name
 			fType = f.get_internal_type()
-			
-			obs = entry[fName]	
 
-			if fType == 'NullBooleanField':
+			obs = entry[fName]
 
+			if fType == "NullBooleanField":
 				if obs == True:
 					obs = 1
 				elif obs == False:
@@ -41,24 +41,44 @@ def exportSurvey(outFileName):
 
 				obs = obs.strftime("%Y/%m/%d %H:%M:%S")
 
-			userRow.append(obs)
+			row.append(obs)
 
-		data.append(userRow)
+		data.append(row)
 
-	writeXlsx(data, outFileName)
-	#print(data)
+	dataContainer.append((className, header, data))
 
-#data is a two dimensional tuple or list 
+	for relObj in ModelClass._meta.related_objects:
+
+		RelMod = relObj.related_model
+		collectData(RelMod, dataContainer)
+
+	return
+
+def exportSurvey(ModelClass, outFileName):
+
+	dataContainer = []
+	collectData(ModelClass, dataContainer)
+
+	writeXlsx(dataContainer, outFileName)
+
 def writeXlsx(data, outFileName):
 
 	workbook = xlsxwriter.Workbook(outFileName)
-	worksheet = workbook.add_worksheet()
-
+	
 	try:
-		for rowNum in range(0, len(data)):
-			row = data[rowNum]
-			for colNum in range(0, len(row)):
-				worksheet.write(rowNum, colNum, data[rowNum][colNum])
-			
+		for ws in data:
+			wsName = ws[0]
+			wsHeader = ws[1]
+			wsData = ws[2]
+
+			wsData.insert(0, wsHeader)
+
+			worksheet = workbook.add_worksheet(wsName)
+
+			for rowNum in range(0, len(wsData)):
+				row = wsData[rowNum]
+				for colNum in range(0, len(row)):
+					worksheet.write(rowNum, colNum, wsData[rowNum][colNum])
+					
 	finally:
 		workbook.close()

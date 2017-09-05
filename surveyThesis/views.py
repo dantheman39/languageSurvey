@@ -323,7 +323,7 @@ def exportSurvey(request):
 	rootFolder = '/tmp'
 	fileName = 'survey_' + today + '.xlsx'
 	outName = os.path.join(rootFolder, fileName)
-	exS(outName)
+	exS(SurveyLine, outName)
 
 	response = HttpResponse()
 	response['Content-Disposition'] = 'attachment; filename={0}'.format(fileName)
