@@ -319,6 +319,26 @@ class ForeignLangForm(forms.Form):
 		# Is a list of tuples
 		self.errorHopper = []
 
+	def resetHiddenNumInputs(self, cleaned_data):
+
+		# This function will reset values to 0 for conditional
+		# inputs that are hidden. For example, if they check
+		# "Classes", then inputs for semesters and years appear.
+		# If they uncheck classes, we don't want to save values
+		# that they had entered to the database, so here we're
+		# resetting them to 0.
+
+		for k in self.errorFieldToKeys.keys():
+			boolChecked = cleaned_data.get(k)
+			if boolChecked == False:
+				for t in self.errorFieldToKeys[k]:
+					cleaned_data[t] = 0
+				if k == "other":
+					cleaned_data["otherStudyExplanation"] = u""
+
+		return cleaned_data
+		
+
 	def minimumOneStudyContextChecked(self, cleaned_data):
 
 		fieldNames = self.errorFieldToKeys.keys()
@@ -390,7 +410,6 @@ class ForeignLangForm(forms.Form):
 			if not cleaned_data.get(nowRequired):
 				valError = forms.ValidationError(FIELD_REQUIRED_MESS, code="required")
 				self.errorHopper.append((nowRequired, valError))
-				#self.add_error(nowRequired, valError)
 
 		# must check if otherStudyDescription is blank before checking
 		# if other has been given a time. This is because if an error
@@ -404,6 +423,7 @@ class ForeignLangForm(forms.Form):
 				self.errorHopper.append(("otherStudyExplanation", valError))
 				#self.add_error("otherStudyExplanation", valError)
 
+		cleaned_data = self.resetHiddenNumInputs(cleaned_data)
 
 		cleaned_data, oneChecked = self.minimumOneStudyContextChecked(cleaned_data)
 
