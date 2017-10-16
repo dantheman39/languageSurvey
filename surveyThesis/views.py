@@ -171,6 +171,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 							livedDaysTotal=forLangForm.livedTotal,
 							workedDaysTotal=forLangForm.workedTotal,
 							otherDaysTotal=forLangForm.otherTotal,
+							schoolSemesters=data["schoolSemesters"],
 							schoolYears=data["schoolYears"],
 							livedYears=data["livedYears"],
 							workedYears=data["workedYears"],
