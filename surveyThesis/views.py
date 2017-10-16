@@ -312,8 +312,6 @@ def results(request):
 @staff_member_required
 def resultsViewOne(request, surveyId):
 
-	import pdb; pdb.set_trace()
-
 	request, template, argsDict = processSurvey(request, adminView=True, adminViewId=surveyId)
 
 	forUser = SurveyLine.objects.get(id=surveyId).userName
