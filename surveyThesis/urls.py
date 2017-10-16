@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^one/', views.surveyPage),
 	url(r'^$', views.surveyPage),
-	url(r'^results/view/([0-9])/$', views.resultsViewOne), 
+	url(r'^results/view/(\d+)/$', views.resultsViewOne), 
 	url(r'^results/$', views.results),
 	url(r'^results/download/$', views.exportSurvey),
 ]
