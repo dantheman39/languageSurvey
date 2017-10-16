@@ -144,11 +144,16 @@ class PageOne(forms.Form):
 			descName = cdt[1]
 			if checkName in cleaned_data:
 				checked = cleaned_data.get(checkName)
-				if checked == u"True" or checked == True:
+				if checked == True:
 					description = cleaned_data.get(descName)
 					if not description:
 						valError = forms.ValidationError(SORTOF_OPTIONAL)
 						self.add_error(descName, valError)
+				else:
+					# make sure the descriptino is blank.
+					# If they change their mind and uncheck 
+					# it, we don't want to save their description
+					cleaned_data[descName] = u""
 
 
 		return cleaned_data
