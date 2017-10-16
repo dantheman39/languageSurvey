@@ -21,8 +21,8 @@ class PageOne(forms.Form):
 	nativeLanguageLabel = _(u"Native language")
 	nativeLangLegend = _(u"Native language(s)")
 
-	addLanguageButtonText = _(u"+")
-	removeButtonText = _(u"-")
+	addLanguageButtonText = _(u"Add another")
+	removeButtonText = _(u"Remove")
 	addForLangText = _(u"Add foreign language")
 	rmForLangText = _(u"Remove")
 

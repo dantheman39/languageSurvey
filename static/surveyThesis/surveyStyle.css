@@ -159,3 +159,8 @@ fieldset {
 	margin-top: .25em;
 	margin-right: .5em;
 }
+
+.addNatLangButt, .rmNatLangButt {
+	display: block;
+	
+}

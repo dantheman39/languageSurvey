@@ -110,7 +110,7 @@ $(document).ready(function() {
 		newDiv.find(".errorlist").remove();
 		var butt = newDiv.find("button");
 		dynamicDr.resetValues({ selector: "select" }, newDiv);
-		butt.html("-");
+		butt.html("Remove");
 		butt.prop("class", rmNatLangClass);
 		// remove errors
 	});
