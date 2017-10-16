@@ -171,6 +171,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 							livedDaysTotal=forLangForm.livedTotal,
 							workedDaysTotal=forLangForm.workedTotal,
 							otherDaysTotal=forLangForm.otherTotal,
+							schoolSemesters=data["schoolSemesters"],
 							schoolYears=data["schoolYears"],
 							livedYears=data["livedYears"],
 							workedYears=data["workedYears"],
@@ -310,6 +311,8 @@ def results(request):
 
 @staff_member_required
 def resultsViewOne(request, surveyId):
+
+	import pdb; pdb.set_trace()
 
 	request, template, argsDict = processSurvey(request, adminView=True, adminViewId=surveyId)
 
