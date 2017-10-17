@@ -63,7 +63,15 @@
 
 	<div id="nativeLangWrapper">
 		{{ natLangsForms.management_form }}
-		{{ natLangsForms.non_form_errors }}
+		{% if natLangsForms.non_form_errors|length > 0 %}
+			<ul class="errorlist">
+				{% for ne in natLangsForms.non_form_errors %}
+					{% if not ne == "Please submit 1 or more forms." %}
+						<li>{{ ne }}</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		{% endif %}
 		{% for natLangForm in natLangsForms %}
 			<div id="natLangDiv{{ forloop.counter0 }}" class="natLang">
 				{{ natLangForm.nativeLang.errors }}
@@ -95,20 +103,20 @@
 		{{ herLangsForms.management_form }}
 		{{ herLangsForms.non_form_errors }}
 		{% for hl in herLangsForms %}
-			<div id="heritageLangDiv{{ forloop.counter0 }}" class="hertiageLangDiv">
+			<div id="heritageLangDiv{{ forloop.counter0 }}" class="heritageLangDiv">
 				{{ hl.DELETE }}
 				{{ hl.heritageLang.errors }}
 				{{ hl.heritageLang.label_tag }}
 				{{ hl.heritageLang }}
 
 				{{ hl.explanation.errors }}
-				{{ hl.explanation.label_tag }}
+				<p>{{ hl.explanationText }}</p>
 				{{ hl.explanation }}
 
 				{% if forloop.counter0 == 0 %}
-					<button class="addHerLangButt" type="button">{{ form.addForLangText }}</button>
+					<button class="addHerLangButt" type="button">{{ hl.addButtonText }}</button>
 				{% else %}
-					<button class="rmHerLangButt" type="button">{{ form.rmForLangText }}</button>
+					<button class="rmHerLangButt" type="button">{{ hl.removeButtonText }}</button>
 				{% endif %}
 			</div>
 		{% endfor %}

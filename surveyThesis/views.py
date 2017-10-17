@@ -9,7 +9,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User as DjangoUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import formset_factory
-from models import SurveyLine, NativeLangLine, ForeignLangLine
+from models import SurveyLine, NativeLangLine, ForeignLangLine, HeritageLangLine
 import logging
 from settings import ALLOW_RESUBMIT
 from surveyThesis.constants import LANGUAGE_CHOICES
@@ -83,7 +83,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 			for flf in forLangsForms:
 				flf.needsValidation = False
 		if not herLangBoolVal:
-			for hlf in ferLangsForms:
+			for hlf in herLangsForms:
 				hlf.needsValidation = False
 
 		natLangsValid = natLangsForms.is_valid()
@@ -93,7 +93,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 		if not forLangBoolVal:
 			# post is valid but we won't be saving any data for it
 			forLangsValid = True
-		if not herLangsBoolVal:
+		if not herLangBoolVal:
 			herLangsValid = True
 
 		if mainFormValid and natLangsValid and herLangsValid and forLangsValid:

@@ -35,12 +35,15 @@ var herLangRenumSpec = dynamicDr.renumArgsBase(
 		{ selector: "select", propToChange: "name"},
 		{ selector: "input", propToChange: "id" },
 		{ selector: "input", propToChange: "name" },
+		{ selector: "textarea", propToChange: "id"},
+		{ selector: "textarea", propToChange: "name"},
 	]
 );
 var herLangResetSpec = dynamicDr.renumArgsBase(
 	[
 		{ selector: "select" },
 		{ selector: "input" },
+		{ selector: "textarea" },
 	]
 );
 
@@ -180,7 +183,7 @@ $(document).on('click', "." + rmForLangClass, function() {
 });
 
 $(document).on('click', "." + rmHerLangClass, function() {
-	var pap = $(this).parent();
+	var papa = $(this).parent();
 	var parentId = papa.prop("id");
 	var divNum = dynamicDr.getLettersAndNumber(parentId).number;
 	papa.prop("hidden", true);

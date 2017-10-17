@@ -130,6 +130,7 @@ class PageOne(forms.Form):
 			"visionProblems",
 			"hearingProblems",
 			"foreignLangBool",
+			"heritageLangBool",
 		]
 		self.castBooleanText(boolFields, cleaned_data)
 				
@@ -157,7 +158,7 @@ class PageOne(forms.Form):
 						valError = forms.ValidationError(SORTOF_OPTIONAL)
 						self.add_error(descName, valError)
 				else:
-					# make sure the descriptino is blank.
+					# make sure the description is blank.
 					# If they change their mind and uncheck 
 					# it, we don't want to save their description
 					cleaned_data[descName] = u""
@@ -181,29 +182,46 @@ class HeritageLangForm(forms.Form):
 
 	langFieldName = "heritageLang"
 
-	heritageLang = forms.ChoiceField(label=_(u"Heritage language"),
+	heritageLang = forms.ChoiceField(label=_(u"Which language?"),
 				label_suffix='', 
 				error_messages={'required': FIELD_REQUIRED_MESS},
 				choices=LANGUAGE_CHOICES,
 				)
 
-	explanation = forms.CharField(
+	explanation = forms.CharField(	
+				label_suffix='', 
 				required=False,
 				widget = forms.Textarea,
 				error_messages={'required': SORTOF_OPTIONAL},
 				)
 
+	explanationText = _(u"Please tell us about it. (i.e. Who did you speak it with? Can you still speak, understand, and/or write it?)")
+	addButtonText = _(u"Add another language")
+	removeButtonText = _(u"Remove")
+
 	def __init__(self, *args, **kwargs):
 		super(HeritageLangForm, self).__init__(*args, **kwargs)
 		self.needsValidation = True
 
+		self.errorHopper = []
+
 	def clean(self):
-		cleaned_data = super(ForeignLangForm, self).clean()
+		cleaned_data = super(HeritageLangForm, self).clean()
 
 		if not self.needsValidation:
 			return cleaned_data
 
-		nowRequireds = [""]
+		nowRequireds = ["heritageLang", "explanation"]
+		for nowRequired in nowRequireds:
+			if not cleaned_data.get(nowRequired):
+				valError = forms.ValidationError(FIELD_REQUIRED_MESS, code="required")
+				self.errorHopper.append((nowRequired, valError))
+
+		for eTup in self.errorHopper:
+			self.add_error(eTup[0], eTup[1])
+		self.errorHopper = []
+
+		return cleaned_data
 
 class ForeignLangForm(forms.Form):
 
@@ -484,6 +502,24 @@ class ForeignLangForm(forms.Form):
 
 class BaseLangFormSet(BaseFormSet):
 
+	#def non_form_errors(self):
+	#	## Overriding parent method, which adds a dumb
+	#	# error message "Please submit 1 or more forms"
+	#	# and I can't see a good way to override that.
+	#	# In my case, there is already a message that
+	#	# will appear over an input, so this error
+	#	# message is superfluous
+
+	#	if self._non_form_errors is None:
+	#		self.full_clean()
+	#		dumbMessage = u"Please submit 1 or more forms."
+	#		if dumbMessage in self._non_form_errors:
+	#			self._non_form_errors.remove(dumbMessage)
+
+
+	#	return self._non_form_errors
+	
+
 	def clean(self):
 
 		#if any(self.errors):
@@ -499,7 +535,7 @@ class BaseLangFormSet(BaseFormSet):
 		for i in range(0, numForms):
 			form = self.forms[i]
 			# Ignore if going to be deleted
-			if form.cleaned_data["DELETE"]:
+			if form.cleaned_data.get("DELETE"):
 				continue
 
 			lang = form.cleaned_data.get(form.langFieldName)
