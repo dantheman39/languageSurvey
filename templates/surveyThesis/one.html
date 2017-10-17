@@ -85,6 +85,35 @@
 		<input id="removeButtonText" value="{{ form.removeButtonText }}"/>
 	</div>
 
+	<div id="heritageLangBoolDiv" class="radioButtonWrapper">
+		{{ form.heritageLangBool.errors }}
+		<p>{{ form.heritageLangsQuestion }}</p>
+		{{ form.heritageLangBool }}
+	</div>
+
+	<div id="heritageLanguageWrapper" style="display:none;">
+		{{ herLangsForms.management_form }}
+		{{ herLangsForms.non_form_errors }}
+		{% for hl in herLangsForms %}
+			<div id="heritageLangDiv{{ forloop.counter0 }}" class="hertiageLangDiv">
+				{{ hl.DELETE }}
+				{{ hl.heritageLang.errors }}
+				{{ hl.heritageLang.label_tag }}
+				{{ hl.heritageLang }}
+
+				{{ hl.explanation.errors }}
+				{{ hl.explanation.label_tag }}
+				{{ hl.explanation }}
+
+				{% if forloop.counter0 == 0 %}
+					<button class="addHerLangButt" type="button">{{ form.addForLangText }}</button>
+				{% else %}
+					<button class="rmHerLangButt" type="button">{{ form.rmForLangText }}</button>
+				{% endif %}
+			</div>
+		{% endfor %}
+	</div>
+
 	<div id="foreignLangBoolDiv" class="radioButtonWrapper">
 		{{ form.foreignLangBool.errors }}
 		<p>{{ form.foreignLangsQuestion }}</p>

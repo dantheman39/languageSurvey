@@ -193,7 +193,7 @@ class HeritageLangForm(forms.Form):
 				error_messages={'required': SORTOF_OPTIONAL},
 				)
 
-	def __init__(self):
+	def __init__(self, *args, **kwargs):
 		super(HeritageLangForm, self).__init__(*args, **kwargs)
 		self.needsValidation = True
 

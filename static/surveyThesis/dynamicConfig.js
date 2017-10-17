@@ -27,8 +27,26 @@ var forLangResetSpec = dynamicDr.renumArgsBase(
 		{ selector: ".daysTotal,.semestersTotal", newVal: "0" },
 	]
 );
+var herLangRenumSpec = dynamicDr.renumArgsBase(
+	[
+		{ selector: ".heritageLangDiv", propToChange: "id", addBack: true },
+		{ selector: "label", propToChange: "for"},
+		{ selector: "select", propToChange: "id"},
+		{ selector: "select", propToChange: "name"},
+		{ selector: "input", propToChange: "id" },
+		{ selector: "input", propToChange: "name" },
+	]
+);
+var herLangResetSpec = dynamicDr.renumArgsBase(
+	[
+		{ selector: "select" },
+		{ selector: "input" },
+	]
+);
+
 var rmNatLangClass = "rmNatLangButt";
 var rmForLangClass = "rmForLangButt";
+var rmHerLangClass = "rmHerLangButt";
 var natLangForm = "natLang";
 
 var hideShowTimeDivs = function(container) {
@@ -75,11 +93,15 @@ $(document).ready(function() {
 	$("form").attr("autocomplete", "off");
 
 	dynamicDr.hideShowDiv("#foreignLanguageWrapper", "input[name=foreignLangBool]");
+	dynamicDr.hideShowDiv("#heritageLanguageWrapper", "input[name=heritageLangBool]");
 	dynamicDr.hideShowDiv("#visionProblemsDetails", "input[name=visionProblems]");
 	dynamicDr.hideShowDiv("#hearingProblemsDetails", "input[name=hearingProblems]");
 
 	$("input[name=foreignLangBool]").on("change", function() {
 		dynamicDr.hideShowDiv("#foreignLanguageWrapper", "input[name=foreignLangBool]");
+	});
+	$("input[name=heritageLangBool]").on("change", function() {
+		dynamicDr.hideShowDiv("#heritageLanguageWrapper", "input[name=heritageLangBool]");
 	});
 	$("input[name=visionProblems]").on("change", function() {
 		dynamicDr.hideShowDiv("#visionProblemsDetails", "input[name=visionProblems]");
@@ -126,6 +148,17 @@ $(document).ready(function() {
 		butt.prop("class", rmForLangClass);
 	});
 
+	$(".addHerLangButt").click(function() {
+		var newDiv = dynamicDr.cloneAndRenumber("heritageLangDiv", "#heritageLanguageWrapper", "heritageLangDiv", "dontMattah", herLangRenumSpec, "herLang");
+		newDiv.find(".errorlist").remove();
+		dynamicDr.resetMultipleValues(herLangResetSpec, newDiv);
+		hideShowTimeDivs(newDiv);
+
+		var butt = newDiv.find("button");
+		butt.html("Remove");
+		butt.prop("class", rmHerLangClass);
+	});
+
 });
 
 $(document).on('click', "." + rmNatLangClass, function () {
@@ -143,5 +176,14 @@ $(document).on('click', "." + rmForLangClass, function() {
 	var divNum = dynamicDr.getLettersAndNumber(parentId).number;
 	papa.prop("hidden", true);
 	var deleteInputId = "id_forLang-" + divNum + "-DELETE";
+	document.getElementById(deleteInputId).checked = true;
+});
+
+$(document).on('click', "." + rmHerLangClass, function() {
+	var pap = $(this).parent();
+	var parentId = papa.prop("id");
+	var divNum = dynamicDr.getLettersAndNumber(parentId).number;
+	papa.prop("hidden", true);
+	var deleteInputId = "id_herLang-" + divNum + "-DELETE";
 	document.getElementById(deleteInputId).checked = true;
 });

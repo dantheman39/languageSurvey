@@ -55,7 +55,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 						formset=BaseLangFormSet,
 	)
 	HerLangFormset = formset_factory(
-						ForeignLangForm,
+						HeritageLangForm,
 						can_delete=True,
 						formset=BaseLangFormSet,
 	)
@@ -70,25 +70,33 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 		form = PageOne(request.POST)
 		natLangsForms = NatLangFormset(request.POST, request.FILES, prefix=u"natLang")
+		herLangsForms = HerLangFormset(request.POST, request.FILES, prefix=u"herLang")
 		forLangsForms = ForLangFormset(request.POST, request.FILES, prefix=u"forLang")
 
 
 		mainFormValid = form.is_valid()
 		# see if the foreign languages were visible and need validation
 		forLangBoolVal = form.cleaned_data.get("foreignLangBool")
+		herLangBoolVal = form.cleaned_data.get("heritageLangBool")
 
 		if not forLangBoolVal:
 			for flf in forLangsForms:
 				flf.needsValidation = False
+		if not herLangBoolVal:
+			for hlf in ferLangsForms:
+				hlf.needsValidation = False
 
 		natLangsValid = natLangsForms.is_valid()
 		forLangsValid = forLangsForms.is_valid()
+		herLangsValid = herLangsForms.is_valid()
 
 		if not forLangBoolVal:
 			# post is valid but we won't be saving any data for it
 			forLangsValid = True
+		if not herLangsBoolVal:
+			herLangsValid = True
 
-		if mainFormValid and natLangsValid and forLangsValid:
+		if mainFormValid and natLangsValid and herLangsValid and forLangsValid:
 			data = form.cleaned_data
 
 			# see if updating or posting new
@@ -112,6 +120,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 					"education",
 					"undergradLevel",
 					"foreignLangBool",
+					"heritageLangBool",
 					"visionProblems",
 					"visionProblemsDetails",
 					"hearingProblems",
@@ -128,8 +137,9 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 				# It's going to be easier to delete than to update
 				nlEntry = surveyLine.nativelangline_set.all()
+				hlEntry = surveyLine.heritagelangline_set.all()
 				flEntry = surveyLine.foreignlangline_set.all()
-				for lq in [nlEntry, flEntry]:
+				for lq in [nlEntry, hlEntry, flEntry]:
 					for le in lq:
 						le.delete()
 
@@ -149,6 +159,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 					hearingProblems=data['hearingProblems'],
 					hearingProblemsDetails=data['hearingProblemsDetails'],
 					foreignLangBool=data['foreignLangBool'],
+					heritageLangBool=data['heritageLangBool'],
 					)
 				surveyLine.save()
 
@@ -198,6 +209,17 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 						forLangLine.save()
 
+			if herLangBoolVal:
+				for herLangForm in herLangsForms:
+					data = herLangForm.cleaned_data
+					if not data["DELETE"]:
+						herLangLine = HeritageLangLine(
+							surveyId=surveyLine,
+							heritageLang=data["heritageLang"],
+							explanation=data["explanation"],
+						)
+						herLangLine.save()
+
 			return request, "completed.html", {}
 
 		else: 
@@ -227,6 +249,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 				"education": entry.education,
 				"undergradLevel": entry.undergradLevel,
 				"foreignLangBool": entry.foreignLangBool,
+				"heritageLangBool": entry.heritageLangBool,
 				"visionProblems": entry.visionProblems,
 				"visionProblemsDetails": entry.visionProblemsDetails,
 				"hearingProblems": entry.hearingProblems,
@@ -243,6 +266,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 					"nativeLang": nle.nativeLang,
 				}
 				nlInitials.append(nlInitial)
+
 			# foreignLangEntries
 			fles = entry.foreignlangline_set.all()
 
@@ -282,22 +306,41 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 					"livedDays": fle.livedDays,
 					"workedDays": fle.workedDays,
 					"otherDays": fle.otherDays,
-
 				}	
 				flInitials.append(flInitial)
 
+			hles = entry.heritagelangline_set.all()
+			hlInitials = []
+			if hles:
+				HerLangFormset = formset_factory(
+									HeritageLangForm,
+									can_delete=True,
+									formset=BaseLangFormSet,
+									extra=0,
+				)
+			hlInitials=[]
+			for hle in hles:
+				hlInitial = {
+					"heritageLang": hle.heritageLang,
+					"explanation": hle.explanation,
+				}
+				hlInitials.append(hlInitial)
+
 			natLangsForms = NatLangFormset(prefix=u"natLang", initial=nlInitials)
 			forLangsForms = ForLangFormset(prefix=u"forLang", initial=flInitials)
+			herLangsForms = HerLangFormset(prefix=u"herLang", initial=hlInitials)
 
 		# we have no entry, give them empty form
 		else:
 			form = PageOne()
 			natLangsForms = NatLangFormset(prefix=u"natLang")
+			herLangsForms = HerLangFormset(prefix=u"herLang")
 			forLangsForms = ForLangFormset(prefix=u"forLang")
 
 	argsDict = {
 		'form': form, 
 		'natLangsForms': natLangsForms,
+		'herLangsForms': herLangsForms,
 		'forLangsForms': forLangsForms,
 	}
 

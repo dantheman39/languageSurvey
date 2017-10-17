@@ -33,6 +33,7 @@ class SurveyLine(models.Model):
 	hearingProblemsDetails = models.TextField(blank=True)
 
 	foreignLangBool = models.BooleanField(choices=YES_NO_CHOICES)
+	heritageLangBool = models.BooleanField(choices=YES_NO_CHOICES)
 
 	adminComment = models.TextField(blank=True)
 
