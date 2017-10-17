@@ -3,7 +3,7 @@
 
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from forms import PageOne, NativeLangForm, ForeignLangForm, BaseLangFormSet
+from forms import PageOne, NativeLangForm, HeritageLangForm, ForeignLangForm, BaseLangFormSet
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User as DjangoUser
@@ -54,6 +54,12 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 						can_delete=True,
 						formset=BaseLangFormSet,
 	)
+	HerLangFormset = formset_factory(
+						ForeignLangForm,
+						can_delete=True,
+						formset=BaseLangFormSet,
+	)
+
 	ForLangFormset = formset_factory(
 						ForeignLangForm,
 						can_delete=True,

@@ -44,6 +44,16 @@ class NativeLangLine(models.Model):
 		max_length=10,
 	)
 
+class HeritageLangLine(models.Model):
+
+	surveyId = models.ForeignKey('SurveyLine')
+
+	heritageLang = models.CharField(
+		max_length=10,
+	)
+
+	explanation = models.CharField(max_length=255, blank=True)
+
 class ForeignLangLine(models.Model):
 
 	surveyId = models.ForeignKey('SurveyLine')

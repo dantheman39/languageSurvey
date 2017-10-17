@@ -34,6 +34,8 @@ class PageOne(forms.Form):
 
 	undergradBlankError = _(u"Please tell us what year you are in, or the last year you completed")
 
+	heritageLangsQuestion = _(u"Did you speak another language with a family member or caretaker when you were a child?")
+
 	foreignLangsQuestion = _(u"Do you speak, or have you studied a foreign language?")
 
 	adminComment = forms.CharField(
@@ -89,6 +91,11 @@ class PageOne(forms.Form):
 				required=False,
 				widget = forms.Textarea,
 				error_messages={'required': SORTOF_OPTIONAL},
+				)
+
+	heritageLangBool = forms.ChoiceField(
+				choices=YES_NO_CHOICES,
+				widget=forms.RadioSelect,
 				)
 
 	#foreignLanguages = forms.CharField(
@@ -169,6 +176,34 @@ class NativeLangForm(forms.Form):
 				error_messages={'required': FIELD_REQUIRED_MESS},
 				choices=LANGUAGE_CHOICES,
 				)
+
+class HeritageLangForm(forms.Form):
+
+	langFieldName = "heritageLang"
+
+	heritageLang = forms.ChoiceField(label=_(u"Heritage language"),
+				label_suffix='', 
+				error_messages={'required': FIELD_REQUIRED_MESS},
+				choices=LANGUAGE_CHOICES,
+				)
+
+	explanation = forms.CharField(
+				required=False,
+				widget = forms.Textarea,
+				error_messages={'required': SORTOF_OPTIONAL},
+				)
+
+	def __init__(self):
+		super(HeritageLangForm, self).__init__(*args, **kwargs)
+		self.needsValidation = True
+
+	def clean(self):
+		cleaned_data = super(ForeignLangForm, self).clean()
+
+		if not self.needsValidation:
+			return cleaned_data
+
+		nowRequireds = [""]
 
 class ForeignLangForm(forms.Form):
 
