@@ -5,9 +5,9 @@ from django.utils.translation import ugettext as _
 
 GENDER_CHOICES = (
 	("", ""),
-	("male", "Male"),
-	("female", "Female"),
-	("other", "Other"),
+	("male", _(u"Male")),
+	("female", _("Female")),
+	("other", _("Other")),
 	
 )
 

@@ -44,6 +44,44 @@ def surveyPage(request):
 
 	return render(request, template, argsDict)
 
+
+@staff_member_required
+def results(request):
+
+	usersDates = list(SurveyLine.objects.values_list("userName", "date", "id", "dateLastEdited"))
+	
+	argsDict = { 
+		"usersDates": usersDates,
+	}
+
+	return  render(request, "results.html", argsDict)
+
+@staff_member_required
+def resultsViewOne(request, surveyId):
+
+	request, template, argsDict = processSurvey(request, adminView=True, adminViewId=surveyId)
+
+	forUser = SurveyLine.objects.get(id=surveyId).userName
+	argsDict["resultsForUser"] = forUser
+
+	return render(request, template, argsDict)
+
+@staff_member_required
+def exportSurvey(request):
+
+	today = timezone.now().strftime("%Y-%m-%d")
+	rootFolder = '/tmp'
+	fileName = 'survey_' + today + '.xlsx'
+	outName = os.path.join(rootFolder, fileName)
+	exS(SurveyLine, outName)
+
+	response = HttpResponse()
+	response['Content-Disposition'] = 'attachment; filename={0}'.format(fileName)
+	response['X-Sendfile'] = outName
+		
+	#return render(request, 'languageSurvey/resultsTest.html', {'userName': request.user})
+	return response
+
 def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 	NatLangFormset = formset_factory(
@@ -99,7 +137,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 		if mainFormValid and natLangsValid and herLangsValid and forLangsValid:
 			data = form.cleaned_data
 
-			# see if updating or posting new
+			# see if admin is updating or if participant is posting new
 			surveyLine = None
 			try: 
 				if adminView:
@@ -223,8 +261,9 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 			return request, "completed.html", {}
 
 		else: 
-			logger.info('Form is not valid for some reason')
+			logger.info('Form is not valid')
 
+	# the "if" before this was if == "POST"
 	else:
 
 		entry = None
@@ -345,41 +384,3 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 	}
 
 	return request, "one.html", argsDict
-
-
-@staff_member_required
-def results(request):
-
-	usersDates = list(SurveyLine.objects.values_list("userName", "date", "id", "dateLastEdited"))
-	
-	argsDict = { 
-		"usersDates": usersDates,
-	}
-
-	return  render(request, "results.html", argsDict)
-
-@staff_member_required
-def resultsViewOne(request, surveyId):
-
-	request, template, argsDict = processSurvey(request, adminView=True, adminViewId=surveyId)
-
-	forUser = SurveyLine.objects.get(id=surveyId).userName
-	argsDict["resultsForUser"] = forUser
-
-	return render(request, template, argsDict)
-
-@staff_member_required
-def exportSurvey(request):
-
-	today = timezone.now().strftime("%Y-%m-%d")
-	rootFolder = '/tmp'
-	fileName = 'survey_' + today + '.xlsx'
-	outName = os.path.join(rootFolder, fileName)
-	exS(SurveyLine, outName)
-
-	response = HttpResponse()
-	response['Content-Disposition'] = 'attachment; filename={0}'.format(fileName)
-	response['X-Sendfile'] = outName
-		
-	#return render(request, 'languageSurvey/resultsTest.html', {'userName': request.user})
-	return response

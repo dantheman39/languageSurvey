@@ -43,7 +43,6 @@ class PageOne(forms.Form):
 				widget = forms.Textarea,
 				)
 
-
 	age = forms.IntegerField(label=_(u'Age'),
 				label_suffix='',
 				error_messages={'required': FIELD_REQUIRED_MESS},
@@ -66,10 +65,6 @@ class PageOne(forms.Form):
 				choices=UG_CHOICES,
 				required=False,
 				)
-
-	#nativeLanguages = forms.CharField(
-	#			max_length=200,
-	#			)
 
 	visionProblems = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
@@ -97,10 +92,6 @@ class PageOne(forms.Form):
 				choices=YES_NO_CHOICES,
 				widget=forms.RadioSelect,
 				)
-
-	#foreignLanguages = forms.CharField(
-	#			widget = forms.Textarea,
-	#			)
 
 	foreignLangBool = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
@@ -134,7 +125,8 @@ class PageOne(forms.Form):
 		]
 		self.castBooleanText(boolFields, cleaned_data)
 				
-
+		# If they selected "undergrad", they need to tell us what 
+		# year they're in
 		if 'education' in cleaned_data:
 			educationSelection = cleaned_data.get('education')
 			if educationSelection == "undergrad":
@@ -142,11 +134,12 @@ class PageOne(forms.Form):
 					valError = forms.ValidationError(self.undergradBlankError)
 					self.add_error('undergradLevel', valError)
 
+		# If they checked "yes" on input "visionProblems", then "visionProblemsDetails"
+		# can't be blank
 		checkBox_description = [
 			("visionProblems", "visionProblemsDetails"),
 			("hearingProblems", "hearingProblemsDetails"),
 		]
-
 		for cdt in checkBox_description:
 			checkName = cdt[0]
 			descName = cdt[1]
@@ -470,7 +463,7 @@ class ForeignLangForm(forms.Form):
 				self.errorHopper.append((nowRequired, valError))
 
 		# must check if otherStudyDescription is blank before checking
-		# if other has been given a time. This is because if an error
+		# if "other" has been given a time. This is because if an error
 		# is found on an element, it is removed from cleaned_data, if
 		# I understand correctly. WAIT: Added an errorHopper to address
 		# this. Order should no longer matter
@@ -501,24 +494,6 @@ class ForeignLangForm(forms.Form):
 
 
 class BaseLangFormSet(BaseFormSet):
-
-	#def non_form_errors(self):
-	#	## Overriding parent method, which adds a dumb
-	#	# error message "Please submit 1 or more forms"
-	#	# and I can't see a good way to override that.
-	#	# In my case, there is already a message that
-	#	# will appear over an input, so this error
-	#	# message is superfluous
-
-	#	if self._non_form_errors is None:
-	#		self.full_clean()
-	#		dumbMessage = u"Please submit 1 or more forms."
-	#		if dumbMessage in self._non_form_errors:
-	#			self._non_form_errors.remove(dumbMessage)
-
-
-	#	return self._non_form_errors
-	
 
 	def clean(self):
 
