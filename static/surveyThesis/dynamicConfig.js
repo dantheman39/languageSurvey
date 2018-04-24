@@ -164,29 +164,32 @@ $(document).ready(function() {
 
 });
 
-$(document).on('click', "." + rmNatLangClass, function () {
-	var papa = $(this).parent();
+// This is a helper function used by the following three 
+// event handlers. They set a form as marked for deletion
+//
+// papa is the parent of a given "delete" button
+var setDivForDelete = function(papa, deleteInputIdPrefix) {
 	var parentId = papa.prop("id");
 	var divNum = dynamicDr.getLettersAndNumber(parentId).number;
 	papa.prop("hidden", true);
-	var deleteInputId = "id_" + natLangForm + "-" + divNum + "-DELETE";
+	var deleteInputId = deleteInputIdPrefix + divNum + "-DELETE";
 	document.getElementById(deleteInputId).checked = true;
+};
+
+$(document).on('click', "." + rmNatLangClass, function () {
+	var deleteInputIdPre = "id_" + natLangForm + "-";
+	var papa = $(this).parent();
+	setDivForDelete(papa, deleteInputIdPre);
 });
 
 $(document).on('click', "." + rmForLangClass, function() {
+	var deleteInputIdPre = "id_forLang-";
 	var papa = $(this).parent();
-	var parentId = papa.prop("id");
-	var divNum = dynamicDr.getLettersAndNumber(parentId).number;
-	papa.prop("hidden", true);
-	var deleteInputId = "id_forLang-" + divNum + "-DELETE";
-	document.getElementById(deleteInputId).checked = true;
+	setDivForDelete(papa, deleteInputIdPre);
 });
 
 $(document).on('click', "." + rmHerLangClass, function() {
+	var deleteInputId = "id_herLang-";
 	var papa = $(this).parent();
-	var parentId = papa.prop("id");
-	var divNum = dynamicDr.getLettersAndNumber(parentId).number;
-	papa.prop("hidden", true);
-	var deleteInputId = "id_herLang-" + divNum + "-DELETE";
-	document.getElementById(deleteInputId).checked = true;
+	setDivForDelete(papa, deleteInputIdPre);
 });
