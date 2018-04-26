@@ -189,7 +189,7 @@ $(document).on('click', "." + rmForLangClass, function() {
 });
 
 $(document).on('click', "." + rmHerLangClass, function() {
-	var deleteInputId = "id_herLang-";
+	var deleteInputIdPre = "id_herLang-";
 	var papa = $(this).parent();
 	setDivForDelete(papa, deleteInputIdPre);
 });

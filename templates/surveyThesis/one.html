@@ -311,8 +311,6 @@
 		{% endfor %}
 	</div>
 
-
-
 	<div id="visionDiv" class="radioButtonWrapper">
 		{{ form.visionProblems.errors }}
 		<p>{{ form.visionProblemsText }}</p>
@@ -335,18 +333,6 @@
 		<p>{{ form.hearingProblemsDetailsText }}</p>
 		{{ form.hearingProblemsDetails }}
 	</div>
-
-	<div class="radioButtonWrapper">
-		{{ form.additionalHomeLang.errors }}
-		<p>{{ form.additionalHomeLangText }}</p>
-		{{ form.additionalHomeLang }}
-	</div>
-	<div id="additionalHomeLangDetails" class="indentDiv" hidden>
-		{{ form.additionalHomeLangDetails.errors }}
-		<p>{{ form.additionalHomeLangDetailsText }}</p>
-		{{ form.additionalHomeLangDetails }}
-	</div>
-
 
 	<button type="submit" id="submitButton">Submit</button>
 
