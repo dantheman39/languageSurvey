@@ -179,6 +179,7 @@ class HeritageLangForm(forms.Form):
 				label_suffix='', 
 				error_messages={'required': FIELD_REQUIRED_MESS},
 				choices=LANGUAGE_CHOICES,
+				required=False,
 				)
 
 	explanation = forms.CharField(	
@@ -199,6 +200,7 @@ class HeritageLangForm(forms.Form):
 		self.errorHopper = []
 
 	def clean(self):
+
 		cleaned_data = super(HeritageLangForm, self).clean()
 
 		if not self.needsValidation:
@@ -495,14 +497,20 @@ class ForeignLangForm(forms.Form):
 
 class BaseLangFormSet(BaseFormSet):
 
+	def __init__(self, *args, **kwargs):
+
+		super(BaseLangFormSet, self).__init__(*args, **kwargs)
+		for form in self.forms:
+			# If we don't do this, blank forms
+			# will submit as valid
+			form.empty_permitted = False
+
 	def clean(self):
 
 		#if any(self.errors):
 		#	# Don't bother validating the formset if one 
 		#	# of the forms has errors
 		#	return
-
-		cleaned_data = super(BaseLangFormSet, self).clean()
 
 		# check that two languages aren't the same
 		languages = []

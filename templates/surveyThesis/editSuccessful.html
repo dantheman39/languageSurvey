@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load staticfiles %}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ form.pageTitle }}</title>
+	<link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css" href="{% static 'surveyThesis/headerChunk.css' %}"/>
+</head>
+
+<body>
+
+<div id="headline">
+	<h1 id="headerH1">Language background survey</h1>
+		<p class="headerRight">Logged in as {{ user }}
+			<a id="logoutLink" href="/accounts/logout/">Logout</a>
+		</p>
+</div>
+
+<div id="mainContent">
+	<p style="padding-top:20px;max-width:25em;line-height:150%">You've successfully edited the entry for user <strong>{{ resultsForUser }}</strong>. Thank you!</p>
+
+		<p><a href="/results">Back to list</a></p>
+</div>
+
+</body>
+</html>

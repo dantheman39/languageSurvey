@@ -258,7 +258,11 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 						)
 						herLangLine.save()
 
-			return request, "completed.html", {}
+			if adminView:
+				compTemp = "editSuccessful.html"
+			else:
+				compTemp = "completed.html"
+			return request, compTemp, {}
 
 		else: 
 			logger.info('Form is not valid')
