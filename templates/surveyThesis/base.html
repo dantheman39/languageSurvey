@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load staticfiles %}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	{% block title %}
+		<title>{{ form.pageTitle }}</title>
+	{% endblock title %}
+
+	{% block styleHead %}
+		<link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'surveyThesis/headerChunk.css' %}"/>
+	{% endblock styleHead %}
+
+</head>
+
+<body>
+<div id="headline">
+	<h1 id="headerH1">Language background survey</h1>
+		<p class="headerRight">Logged in as {{ user }}
+			<a id="logoutLink" href="/accounts/logout/">Logout</a>
+		</p>
+</div>
+
+{% block mainContent %}
+{% endblock %}
+
+{% block scriptsBody %}
+{% endblock scriptsBody %}
+
+</body>
+</html>

@@ -1,22 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
 {% load staticfiles %}
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{{ form.pageTitle }}</title>
-	<link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/>
-	<link rel="stylesheet" type="text/css" href="{% static 'surveyThesis/headerChunk.css' %}"/>
-</head>
 
-<body>
-<div id="headline">
-	<h1 id="headerH1">{{ form.pageTitle }}</h1>
-</div>
-
-
-
+{% block mainContent %}
 <div id="mainContent">	
 <form id="form" action="" method="post">
 	{% csrf_token %}
@@ -42,10 +28,10 @@
 
 </form>
 </div>
+{% endblock %}
 
-<script src="{% static 'jquery.js' %}"></script>
-<script src="{% static 'jquery-ui.min.js' %}"></script>
-<script src="{% static 'surveyThesis/results.js' %}"></script>
-
-</body>
-</html>
+{% block scriptsBody %}
+	<script src="{% static 'jquery.js' %}"></script>
+	<script src="{% static 'jquery-ui.min.js' %}"></script>
+	<script src="{% static 'surveyThesis/results.js' %}"></script>
+{% endblock scriptsBody %}

@@ -1,23 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
 {% load staticfiles %}
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{{ form.pageTitle }}</title>
-	<link href="{% static 'surveyThesis/surveyStyle.css' %}" type="text/css" rel="stylesheet"/>
-	<link rel="stylesheet" type="text/css" href="{% static 'surveyThesis/headerChunk.css' %}"/>
-</head>
 
-<body>
-
-<div id="headline">
-	<h1 id="headerH1">{{ form.pageTitle }}</h1>
-		<p class="headerRight">Logged in as {{ user }}
-			<a id="logoutLink" href="/accounts/logout/">Logout</a>
-		</p>
-</div>
+{% block mainContent %}
 
 <div id="mainContent">	
 
@@ -343,7 +328,10 @@
 
 </form>
 </div>
+{% endblock mainContent %}
 
+
+{% block scriptsBody %}
 	<script src="{% static 'jquery.js' %}"></script>
 	<script src="{% static 'surveyThesis/json2.js' %}" type="text/javascript"></script>
 	<script src="{% static 'dynamicDr/dynamicDr.js' %}" type="text/javascript"></script>
@@ -351,6 +339,4 @@
 	<script src="{% static 'timeCalculator/timeCalculator.js' %}" type="text/javascript"></script>
 	<script src="{% static 'surveyThesis/timeCalcConfig.js' %}" type="text/javascript"></script>
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> -->
-</body>
-
-</html>
+{% endblock %}

@@ -399,4 +399,4 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 		'forLangsForms': forLangsForms,
 	}
 
-	return request, "one.html", argsDict
+	return request, "survey.html", argsDict
