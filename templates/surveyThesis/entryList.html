@@ -1,0 +1,14 @@
+	<tr>
+		<th>Username</th>
+		<th>Date submitted</th>
+		<th>Last edited</th>
+		<th></th>
+	</tr>
+{% for userDate in usersDates %}
+	<tr>
+		<th><a href="/results/view/{{userDate.2}}">{{ userDate.0 }}</a></th>
+		<th>{{ userDate.1 }}</th>	
+		<th>{{ userDate.3 }}</th>
+		<th><button type="button" class="deleteButton" data-participantid="{{ userDate.2 }}" data-username="{{ userDate.0 }}">delete</button></th>
+	</tr>
+{% endfor %}
