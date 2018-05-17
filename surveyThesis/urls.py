@@ -27,4 +27,5 @@ urlpatterns = [
 	url(r'^results/view/(\d+)/$', views.resultsViewOne), 
 	url(r'^results/$', views.results),
 	url(r'^results/download/$', views.exportSurvey),
+	url(r'^results/delete/(\d+)/$', views.deleteEntry),
 ]

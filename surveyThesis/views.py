@@ -57,6 +57,18 @@ def results(request):
 	return  render(request, "results.html", argsDict)
 
 @staff_member_required
+def deleteEntry(request, surveyId):
+
+	SurveyLine.objects.get(pk=surveyId).delete()
+	usersDates = list(SurveyLine.objects.values_list("userName", "date", "id", "dateLastEdited"))
+
+	argsDict = {
+		"usersDates": usersDates,
+	}
+
+	return render(request, "entryList.html", argsDict)
+
+@staff_member_required
 def resultsViewOne(request, surveyId):
 
 	request, template, argsDict = processSurvey(request, adminView=True, adminViewId=surveyId)

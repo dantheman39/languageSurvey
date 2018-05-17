@@ -21,24 +21,31 @@
 <form id="form" action="" method="post">
 	{% csrf_token %}
 
-	<table>
-		<tr>
-			<th>Username</th>
-			<th>Date submitted</th>
-			<th>Last edited</th>
-		</tr>
-	{% for userDate in usersDates %}
-		<tr>
-			<th><a href="/results/view/{{userDate.2}}">{{ userDate.0 }}</a></th>
-			<th>{{ userDate.1 }}</th>	
-			<th>{{ userDate.3 }}</th>
-		</tr>
-	{% endfor %}
+	<div id="deleteDialog" data-deleteid="">
+		Are you sure you want to delete the entry for user <strong><span id="userName-dlg"></span></strong>? This cannot be undone.
+
+		<div>
+			<button type="button" id="deleteCanceled">Cancel</button>
+			<button type="button" id="deleteConfirmed">Delete</button>
+		</div>
+	</div>
+
+	<div id="deleteError">
+		There was a server error when trying to delete. Ask the admin to check the logs.
+	</div>
+
+	<table id="entryListTable">
+		{% include "surveyThesis/entryList.html" %}
 	</table>
 
 	<p><a href="/results/download">Download all results</p>
 
 </form>
 </div>
+
+<script src="{% static 'jquery.js' %}"></script>
+<script src="{% static 'jquery-ui.min.js' %}"></script>
+<script src="{% static 'surveyThesis/results.js' %}"></script>
+
 </body>
 </html>
