@@ -39,7 +39,7 @@ class SurveyLine(models.Model):
 
 class NativeLangLine(models.Model):
 
-	surveyId = models.ForeignKey('SurveyLine')
+	surveyId = models.ForeignKey('SurveyLine', on_delete=models.CASCADE)
 
 	nativeLang = models.CharField(
 		max_length=10,
@@ -47,7 +47,7 @@ class NativeLangLine(models.Model):
 
 class HeritageLangLine(models.Model):
 
-	surveyId = models.ForeignKey('SurveyLine')
+	surveyId = models.ForeignKey('SurveyLine', on_delete=models.CASCADE)
 
 	heritageLang = models.CharField(
 		max_length=10,
@@ -57,7 +57,7 @@ class HeritageLangLine(models.Model):
 
 class ForeignLangLine(models.Model):
 
-	surveyId = models.ForeignKey('SurveyLine')
+	surveyId = models.ForeignKey('SurveyLine', on_delete=models.CASCADE)
 	
 	foreignLang = models.CharField(
 		max_length=10,
