@@ -22,10 +22,9 @@ urlpatterns = [
     url(r'^accounts/login/$', login),
     url(r'^accounts/logout/$', logout),
     url(r'^admin/', include(admin.site.urls)),
-	url(r'^one/', views.surveyPage),
-	url(r'^$', views.surveyPage),
+	url(r'^$', views.surveyPage, name="survey"),
 	url(r'^results/view/(\d+)/$', views.resultsViewOne), 
-	url(r'^results/$', views.results),
+	url(r'^results/$', views.results, name="results"),
 	url(r'^results/download/$', views.exportSurvey),
 	url(r'^results/delete/(\d+)/$', views.deleteEntry),
 ]
