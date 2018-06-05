@@ -1,0 +1,71 @@
+[
+{
+  "model": "surveyThesis.surveyline",
+  "pk": 1,
+  "fields": {
+    "userName": "testuser2",
+    "age": 23,
+    "gender": "male",
+    "education": "undergrad",
+    "undergradLevel": "sp",
+    "date": "2017-09-04T14:27:28.396Z",
+    "dateLastEdited": "2017-09-04T20:13:53.711Z",
+    "visionProblems": false,
+    "visionProblemsDetails": "",
+    "hearingProblems": true,
+    "hearingProblemsDetails": "I have a ringing in my ear",
+    "foreignLangBool": true,
+    "heritageLangBool": true,
+    "adminComment": ""
+  }
+},
+{
+  "model": "surveyThesis.nativelangline",
+  "pk": 1,
+  "fields": {
+    "surveyId": 1,
+    "nativeLang": "en"
+  }
+},
+{
+  "model": "surveyThesis.heritagelangline",
+  "pk": 1,
+  "fields": {
+    "surveyId": 1,
+    "heritageLang": "ar",
+    "explanation": "Yes and no"
+  }
+},
+{
+  "model": "surveyThesis.foreignlangline",
+  "pk": 1,
+  "fields": {
+    "surveyId": 1,
+    "foreignLang": "es",
+    "proficiency": 2,
+    "school": true,
+    "schoolSemestersTotal": 0,
+    "schoolYears": 0,
+    "schoolSemesters": 6,
+    "lived": false,
+    "livedDaysTotal": 0,
+    "livedYears": 0,
+    "livedMonths": 0,
+    "livedWeeks": 0,
+    "livedDays": 0,
+    "worked": false,
+    "workedDaysTotal": 0,
+    "workedYears": 0,
+    "workedMonths": 0,
+    "workedWeeks": 0,
+    "workedDays": 0,
+    "other": true,
+    "otherDescription": "I watch movies",
+    "otherDaysTotal": 0,
+    "otherYears": 0,
+    "otherMonths": 0,
+    "otherWeeks": 0,
+    "otherDays": 0
+  }
+}
+]

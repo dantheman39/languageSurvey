@@ -6,10 +6,15 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from surveyThesis.models import SurveyLine, NativeLangLine, HeritageLangLine, ForeignLangLine
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 
 class ViewTests(TestCase):
 
-	def setUp(self):
+	fixtures = ["testusers.json"]
+	### Note that testuser1 has no submission, testuser2 does
+
+	@classmethod
+	def setUpTestData(self):
 		test_user1 = User.objects.create_user(username="testuser1", password="12345")
 		test_admin1 = User.objects.create_user(username="testadmin1", 
 										password="12345", is_staff=True)
@@ -20,56 +25,7 @@ class ViewTests(TestCase):
 		test_user2 = User.objects.create_user(username="testuser2", password="12345")
 		test_user2.save()
 
-		survey_line = SurveyLine(
-			userName=test_user2.username,
-			age=19,
-			gender="male",
-			education="undergrad",
-			undergradLevel="sp",
-			date=timezone.now(),
-			dateLastEdited=timezone.now(),
-			visionProblems=True,
-			visionProblemsDetails="I have ants in my eyes",
-			hearingProblems=True,
-			hearingProblemsDetails="I'm deaf",
-			foreignLangBool=True,
-			heritageLangBool=True,
-		)
-		survey_line.save()
-
-		native_lang = NativeLangLine(
-			surveyId=survey_line,
-			nativeLang="en",
-		)
-		native_lang.save()
-
-		heritage_lang = HeritageLangLine(
-			surveyId=survey_line,
-			heritageLang="es",
-			explanation="Spoke Spanish with my mom",
-		)	
-		heritage_lang.save()
-
-		foreign_lang = ForeignLangLine(
-			surveyId=survey_line,
-			foreignLang="fr",
-			proficiency=2,
-			school=True,
-			schoolSemestersTotal=8,
-			schoolSemesters=0,
-			schoolYears=4,
-			other=True,
-			otherDescription="I watch movies",
-			otherDaysTotal=365,
-			otherYears=1,
-			otherMonths=0,
-			otherWeeks=0,
-			otherDays=0,
-		)
-		foreign_lang.save()
-		
-
-	def loginUser(self, user_num=1):
+	def loginUser(self, user_num):
 
 		user = "testuser" + unicode(user_num)
 
@@ -81,12 +37,35 @@ class ViewTests(TestCase):
 
 	def test_new_user_correct_template(self):
 
-		login = self.loginUser()
+		login = self.loginUser(user_num=1)
 		response = self.client.get(reverse("survey"))
 		self.assertTemplateUsed(response, "survey.html")
 
-	def test_old_user_redirected(self):
+	def test_already_submitted_correct_template(self):
 
 		login = self.loginUser(user_num=2)
 		response = self.client.get(reverse("survey"))
 		self.assertTemplateUsed(response, "alreadySubmitted.html")
+
+	def test_delete(self):
+
+		# Deleting testuser2's entries, keep this at
+		# the bottom of file for now
+
+		login = self.loginAdmin()
+
+		response = self.client.post(reverse("delete", args=[1]))
+
+		self.assertEqual(response.status_code, 200)
+
+		with self.assertRaises(ObjectDoesNotExist) as e:
+			SurveyLine.objects.get(pk=1)
+
+		with self.assertRaises(ObjectDoesNotExist) as e:
+			NativeLangLine.objects.get(surveyId=1)
+
+		with self.assertRaises(ObjectDoesNotExist) as e:
+			HeritageLangLine.objects.get(surveyId=1)
+
+		with self.assertRaises(ObjectDoesNotExist) as e:
+			ForeignLangLine.objects.get(surveyId=1)

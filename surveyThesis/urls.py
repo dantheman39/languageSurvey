@@ -23,8 +23,8 @@ urlpatterns = [
     url(r'^accounts/logout/$', logout),
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^$', views.surveyPage, name="survey"),
-	url(r'^results/view/(\d+)/$', views.resultsViewOne), 
+	url(r'^results/view/(\d+)/$', views.resultsViewOne, name="viewOne"), 
 	url(r'^results/$', views.results, name="results"),
 	url(r'^results/download/$', views.exportSurvey),
-	url(r'^results/delete/(\d+)/$', views.deleteEntry),
+	url(r'^results/delete/(\d+)/$', views.deleteEntry, name="delete"),
 ]
