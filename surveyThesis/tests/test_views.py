@@ -78,3 +78,4 @@ class ViewTests(TestCase):
 
 		with self.assertRaises(ObjectDoesNotExist) as e:
 			ForeignLangLine.objects.get(surveyId=1)
+

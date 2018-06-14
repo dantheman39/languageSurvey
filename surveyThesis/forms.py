@@ -206,11 +206,15 @@ class HeritageLangForm(forms.Form):
 		if not self.needsValidation:
 			return cleaned_data
 
-		nowRequireds = ["heritageLang", "explanation"]
+		nowRequireds = [
+			("heritageLang", FIELD_REQUIRED_MESS),
+			("explanation", SORTOF_OPTIONAL),
+		]
+
 		for nowRequired in nowRequireds:
-			if not cleaned_data.get(nowRequired):
-				valError = forms.ValidationError(FIELD_REQUIRED_MESS, code="required")
-				self.errorHopper.append((nowRequired, valError))
+			if not cleaned_data.get(nowRequired[0]):
+				valError = forms.ValidationError(nowRequired[1], code="required")
+				self.errorHopper.append((nowRequired[0], valError))
 
 		for eTup in self.errorHopper:
 			self.add_error(eTup[0], eTup[1])
