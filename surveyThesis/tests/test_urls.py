@@ -31,10 +31,14 @@ class UrlTests(TestCase):
 		response = self.client.get(reverse("survey"))
 		self.assertRedirects(response, "/accounts/login/?next=/")
 
-	def test_redirect_if_not_admin(self):
+	def test_redirect_if_not_admin_results(self):
 		login = self.client.login(username="testuser1", password="12345")
 		response = self.client.get(reverse("results"))
 		self.assertRedirects(response, "/admin/login/?next=/results/")
+
+		# Repeating with resultsViewOne
+		response = self.client.get(reverse("viewOne", args=[1]))
+		self.assertRedirects(response, "/admin/login/?next=/results/view/1/")
 
 	def test_results_view_one_with_arg(self):
 

@@ -35,17 +35,25 @@ class ViewTests(TestCase):
 
 		return self.client.login(username="testadmin1", password="12345")
 
-	def test_new_user_correct_template(self):
+	# For view method surveyPage
+	def test_survey_new_user_correct_template(self):
 
 		login = self.loginUser(user_num=1)
 		response = self.client.get(reverse("survey"))
 		self.assertTemplateUsed(response, "survey.html")
 
-	def test_already_submitted_correct_template(self):
+	# For view method surveyPage
+	def test_survey_already_submitted_correct_template(self):
 
 		login = self.loginUser(user_num=2)
 		response = self.client.get(reverse("survey"))
 		self.assertTemplateUsed(response, "alreadySubmitted.html")
+
+	def test_results_correct_template(self):
+
+		login = self.loginAdmin()
+		response = self.client.get(reverse("results"))
+		self.assertTemplateUsed(response, "results.html")
 
 	def test_delete(self):
 
@@ -58,6 +66,7 @@ class ViewTests(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 
+		# Making sure object and related tables don't exist
 		with self.assertRaises(ObjectDoesNotExist) as e:
 			SurveyLine.objects.get(pk=1)
 
