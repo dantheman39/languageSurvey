@@ -175,18 +175,18 @@ class HeritageLangForm(forms.Form):
 
 	langFieldName = "heritageLang"
 
+	# These two fields are optionally required.
+	# see clean()
 	heritageLang = forms.ChoiceField(label=_(u"Which language?"),
 				label_suffix='', 
-				error_messages={'required': FIELD_REQUIRED_MESS},
 				choices=LANGUAGE_CHOICES,
-				required=False,
+				required=False, 
 				)
 
 	explanation = forms.CharField(	
 				label_suffix='', 
-				required=False,
 				widget = forms.Textarea,
-				error_messages={'required': SORTOF_OPTIONAL},
+				required=False,
 				)
 
 	explanationText = _(u"Please tell us about it. (i.e. Who did you speak it with? Can you still speak, understand, and/or write it?)")
