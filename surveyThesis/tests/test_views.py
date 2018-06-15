@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from surveyThesis.models import SurveyLine, NativeLangLine, HeritageLangLine, ForeignLangLine
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from surveyThesis.forms import FIELD_REQUIRED_MESS
 
 class ViewTests(TestCase):
 
@@ -79,3 +80,94 @@ class ViewTests(TestCase):
 		with self.assertRaises(ObjectDoesNotExist) as e:
 			ForeignLangLine.objects.get(surveyId=1)
 
+	### Higher level (integration) tests
+	def test_survey_valid_post(self):
+
+		login = self.loginUser(user_num=1)
+		postData = {
+			"natLang-INITIAL_FORMS": 0,
+			"natLang-TOTAL_FORMS": 1,
+			"natLang-MIN_NUM_FORMS": 1,
+			"natLang-MAX_NUM_FORMS": 1000,
+			"natLang-0-nativeLang": "en",
+			"forLang-INITIAL_FORMS": 0,
+			"forLang-TOTAL_FORMS": 2,
+			"forLang-MIN_NUM_FORMS": 0,
+			"forLang-MAX_NUM_FORMS": 1000,
+			"herLang-INITIAL_FORMS": 0,
+			"herLang-TOTAL_FORMS": 2,
+			"herLang-MIN_NUM_FORMS": 0,
+			"herLang-MAX_NUM_FORMS": 1000,
+			"visionProblems": False,
+			"hearingProblems": False,
+			"education": "primary",
+			"heritageLangBool": False,
+			"foreignLangBool": False,
+			"gender": "male",
+			"age": 21,
+
+		}
+		response = self.client.post(reverse("survey"), postData) 
+		self.assertEqual(response.status_code, 200)
+		self.assertTemplateUsed(response, "completed.html")
+
+	def test_survey_bad_post(self):
+
+		login = self.loginUser(user_num=1)
+		#"age" is missing
+		postData = {
+			"natLang-INITIAL_FORMS": 0,
+			"natLang-TOTAL_FORMS": 1,
+			"natLang-MIN_NUM_FORMS": 1,
+			"natLang-MAX_NUM_FORMS": 1000,
+			"natLang-0-nativeLang": "en",
+			"forLang-INITIAL_FORMS": 0,
+			"forLang-TOTAL_FORMS": 2,
+			"forLang-MIN_NUM_FORMS": 0,
+			"forLang-MAX_NUM_FORMS": 1000,
+			"herLang-INITIAL_FORMS": 0,
+			"herLang-TOTAL_FORMS": 2,
+			"herLang-MIN_NUM_FORMS": 0,
+			"herLang-MAX_NUM_FORMS": 1000,
+			"visionProblems": True,
+			"hearingProblems": False,
+			"education": "primary",
+			"heritageLangBool": False,
+			"foreignLangBool": False,
+			"gender": "male",
+
+		}
+		response = self.client.post(reverse("survey"), postData)
+		self.assertEqual(response.status_code, 200)
+		self.assertTemplateUsed(response, "survey.html")
+		self.assertFormError(response, "form", "age", FIELD_REQUIRED_MESS)
+
+	def test_survey_valid_edit(self):
+
+		login = self.loginAdmin()
+		postData = {
+			"natLang-INITIAL_FORMS": 0,
+			"natLang-TOTAL_FORMS": 1,
+			"natLang-MIN_NUM_FORMS": 1,
+			"natLang-MAX_NUM_FORMS": 1000,
+			"natLang-0-nativeLang": "en",
+			"forLang-INITIAL_FORMS": 0,
+			"forLang-TOTAL_FORMS": 2,
+			"forLang-MIN_NUM_FORMS": 0,
+			"forLang-MAX_NUM_FORMS": 1000,
+			"herLang-INITIAL_FORMS": 0,
+			"herLang-TOTAL_FORMS": 2,
+			"herLang-MIN_NUM_FORMS": 0,
+			"herLang-MAX_NUM_FORMS": 1000,
+			"visionProblems": False,
+			"hearingProblems": False,
+			"education": "primary",
+			"heritageLangBool": False,
+			"foreignLangBool": False,
+			"gender": "male",
+			"age": 21,
+
+		}
+		response = self.client.post(reverse("viewOne", args=[1]), postData) 
+		self.assertEqual(response.status_code, 200)
+		self.assertTemplateUsed(response, "editSuccessful.html")
