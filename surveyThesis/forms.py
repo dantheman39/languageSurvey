@@ -11,8 +11,10 @@ import logging
 logger = logging.getLogger('surveyThesis')
 FIELD_REQUIRED_MESS = _(u"This field is required")
 SORTOF_OPTIONAL = _(u"If you don't want to answer, you can say so here, but this field can't be blank")
+STUDY_TIME_MESS = _("Please tell us how long")
+DUPLICATE_LANG_MESS = _("The same language was listed twice")
 
-class PageOne(forms.Form):
+class SurveyForm(forms.Form):
 
 	pageTitle = _(u"Language background survey")
 	
@@ -69,6 +71,7 @@ class PageOne(forms.Form):
 	visionProblems = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
 				widget=forms.RadioSelect,
+				error_messages={'required': FIELD_REQUIRED_MESS},
 				)
 
 	visionProblemsDetails = forms.CharField(
@@ -80,6 +83,7 @@ class PageOne(forms.Form):
 	hearingProblems = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
 				widget=forms.RadioSelect,
+				error_messages={'required': FIELD_REQUIRED_MESS},
 				)
 
 	hearingProblemsDetails = forms.CharField(
@@ -91,11 +95,13 @@ class PageOne(forms.Form):
 	heritageLangBool = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
 				widget=forms.RadioSelect,
+				error_messages={'required': FIELD_REQUIRED_MESS},
 				)
 
 	foreignLangBool = forms.ChoiceField(
 				choices=YES_NO_CHOICES,
 				widget=forms.RadioSelect,
+				error_messages={'required': FIELD_REQUIRED_MESS},
 				)
 
 	foreignProficiencyChoices = PROFICIENCY_CHOICES 
@@ -113,7 +119,7 @@ class PageOne(forms.Form):
 				cleaned_data[bf] = bv
 
 	def clean(self):
-		cleaned_data = super(PageOne, self).clean()
+		cleaned_data = super(SurveyForm, self).clean()
 
 		# for some reason radio buttons are not being
 		# correctly converted to python types
@@ -428,7 +434,7 @@ class ForeignLangForm(forms.Form):
 
 				if not foundValue:
 					noErrors = False
-					valError = forms.ValidationError(_("Please tell us how long"), code="blankTime")
+					valError = forms.ValidationError(STUDY_TIME_MESS, code="blankTime")
 					self.errorHopper.append((errorField, valError))
 					#self.add_error(errorField, valError)
 		return cleaned_data, noErrors
@@ -449,11 +455,33 @@ class ForeignLangForm(forms.Form):
 
 		self.schoolTotal = valDict["schoolSemesters"] + (valDict["schoolYears"] * 2) 
 
-		self.livedTotal = TimeCalculator("lived", cleaned_data).totalDays
-		self.workedTotal = TimeCalculator("worked", cleaned_data).totalDays
-		self.otherTotal = TimeCalculator("other", cleaned_data).totalDays
+		self.livedTotal = self.calculateStudyDays("lived", cleaned_data)
+		self.workedTotal = self.calculateStudyDays("worked", cleaned_data)
+		self.otherTotal = self.calculateStudyDays("other", cleaned_data)
 
 		return cleaned_data
+
+	def calculateStudyDays(self, prefix, cleaned_data):
+
+		units = ["Years", "Months", "Weeks", "Days"]
+		keys = [prefix + x for x in units]
+
+		vals =[] 
+		for k in keys:
+			val = cleaned_data.get(k)
+		
+			try: 
+				val = int(val)
+			except(ValueError, TypeError) as e:
+				val = 0
+
+			vals.append(val)
+
+		years = vals[0]
+		months = vals[1]
+		weeks = vals[2]
+		days = vals[3]
+		return (years * 365) + (months * 30) + (weeks * 7) + days
 
 	def clean(self):
 
@@ -511,11 +539,6 @@ class BaseLangFormSet(BaseFormSet):
 
 	def clean(self):
 
-		#if any(self.errors):
-		#	# Don't bother validating the formset if one 
-		#	# of the forms has errors
-		#	return
-
 		# check that two languages aren't the same
 		languages = []
 		numForms = len(self.forms)
@@ -527,30 +550,6 @@ class BaseLangFormSet(BaseFormSet):
 
 			lang = form.cleaned_data.get(form.langFieldName)
 			if lang in languages:
-				raise forms.ValidationError(_("The same language was listed twice"))
+				raise forms.ValidationError(DUPLICATE_LANG_MESS)
 			else:
 				languages.append(lang)
-				
-class TimeCalculator(object):
-
-	def __init__(self, prefix, cleaned_data):
-
-		units = ["Years", "Months", "Weeks", "Days"]
-		keys = [prefix + x for x in units]
-
-		vals =[] 
-		for k in keys:
-			val = cleaned_data.get(k)
-		
-			try: 
-				val = int(val)
-			except(ValueError, TypeError) as e:
-				val = 0
-
-			vals.append(val)
-
-		years = vals[0]
-		months = vals[1]
-		weeks = vals[2]
-		days = vals[3]
-		self.totalDays = (years * 365) + (months * 30) + (weeks * 7) + days

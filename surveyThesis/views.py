@@ -3,7 +3,7 @@
 
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from forms import PageOne, NativeLangForm, HeritageLangForm, ForeignLangForm, BaseLangFormSet
+from forms import SurveyForm, NativeLangForm, HeritageLangForm, ForeignLangForm, BaseLangFormSet
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User as DjangoUser
@@ -118,7 +118,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 	if request.method == 'POST':
 
-		form = PageOne(request.POST)
+		form = SurveyForm(request.POST)
 		natLangsForms = NatLangFormset(request.POST, request.FILES, prefix=u"natLang")
 		herLangsForms = HerLangFormset(request.POST, request.FILES, prefix=u"herLang")
 		forLangsForms = ForLangFormset(request.POST, request.FILES, prefix=u"forLang")
@@ -311,7 +311,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 				"hearingProblemsDetails": entry.hearingProblemsDetails,
 			
 			}
-			form = PageOne(initial=initial)
+			form = SurveyForm(initial=initial)
 
 			# nativeLangEntries
 			nles = entry.nativelangline_set.all()
@@ -387,7 +387,7 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 		# we have no entry, give them empty form
 		else:
-			form = PageOne()
+			form = SurveyForm()
 			natLangsForms = NatLangFormset(prefix=u"natLang")
 			herLangsForms = HerLangFormset(prefix=u"herLang")
 			forLangsForms = ForLangFormset(prefix=u"forLang")
