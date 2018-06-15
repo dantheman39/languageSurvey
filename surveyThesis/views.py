@@ -128,7 +128,6 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 		# see if the foreign languages were visible and need validation
 		forLangBoolVal = form.cleaned_data.get("foreignLangBool")
 		herLangBoolVal = form.cleaned_data.get("heritageLangBool")
-
 		if not forLangBoolVal:
 			for flf in forLangsForms:
 				flf.needsValidation = False
@@ -161,125 +160,35 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 
 			if surveyLine is not None:
-				# we are updating a pre-existing entry
-
-				# first is the model attribute, second is the form attribute
-				attrs = [
-					"age",
-					"gender",
-					"education",
-					"undergradLevel",
-					"foreignLangBool",
-					"heritageLangBool",
-					"visionProblems",
-					"visionProblemsDetails",
-					"hearingProblems",
-					"hearingProblemsDetails",
-				]
-
-				for att in attrs:
-					setattr(surveyLine, att, data[att])
-
-				surveyLine.dateLastEdited = timezone.now()
-
-				if adminView and "adminComment" in data:
-					surveyLine.adminComment = data["adminComment"]
-
-				# It's going to be easier to delete than to update
-				nlEntry = surveyLine.nativelangline_set.all()
-				hlEntry = surveyLine.heritagelangline_set.all()
-				flEntry = surveyLine.foreignlangline_set.all()
-				for lq in [nlEntry, hlEntry, flEntry]:
-					for le in lq:
-						le.delete()
-
-				surveyLine.save()
-
+				updatePreviousEntry(surveyLine, adminView)
+				# Deleting related tables and recreating them
+				# is currently enough for this small app
+				deleteLanguages(surveyLine)
 			else:
-				# we are creating a new entry
-				surveyLine = SurveyLine(
-					userName=request.user,
-					date=timezone.now(),
-					age=data['age'],
-					gender=data["gender"],
-					education=data['education'],
-					undergradLevel=data['undergradLevel'],
-					visionProblems=data['visionProblems'],
-					visionProblemsDetails=data['visionProblemsDetails'],
-					hearingProblems=data['hearingProblems'],
-					hearingProblemsDetails=data['hearingProblemsDetails'],
-					foreignLangBool=data['foreignLangBool'],
-					heritageLangBool=data['heritageLangBool'],
-					)
-				surveyLine.save()
+				surveyLine = populateSurveyLine(surveyLine, user, data)
 
-			for natLangForm in natLangsForms:
-				data = natLangForm.cleaned_data
-				if not data["DELETE"]:
-					natLangLine = NativeLangLine(
-						surveyId=surveyLine,
-						nativeLang=data["nativeLang"],
-					)
-					natLangLine.save()
+			saveNatLangs(surveyLine, natLangsForms)
 
 			if forLangBoolVal:
-				for forLangForm in forLangsForms:
-					data = forLangForm.cleaned_data
-					if not data["DELETE"]:
-						forLangLine = ForeignLangLine(
-							surveyId=surveyLine,
-							foreignLang=data["foreignLang"],
-							proficiency=data["proficiency"],
-							school=data["school"],
-							lived=data["lived"],
-							worked=data["worked"],
-							other=data["other"],
-							schoolSemestersTotal=forLangForm.schoolTotal,
-							livedDaysTotal=forLangForm.livedTotal,
-							workedDaysTotal=forLangForm.workedTotal,
-							otherDaysTotal=forLangForm.otherTotal,
-							schoolSemesters=data["schoolSemesters"],
-							schoolYears=data["schoolYears"],
-							livedYears=data["livedYears"],
-							workedYears=data["workedYears"],
-							otherYears=data["otherYears"],
-							livedMonths=data["livedMonths"],
-							workedMonths=data["workedMonths"],
-							otherMonths=data["otherMonths"],
-							livedWeeks=data["livedWeeks"],
-							workedWeeks=data["workedWeeks"],
-							otherWeeks=data["otherWeeks"],
-							livedDays=data["livedDays"],
-							workedDays=data["workedDays"],
-							otherDays=data["otherDays"],
-						)
-						otherDesc = data.get("otherStudyExplanation")
-						if otherDesc is not None:
-							forLangLine.otherDescription = otherDesc
-
-						forLangLine.save()
+				saveForLangs(surveyLine, forLangsForms, data)
 
 			if herLangBoolVal:
-				for herLangForm in herLangsForms:
-					data = herLangForm.cleaned_data
-					if not data["DELETE"]:
-						herLangLine = HeritageLangLine(
-							surveyId=surveyLine,
-							heritageLang=data["heritageLang"],
-							explanation=data["explanation"],
-						)
-						herLangLine.save()
+				saveHerLangs(surveyLine, herLangsForms, data)
 
 			if adminView:
 				compTemp = "editSuccessful.html"
 			else:
 				compTemp = "completed.html"
+
+			###### Return from successful POST
 			return request, compTemp, {}
 
 		else: 
 			logger.info('Form is not valid')
 
-	# the "if" before this was if == "POST"
+	# For GET requests.
+	# If an admin is getting, they can view the form populated with
+	# data from a participant, and edit it if they want.
 	else:
 
 		entry = None
@@ -297,93 +206,8 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 
 		if entry is not None:
 
-			initial = {
-				"adminComment": entry.adminComment,
-				"age": entry.age, 
-				"gender": entry.gender,
-				"education": entry.education,
-				"undergradLevel": entry.undergradLevel,
-				"foreignLangBool": entry.foreignLangBool,
-				"heritageLangBool": entry.heritageLangBool,
-				"visionProblems": entry.visionProblems,
-				"visionProblemsDetails": entry.visionProblemsDetails,
-				"hearingProblems": entry.hearingProblems,
-				"hearingProblemsDetails": entry.hearingProblemsDetails,
-			
-			}
-			form = PageOne(initial=initial)
-
-			# nativeLangEntries
-			nles = entry.nativelangline_set.all()
-			nlInitials = []
-			for nle in nles:
-				nlInitial = {
-					"nativeLang": nle.nativeLang,
-				}
-				nlInitials.append(nlInitial)
-
-			# foreignLangEntries
-			fles = entry.foreignlangline_set.all()
-
-			if fles:
-				# overwrite initial factory to set extra=0
-				ForLangFormset = formset_factory(
-									ForeignLangForm,
-									can_delete=True,
-									formset=BaseLangFormSet,
-									extra=0,
-				)
-
-			flInitials=[]
-			for fle in fles:
-				flInitial = {
-					"foreignLang": fle.foreignLang,
-					"proficiency": fle.proficiency,
-					"school": fle.school,
-					"lived": fle.lived,
-					"worked": fle.worked,
-					"other": fle.other,
-					"schoolSemesters": fle.schoolSemesters,
-					"livedDays": fle.livedDays,
-					"workedDays": fle.workedDays,
-					"otherDays": fle.otherDays,
-					"otherStudyExplanation": fle.otherDescription, 
-					"schoolYears": fle.schoolYears,
-					"livedYears": fle.livedYears,
-					"workedYears": fle.workedYears,
-					"otherYears": fle.otherYears,
-					"livedMonths": fle.livedMonths,
-					"workedMonths": fle.workedMonths,
-					"otherMonths": fle.otherMonths,
-					"livedWeeks": fle.livedWeeks,
-					"workedWeeks": fle.workedWeeks,
-					"otherWeeks": fle.otherWeeks,
-					"livedDays": fle.livedDays,
-					"workedDays": fle.workedDays,
-					"otherDays": fle.otherDays,
-				}	
-				flInitials.append(flInitial)
-
-			hles = entry.heritagelangline_set.all()
-			hlInitials = []
-			if hles:
-				HerLangFormset = formset_factory(
-									HeritageLangForm,
-									can_delete=True,
-									formset=BaseLangFormSet,
-									extra=0,
-				)
-			hlInitials=[]
-			for hle in hles:
-				hlInitial = {
-					"heritageLang": hle.heritageLang,
-					"explanation": hle.explanation,
-				}
-				hlInitials.append(hlInitial)
-
-			natLangsForms = NatLangFormset(prefix=u"natLang", initial=nlInitials)
-			forLangsForms = ForLangFormset(prefix=u"forLang", initial=flInitials)
-			herLangsForms = HerLangFormset(prefix=u"herLang", initial=hlInitials)
+			form, natLangsForm, forLangsForm, herLangsForm =  
+						initializeFormsWithData(entry)
 
 		# we have no entry, give them empty form
 		else:
@@ -400,3 +224,217 @@ def processSurvey(request, adminView=False, adminViewId=None, userName=None):
 	}
 
 	return request, "survey.html", argsDict
+
+##### The helper functions to make the processSurvey method
+##### (slightly) easier to follow.
+def updatePreviousEntry(surveyLine, adminView):
+
+	# we are updating a pre-existing entry
+
+	# first is the model attribute, second is the form attribute
+	attrs = [
+		"age",
+		"gender",
+		"education",
+		"undergradLevel",
+		"foreignLangBool",
+		"heritageLangBool",
+		"visionProblems",
+		"visionProblemsDetails",
+		"hearingProblems",
+		"hearingProblemsDetails",
+	]
+
+	for att in attrs:
+		setattr(surveyLine, att, data[att])
+
+	surveyLine.dateLastEdited = timezone.now()
+
+	if adminView and "adminComment" in data:
+		surveyLine.adminComment = data["adminComment"]
+
+
+def populateSurveyLine(surveyLine, user, data):
+
+	# we are creating a new entry
+	surveyLine = SurveyLine(
+		userName=request.user,
+		date=timezone.now(),
+		age=data['age'],
+		gender=data["gender"],
+		education=data['education'],
+		undergradLevel=data['undergradLevel'],
+		visionProblems=data['visionProblems'],
+		visionProblemsDetails=data['visionProblemsDetails'],
+		hearingProblems=data['hearingProblems'],
+		hearingProblemsDetails=data['hearingProblemsDetails'],
+		foreignLangBool=data['foreignLangBool'],
+		heritageLangBool=data['heritageLangBool'],
+		)
+	surveyLine.save()
+
+	return surveyLine
+
+def deleteLanguages(surveyLine):
+
+	# It's going to be easier to delete than to update
+	nlEntry = surveyLine.nativelangline_set.all()
+	hlEntry = surveyLine.heritagelangline_set.all()
+	flEntry = surveyLine.foreignlangline_set.all()
+	for lq in [nlEntry, hlEntry, flEntry]:
+		for le in lq:
+			le.delete()
+
+	surveyLine.save()
+
+def saveNatLangs(surveyLine, natLangsForms):
+	for natLangForm in natLangsForms:
+		data = natLangForm.cleaned_data
+		if not data["DELETE"]:
+			natLangLine = NativeLangLine(
+				surveyId=surveyLine,
+				nativeLang=data["nativeLang"],
+			)
+			natLangLine.save()
+
+def saveForLangs(surveyLine, forLangsForms, data):
+
+	for forLangForm in forLangsForms:
+		data = forLangForm.cleaned_data
+		if not data["DELETE"]:
+			forLangLine = ForeignLangLine(
+				surveyId=surveyLine,
+				foreignLang=data["foreignLang"],
+				proficiency=data["proficiency"],
+				school=data["school"],
+				lived=data["lived"],
+				worked=data["worked"],
+				other=data["other"],
+				schoolSemestersTotal=forLangForm.schoolTotal,
+				livedDaysTotal=forLangForm.livedTotal,
+				workedDaysTotal=forLangForm.workedTotal,
+				otherDaysTotal=forLangForm.otherTotal,
+				schoolSemesters=data["schoolSemesters"],
+				schoolYears=data["schoolYears"],
+				livedYears=data["livedYears"],
+				workedYears=data["workedYears"],
+				otherYears=data["otherYears"],
+				livedMonths=data["livedMonths"],
+				workedMonths=data["workedMonths"],
+				otherMonths=data["otherMonths"],
+				livedWeeks=data["livedWeeks"],
+				workedWeeks=data["workedWeeks"],
+				otherWeeks=data["otherWeeks"],
+				livedDays=data["livedDays"],
+				workedDays=data["workedDays"],
+				otherDays=data["otherDays"],
+			)
+			otherDesc = data.get("otherStudyExplanation")
+			if otherDesc is not None:
+				forLangLine.otherDescription = otherDesc
+
+			forLangLine.save()
+
+def saveHerLangs(surveyLine, herLangsForms):
+
+	for herLangForm in herLangsForms:
+		data = herLangForm.cleaned_data
+		if not data["DELETE"]:
+			herLangLine = HeritageLangLine(
+				surveyId=surveyLine,
+				heritageLang=data["heritageLang"],
+				explanation=data["explanation"],
+			)
+			herLangLine.save()
+
+def initializeFormsWithData(entry):
+
+	initial = {
+		"adminComment": entry.adminComment,
+		"age": entry.age, 
+		"gender": entry.gender,
+		"education": entry.education,
+		"undergradLevel": entry.undergradLevel,
+		"foreignLangBool": entry.foreignLangBool,
+		"heritageLangBool": entry.heritageLangBool,
+		"visionProblems": entry.visionProblems,
+		"visionProblemsDetails": entry.visionProblemsDetails,
+		"hearingProblems": entry.hearingProblems,
+		"hearingProblemsDetails": entry.hearingProblemsDetails,
+	
+	}
+	form = PageOne(initial=initial)
+
+	# nativeLangEntries
+	nles = entry.nativelangline_set.all()
+	nlInitials = []
+	for nle in nles:
+		nlInitial = {
+			"nativeLang": nle.nativeLang,
+		}
+		nlInitials.append(nlInitial)
+
+	# foreignLangEntries
+	fles = entry.foreignlangline_set.all()
+
+	if fles:
+		# overwrite initial factory to set extra=0
+		ForLangFormset = formset_factory(
+							ForeignLangForm,
+							can_delete=True,
+							formset=BaseLangFormSet,
+							extra=0,
+		)
+
+	flInitials=[]
+	for fle in fles:
+		flInitial = {
+			"foreignLang": fle.foreignLang,
+			"proficiency": fle.proficiency,
+			"school": fle.school,
+			"lived": fle.lived,
+			"worked": fle.worked,
+			"other": fle.other,
+			"schoolSemesters": fle.schoolSemesters,
+			"livedDays": fle.livedDays,
+			"workedDays": fle.workedDays,
+			"otherDays": fle.otherDays,
+			"otherStudyExplanation": fle.otherDescription, 
+			"schoolYears": fle.schoolYears,
+			"livedYears": fle.livedYears,
+			"workedYears": fle.workedYears,
+			"otherYears": fle.otherYears,
+			"livedMonths": fle.livedMonths,
+			"workedMonths": fle.workedMonths,
+			"otherMonths": fle.otherMonths,
+			"livedWeeks": fle.livedWeeks,
+			"workedWeeks": fle.workedWeeks,
+			"otherWeeks": fle.otherWeeks,
+			"livedDays": fle.livedDays,
+			"workedDays": fle.workedDays,
+			"otherDays": fle.otherDays,
+		}	
+		flInitials.append(flInitial)
+
+	hles = entry.heritagelangline_set.all()
+	hlInitials = []
+	if hles:
+		HerLangFormset = formset_factory(
+							HeritageLangForm,
+							can_delete=True,
+							formset=BaseLangFormSet,
+							extra=0,
+		)
+	hlInitials=[]
+	for hle in hles:
+		hlInitial = {
+			"heritageLang": hle.heritageLang,
+			"explanation": hle.explanation,
+		}
+		hlInitials.append(hlInitial)
+
+	natLangsForms = NatLangFormset(prefix=u"natLang", initial=nlInitials)
+	forLangsForms = ForLangFormset(prefix=u"forLang", initial=flInitials)
+	herLangsForms = HerLangFormset(prefix=u"herLang", initial=hlInitials)
+
+
